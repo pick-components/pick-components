@@ -52,7 +52,7 @@ test.describe("public route worker", () => {
     await expect(crawlerResponse.text()).resolves.toBe("<h1>Hola Mundo</h1>");
   });
 
-  test("falls back to the SPA shell only when a clean route has no public page", async () => {
+  test("falls back to the SPA shell only when a clean route has no public HTML", async () => {
     // Arrange
     const request = new Request("https://pickcomponents.com/internal/tool");
     const env = createAssetEnv({

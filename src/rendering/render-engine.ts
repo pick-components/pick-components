@@ -28,7 +28,7 @@ export interface ClientBootOptions {
   prerenderCandidate?: PrerenderAdoptionCandidate | null;
   /** Expected DOM root mode for the prerendered markup. Defaults to shadow. */
   rootMode?: PickRootMode;
-  /** Log adoption fallback reasons to the console. */
+  /** Emit adoption fallback reasons in debug mode. */
   debug?: boolean;
 }
 
@@ -355,16 +355,6 @@ export class RenderEngine implements IRenderEngine {
             expectedRootMode: options.boot?.rootMode ?? "shadow",
           })
         : null;
-
-      if (
-        adoptionDecision &&
-        adoptionDecision.mode === "replace" &&
-        options.boot?.debug
-      ) {
-        console.debug(
-          `[Pick Components] Prerender adoption skipped for <${metadata.selector}>: ${adoptionDecision.reason}`,
-        );
-      }
 
       // 8. Execute pipeline
       const result = await this.renderPipeline.execute(
