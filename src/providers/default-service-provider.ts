@@ -18,7 +18,8 @@ import {
  * - Dynamic dependency resolution
  */
 export class DefaultServiceRegistry implements IServiceRegistry {
-  private services = new Map<ServiceToken<unknown>, unknown>();
+  private registrations = new Map<ServiceToken<unknown>, unknown>();
+  private singletonCache = new Map<ServiceToken<unknown>, unknown>();
 
   /**
    * Registers a service instance or factory function
@@ -42,12 +43,13 @@ export class DefaultServiceRegistry implements IServiceRegistry {
    * ```
    */
   register<T>(token: ServiceToken<T>, instanceOrFactory: T | (() => T)): void {
-    if (this.services.has(token)) {
+    if (this.registrations.has(token)) {
       console.warn(
         `[ServiceRegistry] Service ${this.getTokenName(token)} is already registered. Overwriting.`,
       );
     }
-    this.services.set(token, instanceOrFactory);
+    this.registrations.set(token, instanceOrFactory);
+    this.singletonCache.delete(token);
   }
 
   /**
@@ -62,36 +64,68 @@ export class DefaultServiceRegistry implements IServiceRegistry {
    * @throws Error if service is not registered
    */
   get<T>(token: ServiceToken<T>): T {
-    if (!this.services.has(token)) {
-      throw new Error(
-        `[ServiceRegistry] Service '${this.getTokenName(token)}' is not registered. ` +
-          `Make sure to register it in your Composition Root.`,
-      );
-    }
+    const value = this.requireRegistration<T>(token);
 
-    const value = this.services.get(token);
-
-    // Execute factory function if registered as factory
-    // Cache the result so subsequent gets return the same instance (singleton)
-    if (typeof value === "function" && !value.prototype) {
-      const instance = (value as () => T)();
-      this.services.set(token, instance);
-      return instance;
+    if (this.isFactory<T>(value)) {
+      if (!this.singletonCache.has(token)) {
+        this.singletonCache.set(token, value());
+      }
+      return this.singletonCache.get(token) as T;
     }
 
     return value as T;
   }
 
+  /**
+   * Creates a fresh service instance by token.
+   *
+   * @description
+   * This method never caches the created instance.
+   * The token must be registered with a factory function.
+   *
+   * @param token - Service identifier
+   * @returns Fresh service instance
+   * @throws Error if service is not registered
+   * @throws Error if service was registered as a direct instance
+   */
+  getNew<T>(token: ServiceToken<T>): T {
+    const value = this.requireRegistration<T>(token);
+
+    if (this.isFactory<T>(value)) {
+      return value();
+    }
+
+    throw new Error(
+      `[ServiceRegistry] Service '${this.getTokenName(token)}' cannot be created as a new instance. ` +
+        `Register it with a factory function to use getNew().`,
+    );
+  }
+
   has(token: ServiceToken): boolean {
-    return this.services.has(token);
+    return this.registrations.has(token);
   }
 
   clear(): void {
-    this.services.clear();
+    this.registrations.clear();
+    this.singletonCache.clear();
   }
 
   get size(): number {
-    return this.services.size;
+    return this.registrations.size;
+  }
+
+  private requireRegistration<T>(token: ServiceToken<T>): unknown {
+    if (!this.registrations.has(token)) {
+      throw new Error(
+        `[ServiceRegistry] Service '${this.getTokenName(token)}' is not registered. ` +
+          `Make sure to register it in your Composition Root.`,
+      );
+    }
+    return this.registrations.get(token);
+  }
+
+  private isFactory<T>(value: unknown): value is () => T {
+    return typeof value === "function" && !value.prototype;
   }
 
   private getTokenName(token: ServiceToken): string {

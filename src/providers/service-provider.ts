@@ -35,6 +35,7 @@ class ServiceRegistryFacade implements IServiceRegistry {
    * @remarks
    * The custom implementation must honour these contracts:
    * - `get()` must return the **same singleton** on every call for a given token.
+  * - `getNew()` must return a **fresh instance** when the token is factory-backed.
    * - `register()` must treat factory functions lazily (invoke on first `get()`, not on `register()`).
    *
    * @param impl - New registry implementation
@@ -84,6 +85,15 @@ class ServiceRegistryFacade implements IServiceRegistry {
       return this as unknown as T;
     }
     return this.implementation.get(token);
+  }
+
+  getNew<T>(token: ServiceToken<T>): T {
+    if (token === ServiceRegistryFacade.SERVICE_PROVIDER_TOKEN) {
+      throw new Error(
+        `[ServiceRegistryFacade] Token '${ServiceRegistryFacade.SERVICE_PROVIDER_TOKEN}' cannot be resolved with getNew().`,
+      );
+    }
+    return this.implementation.getNew(token);
   }
 
   has(token: ServiceToken): boolean {

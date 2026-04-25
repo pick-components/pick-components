@@ -39,6 +39,7 @@
     "build:release": "npm run build:prod && node scripts/prepare-release-artifacts.mjs",
     "build:examples": "node scripts/build-examples.mjs",
     "build": "npm run build:prod && npm run build:examples",
+    "copilot:export-skill": "node scripts/export-copilot-skill.mjs",
     "pretest": "node scripts/guardrails.mjs && node scripts/check-no-browser-in-node-tests.mjs",
     "serve:dev": "node scripts/serve-examples.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",

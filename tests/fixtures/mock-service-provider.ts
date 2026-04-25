@@ -29,6 +29,20 @@ export class MockServiceProvider implements IServiceProvider {
     return service;
   }
 
+  getNew<T>(key: new (...args: any[]) => T): T {
+    this.callLog.push({ method: "getNew", key });
+    const service = this.services.get(key);
+    if (!service) {
+      throw new Error(`Service not registered: ${key.name || key}`);
+    }
+    if (typeof service === "function") {
+      return (service as () => T)();
+    }
+    throw new Error(
+      `Service '${key.name || key}' is not factory-backed. Cannot create a new instance.`,
+    );
+  }
+
   reset(): void {
     this.services.clear();
     this.callLog = [];

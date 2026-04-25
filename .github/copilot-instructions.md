@@ -2,6 +2,16 @@
 
 These instructions apply to the whole repository. Keep responses concise, actionable, and aligned with existing architecture.
 
+## 🚀 For New Users
+
+Type `/setup-pick-components` in Copilot chat to set up your project with pre-configured prompts and templates for:
+- Creating components with proper patterns
+- Writing tests with AAA structure
+- Implementing factory-first dependency injection
+- Writing secure templates
+
+**First time with Pick Components?** See [SETUP.md](#) or visit the [live playground](https://janmbaco.github.io/PickComponents/).
+
 ## Code Style
 
 - All JSDoc must be in English.

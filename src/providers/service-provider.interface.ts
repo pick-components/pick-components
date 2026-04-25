@@ -32,6 +32,20 @@ export interface IServiceProvider {
   get<T>(token: ServiceToken<T>): T;
 
   /**
+   * Creates a new service instance by token.
+   *
+   * @description
+   * Unlike `get()`, this method never returns the cached singleton.
+   * It requires the token to be registered with a factory function.
+   *
+   * @param token - Service identifier
+   * @returns A fresh service instance
+   * @throws Error if service is not registered
+   * @throws Error if token is registered as a direct instance instead of a factory
+   */
+  getNew<T>(token: ServiceToken<T>): T;
+
+  /**
    * Checks if a service is registered
    * @param token - Service identifier
    * @returns true if registered, false otherwise
