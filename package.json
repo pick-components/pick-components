@@ -19,12 +19,17 @@
     },
     "./package.json": "./package.json"
   },
+  "bin": {
+    "pick-components-copilot": "scripts/export-copilot-skill.mjs"
+  },
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "!dist/**/*.js.map",
     "!dist/**/*.d.ts.map",
     "!dist/browser/**",
+    ".github/skills/setup-pick-components/**",
+    "scripts/export-copilot-skill.mjs",
     "README.md",
     "LICENSE"
   ],
