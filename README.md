@@ -56,7 +56,7 @@ npm install pick-components
 If you want Copilot to follow Pick Components conventions (components, DI, tests, and templates), install the workspace skill into your project:
 
 ```bash
-npx pick-components-copilot
+npx --package=pick-components pick-components-copilot
 ```
 
 This copies `.github/skills/setup-pick-components/` into your project root. Commit the result to enable the skill for your whole team.
@@ -64,7 +64,7 @@ This copies `.github/skills/setup-pick-components/` into your project root. Comm
 To install into a specific directory:
 
 ```bash
-npx pick-components-copilot --target /path/to/your-project
+npx --package=pick-components pick-components-copilot --target /path/to/your-project
 ```
 
 Once installed, type `/setup-pick-components` in Copilot chat to activate the skill.
