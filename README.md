@@ -368,6 +368,12 @@ export class TodoList extends PickComponent {
 }
 ```
 
+### Template Security
+
+Pick Components does not execute arbitrary JavaScript in template expressions and strips executable static template HTML such as inline event handlers, script-like elements, `srcdoc`, style, and unsafe URL protocols. This sanitizer is zero-dependency and intended as framework defense-in-depth. Templates should still be treated as developer-authored code; do not pass fully user-controlled templates into `@PickRender` without additional review or server-side controls.
+
+Manual verification: a template with `<img src="x" onerror="this.insertAdjacentHTML('afterend', '<strong id=xss-ok>ONERROR EJECUTADO</strong>')">` should render at most a broken image; `ONERROR EJECUTADO` must not appear, and the rendered DOM must not contain an `onerror` attribute.
+
 ---
 
 ## Component Intentions

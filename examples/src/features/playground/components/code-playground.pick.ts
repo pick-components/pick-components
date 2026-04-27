@@ -1,9 +1,4 @@
-import {
-  PickComponent,
-  PickRender,
-  Reactive,
-  Services,
-} from "pick-components";
+import { PickComponent, PickRender, Reactive, Services } from "pick-components";
 import { CodePlaygroundInitializer } from "../initializers/code-playground.initializer.js";
 import { CodePlaygroundLifecycle } from "../lifecycles/code-playground.lifecycle.js";
 
@@ -230,8 +225,7 @@ export class CodePlayground extends PickComponent {
 
     const tabBar = root.querySelector<HTMLElement>(".file-tabs");
     const editorPanel = root.querySelector<HTMLElement>(".editor-panel");
-    const previewFrame =
-      root.querySelector<HTMLIFrameElement>("#preview-frame");
+    const previewFrame = this.ensurePreviewFrame(root);
     if (!tabBar || !editorPanel || !previewFrame) {
       throw new Error(
         "CodePlayground template is missing required view elements: .file-tabs, .editor-panel, or #preview-frame.",
@@ -243,6 +237,24 @@ export class CodePlayground extends PickComponent {
       previewFrame,
       tabBar,
     };
+  }
+
+  private ensurePreviewFrame(root: HTMLElement): HTMLIFrameElement | null {
+    const existing = root.querySelector<HTMLIFrameElement>("#preview-frame");
+    if (existing) {
+      return existing;
+    }
+
+    const slot = root.querySelector<HTMLElement>(".preview-frame-slot");
+    if (!slot) {
+      return null;
+    }
+
+    const previewFrame = root.ownerDocument.createElement("iframe");
+    previewFrame.id = "preview-frame";
+    previewFrame.setAttribute("sandbox", "allow-scripts allow-forms");
+    slot.replaceWith(previewFrame);
+    return previewFrame;
   }
 
   private resolveHostRoot(): HTMLElement | null {

@@ -295,6 +295,312 @@ test.describe("TemplateCompiler", () => {
       expect(result.getAttribute("title")).toBe("Click me");
     });
 
+    test("should remove static event handler attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<div><img src="x" onerror="alert(1)"></div>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      const img = result.querySelector("img");
+      expect(img?.hasAttribute("onerror")).toBe(false);
+    });
+
+    test("should remove static event handler attributes case-insensitively", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<div onClick="alert(1)">x</div>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.hasAttribute("onclick")).toBe(false);
+    });
+
+    test("should remove static javascript URL attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<a href="javascript:alert(1)">x</a>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.hasAttribute("href")).toBe(false);
+    });
+
+    test("should remove static data and vbscript URL attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = `
+        <div>
+          <img src="data:text/html,<script>alert(1)</script>">
+          <form action="vbscript:msgbox(1)"></form>
+        </div>
+      `;
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.querySelector("img")?.hasAttribute("src")).toBe(false);
+      expect(result.querySelector("form")?.hasAttribute("action")).toBe(false);
+    });
+
+    test("should remove static style and srcset attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template =
+        '<img style="background: red" srcset="javascript:alert(1) 1x">';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.hasAttribute("style")).toBe(false);
+      expect(result.hasAttribute("srcset")).toBe(false);
+    });
+
+    test("should preserve safe static URLs", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<a href="https://example.com/test">x</a>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.getAttribute("href")).toBe("https://example.com/test");
+    });
+
+    test("should preserve relative static URLs", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<a href="/docs/start">x</a>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.getAttribute("href")).toBe("/docs/start");
+    });
+
+    test("should preserve dynamic href bindings for the binding policy", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      component.url = "https://example.com/dynamic";
+      const template = '<a href="{{url}}">x</a>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.getAttribute("href")).toBe("https://example.com/dynamic");
+
+      component.url = "/docs/updated";
+      component.getPropertyObservable("url").notify();
+      expect(result.getAttribute("href")).toBe("/docs/updated");
+    });
+
+    test("should remove static srcdoc by removing iframe elements", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<iframe srcdoc="<script>alert(1)</script>"></iframe>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.querySelector("iframe")).toBeNull();
+    });
+
+    test("should remove static script elements while preserving safe siblings", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = "<div><script>alert(1)</script><p>safe</p></div>";
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.querySelector("script")).toBeNull();
+      expect(result.querySelector("p")?.textContent).toBe("safe");
+    });
+
+    test("should sanitize inside native template content", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template = '<template><img src="x" onerror="alert(1)"></template>';
+
+      // Act
+      const result = (await compiler.compile(
+        template,
+        component,
+        domContext,
+      )) as HTMLTemplateElement;
+
+      // Assert
+      const img = result.content.querySelector("img");
+      expect(img?.hasAttribute("onerror")).toBe(false);
+    });
+
+    test("should sanitize pick-for preset templates", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      component.items = ["one"];
+      const template = `
+        <pick-for items="{{items}}">
+          <img src="x" onerror="alert(1)">
+        </pick-for>
+      `;
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.getAttribute("data-preset-template")).not.toContain(
+        "onerror",
+      );
+    });
+
+    test("should sanitize existing data-preset-template attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template =
+        '<div data-preset-template=\'<img src="x" onerror="alert(1)">\'></div>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.getAttribute("data-preset-template")).not.toContain(
+        "onerror",
+      );
+    });
+
+    test("should keep dynamic text bindings as text content", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      component.payload = "<img src=x onerror=alert(1)>";
+      const template = "<div>{{payload}}</div>";
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.textContent).toContain("<img");
+      expect(result.querySelector("img")).toBeNull();
+    });
+
+    test("should keep dynamic href bindings under the dynamic URL policy", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      component.badUrl = "javascript:alert(1)";
+      const template = '<a href="{{badUrl}}">x</a>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      expect(result.hasAttribute("href")).toBe(false);
+    });
+
+    test("should preserve framework pick-select and on template syntax", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      component.error = "Boom";
+      const template = `
+        <pick-select>
+          <on condition="{{error !== ''}}">
+            <div>{{error}}</div>
+          </on>
+        </pick-select>
+      `;
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      const pickSelect = result.matches("pick-select")
+        ? result
+        : result.querySelector("pick-select");
+      const onElement = result.querySelector("on");
+      expect(pickSelect).not.toBeNull();
+      expect(onElement).not.toBeNull();
+      expect(onElement?.hasAttribute("condition")).toBe(true);
+    });
+
+    test("should preserve pick-action event attributes", async ({
+      compiler,
+      component,
+      domContext,
+    }) => {
+      // Arrange
+      const template =
+        '<pick-action event="run"><button>Run</button></pick-action>';
+
+      // Act
+      const result = await compiler.compile(template, component, domContext);
+
+      // Assert
+      const pickAction = result.matches("pick-action")
+        ? result
+        : result.querySelector("pick-action");
+      expect(pickAction).not.toBeNull();
+      expect(pickAction?.getAttribute("event")).toBe("run");
+    });
+
     test("should compile template with nested property binding", async ({
       compiler,
       component,

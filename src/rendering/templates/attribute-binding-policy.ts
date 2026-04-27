@@ -8,6 +8,11 @@ export interface IAttributeBindingPolicy {
   canExtractFromAttribute(attributeName: string): boolean;
   canBindAttribute(attributeName: string): boolean;
   allowsObjectBinding(attributeName: string): boolean;
+  sanitizeStaticAttribute(
+    attributeName: string,
+    value: string,
+    ownerElement?: Element | null,
+  ): string | null;
   sanitizeResolvedValue(
     attributeName: string,
     value: string,
@@ -15,13 +20,16 @@ export interface IAttributeBindingPolicy {
   ): string | null;
 }
 
-const BLOCKED_DYNAMIC_ATTRIBUTES = new Set(["style", "srcdoc"]);
+const BLOCKED_DYNAMIC_ATTRIBUTES = new Set(["style", "srcdoc", "srcset"]);
 
 const URL_DYNAMIC_ATTRIBUTES = new Set([
   "action",
+  "background",
   "cite",
   "formaction",
   "href",
+  "lowsrc",
+  "ping",
   "poster",
   "src",
   "xlink:href",
@@ -50,7 +58,21 @@ export class AttributeBindingPolicy implements IAttributeBindingPolicy {
 
   allowsObjectBinding(attributeName: string): boolean {
     const normalized = this.normalize(attributeName);
-    return this.canBindAttribute(normalized) && !this.isUrlAttribute(normalized);
+    return (
+      this.canBindAttribute(normalized) && !this.isUrlAttribute(normalized)
+    );
+  }
+
+  sanitizeStaticAttribute(
+    attributeName: string,
+    value: string,
+    ownerElement?: Element | null,
+  ): string | null {
+    const normalized = this.normalize(attributeName);
+    if (!this.canBindAttribute(normalized)) return null;
+    if (value.includes("{{")) return value;
+    if (!this.isUrlAttribute(normalized)) return value;
+    return this.isSafeUrl(value, ownerElement) ? value : null;
   }
 
   sanitizeResolvedValue(

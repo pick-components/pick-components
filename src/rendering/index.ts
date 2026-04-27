@@ -48,6 +48,8 @@ export type {
 } from "./templates/interpolable-content-selector.interface.js";
 export { Parse5FragmentParser } from "./templates/parse5-fragment-parser.js";
 export { SafeContentSelector } from "./templates/safe-content-selector.js";
+export { TemplateStaticSanitizer } from "./templates/template-static-sanitizer.js";
+export type { ITemplateStaticSanitizer } from "./templates/template-static-sanitizer.js";
 
 // Interfaces for dependency injection
 export type { ISkeletonRenderer } from "./skeleton/skeleton-renderer.js";

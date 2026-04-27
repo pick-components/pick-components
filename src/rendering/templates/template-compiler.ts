@@ -7,6 +7,10 @@ import type { IComponentMetadataRegistry } from "../../core/component-metadata-r
 import { ComponentMetadata } from "../../core/component-metadata.js";
 import { IBindingResolver } from "../bindings/binding-resolver.js";
 import { NodeType } from "../dom/node-types.js";
+import {
+  TemplateStaticSanitizer,
+  type ITemplateStaticSanitizer,
+} from "./template-static-sanitizer.js";
 
 /**
  * Implements the responsibility of compiling template HTML with reactive bindings.
@@ -50,6 +54,7 @@ export class TemplateCompiler implements ITemplateCompiler {
     private readonly bindingResolver: IBindingResolver,
     private readonly metadataSource: IComponentMetadataRegistry,
     private readonly managedRegistry?: IManagedElementRegistry,
+    private readonly templateStaticSanitizer: ITemplateStaticSanitizer = new TemplateStaticSanitizer(),
   ) {
     if (!domAdapter) {
       throw new Error("Dom adapter is required");
@@ -165,9 +170,11 @@ export class TemplateCompiler implements ITemplateCompiler {
       resolvedMetadata?.selector || component.constructor.name.toLowerCase();
 
     const template = this.domAdapter.createTemplateElement();
-    template.innerHTML = this.preparePickForTemplateBoundaries(
+    const prepared = this.preparePickForTemplateBoundaries(
       templateSource.trim(),
     );
+    template.innerHTML = prepared;
+    this.templateStaticSanitizer.sanitize(template.content);
 
     let rootElement: HTMLElement;
     if (template.content.children.length === 1) {
