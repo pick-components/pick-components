@@ -200,7 +200,7 @@ branch matches, `<otherwise>` renders.
 
 ## Debugging template expressions
 
-Template expressions evaluate at runtime in the browser. A failing expression **never throws** — it resolves to an empty string. Problems are surfaced via `console.warn` with the `[ExpressionResolver]` prefix.
+Template expressions evaluate at runtime in the browser. A failing expression **never throws** — it resolves to an empty string. Some failure modes also emit `console.warn` with the `[ExpressionResolver]` prefix, while others are intentionally silent by design.
 
 ### Why an expression evaluates to empty string
 

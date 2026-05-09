@@ -3,7 +3,7 @@ import { PickComponent, PickRender, Reactive } from "pick-components";
 
 // {{...}} expressions are evaluated by the template engine against a property allow-list.
 // Only non-private, non-lifecycle component properties are in scope.
-// Failing expressions resolve to an empty string and emit a console.warn.
+// Failing expressions resolve to an empty string; some blocked expressions also emit a console.warn.
 @PickRender({
   selector: "template-security-example",
   styles: securityStyles,

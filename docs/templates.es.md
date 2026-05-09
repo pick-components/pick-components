@@ -197,7 +197,7 @@ Las ramas `<on>` se renderizan cuando su `condition` se resuelve como verdadera.
 
 ## Depuración de expresiones de template
 
-Las expresiones de template se evalúan en tiempo de ejecución en el navegador. Una expresión fallida **nunca lanza una excepción** — se resuelve a cadena vacía. Los problemas se muestran mediante `console.warn` con el prefijo `[ExpressionResolver]`.
+Las expresiones de template se evalúan en tiempo de ejecución en el navegador. Una expresión fallida **nunca lanza una excepción** — se resuelve a cadena vacía. Algunos fallos emiten `console.warn` con el prefijo `[ExpressionResolver]`; otros se resuelven silenciosamente por diseño.
 
 ### Por qué una expresión se evalúa a cadena vacía
 

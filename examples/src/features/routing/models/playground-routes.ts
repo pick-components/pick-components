@@ -23,6 +23,7 @@ export const PLAYGROUND_EXAMPLE_IDS = [
   "13-dashboard",
   "14-pick",
   "15-slots",
+  "16-template-security",
 ] as const;
 
 export type ExampleId = (typeof PLAYGROUND_EXAMPLE_IDS)[number];

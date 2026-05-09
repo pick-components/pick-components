@@ -3,7 +3,7 @@ import { PickComponent, PickRender, Reactive } from "pick-components";
 
 // Las expresiones {{...}} las evalúa el motor de templates contra una lista de propiedades permitidas.
 // Solo las propiedades no privadas y no-lifecycle del componente están en el ámbito.
-// Las expresiones fallidas se resuelven a cadena vacía y emiten un console.warn.
+// Las expresiones no permitidas se convierten en cadena vacía; algunas además emiten un console.warn.
 @PickRender({
   selector: "template-security-example",
   styles: securityStyles,
