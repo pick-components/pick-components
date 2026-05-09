@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added `docs/DECORATOR-COMPATIBILITY.md` (and Spanish translation) documenting all tested TypeScript decorator setups and bundler combinations (closes #3).
+- Added `docs/PICK-VS-OTHERS.md` (and Spanish translation) comparing Pick Components with Lit, Angular, and Glimmer (closes #5).
+- Added six compatibility examples under `examples/compat/` covering tsc+legacy, webpack+ts-loader+TC39, swc+TC39, webpack+babel-loader+legacy, webpack+babel-loader+TC39, and bun+TC39.
+- Added `scripts/build-compat-examples.mjs` to build all compat examples in one step (`npm run build:compat`).
+- Added Playwright test suite `tests/browser/compat-decorator-setups.test.ts` verifying all six compat setups render correctly (`npm run test:compat`).
 - Added `componentOverrides` to `bootstrapFramework` to allow shallow metadata overrides by selector.
 - Added `patch(componentId, patch)` to `IComponentMetadataRegistry` and `ComponentMetadataRegistry`.
 - Added `.github/release.yml` to standardize automatic GitHub Release Notes categories.

@@ -37,6 +37,11 @@ test-screenshot.png
 Thumbs.db
 *.bak
 
+# Spurious tsc output in src/ (outDir should be dist/)
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+
 # Root build artifacts
 bundle.js
 
