@@ -15,3 +15,5 @@ export type {
   DomListenerHandler,
 } from "./pick/types.js";
 export { Reactive } from "./reactive.decorator.js";
+export { defineComponent } from "./define-component.js";
+export { definePick } from "./define-pick.js";

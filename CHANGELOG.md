@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `docs/templates.md` debugging section: why expressions evaluate to empty string, console warning format, DevTools filter workflow, invalid expression examples, and blocked template positions (closes #6).
 - Added `docs/templates.es.md` as the Spanish companion for the full template system reference.
 - Added playground example `16-template-security` (4 locale variants) showing allowed vs rejected template expressions and blocked template positions (closes #7).
+- Added `defineComponent()` as a decorator-free alternative to `@PickRender` (closes #4).
+- Added `definePick()` as a decorator-free alternative to `@Pick` with no class required (closes #4).
+- Added `components` option to `bootstrapFramework` for explicit composition root registration (closes #4).
+- Added `ComponentDefinition` discriminated union type exported from `pick-components`.
+- Added playground examples `17-define-component` and `18-define-pick` (4 locale variants each).
+- Added "Using without decorators" section to `docs/PICK-VS-PICKRENDER.md` and its Spanish translation.
 
 ### Changed
 - `bootstrapFramework` now validates all `componentOverrides` entries atomically before applying any patch.

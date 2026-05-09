@@ -38,6 +38,9 @@ import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
 import { isPlainObject } from "../utils/is-plain-object.js";
 import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
+import type { PickComponent } from "../core/pick-component.js";
+import type { ComponentConfig } from "../decorators/pick-render.decorator.js";
+import type { InlineContext } from "../decorators/pick/types.js";
 
 /**
  * Map of service token overrides.
@@ -71,6 +74,41 @@ export type ComponentMetadataOverrides = Record<
 >;
 
 /**
+ * Discriminates between the two component definition variants.
+ *
+ * @see {@link ComponentDefinition}
+ */
+export enum ComponentKind {
+  /** Class-based component, equivalent to `@PickRender`. */
+  Render = "render",
+  /** Functional component, equivalent to `@Pick`. */
+  Pick = "pick",
+}
+
+/**
+ * Descriptor for a component registered via `defineComponent` or `definePick`.
+ *
+ * @description
+ * Produced by `defineComponent` and `definePick` when called before
+ * `bootstrapFramework`. Pass descriptors through the `components` option to
+ * let the framework register them once services are available.
+ *
+ * @see {@link defineComponent}
+ * @see {@link definePick}
+ */
+export type ComponentDefinition =
+  | {
+      readonly kind: typeof ComponentKind.Render;
+      readonly Class: new (...args: unknown[]) => PickComponent;
+      readonly config: ComponentConfig;
+    }
+  | {
+      readonly kind: typeof ComponentKind.Pick;
+      readonly selector: string;
+      readonly setup: (ctx: InlineContext) => void;
+    };
+
+/**
  * Configuration options for `bootstrapFramework`.
  */
 export interface BootstrapOptions {
@@ -96,6 +134,29 @@ export interface BootstrapOptions {
    * `registry.get('IComponentMetadataRegistry').patch(id, patch)` directly.
    */
   readonly componentOverrides?: ComponentMetadataOverrides;
+
+  /**
+   * Component definitions to register as part of the bootstrap phase.
+   *
+   * @description
+   * Accepts descriptors produced by `defineComponent` and `definePick`.
+   * Registrations happen after all framework services are ready, giving
+   * a single explicit composition root instead of relying on decorator
+   * side effects from module imports.
+   *
+   * @example
+   * ```typescript
+   * import { defineComponent, definePick } from 'pick-components';
+   *
+   * await bootstrapFramework(Services, {}, {
+   *   components: [
+   *     defineComponent(MyCounter, { selector: 'my-counter', template: '...' }),
+   *     definePick('my-form', (ctx) => { ctx.html('...'); }),
+   *   ],
+   * });
+   * ```
+   */
+  readonly components?: ComponentDefinition[];
 }
 
 /**
@@ -135,6 +196,7 @@ export async function bootstrapFramework(
 
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
   const rawComponentOverrides = options.componentOverrides;
+  const componentDefinitions = options.components ?? [];
 
   if (rawComponentOverrides !== undefined && !isPlainObject(rawComponentOverrides)) {
     throw new Error(
@@ -394,6 +456,23 @@ export async function bootstrapFramework(
   if (metadataRegistry !== null) {
     for (const [componentId, metadataPatch] of overrideEntries) {
       metadataRegistry.patch(componentId, metadataPatch);
+    }
+  }
+
+  // Register component definitions (defineComponent / definePick)
+  if (componentDefinitions.length > 0) {
+    const [{ PickRender }, { Pick }] = await Promise.all([
+      import("../decorators/pick-render.decorator.js"),
+      import("../decorators/pick.decorator.js"),
+    ]);
+
+    for (const def of componentDefinitions) {
+      if (def.kind === ComponentKind.Render) {
+        PickRender(def.config)(def.Class as Parameters<ClassDecorator>[0]);
+      } else {
+        class PickBase {}
+        Pick(def.selector, def.setup)(PickBase as Parameters<ClassDecorator>[0]);
+      }
     }
   }
 }

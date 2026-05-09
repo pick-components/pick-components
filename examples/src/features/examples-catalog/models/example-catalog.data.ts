@@ -184,4 +184,20 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExampleDefinition[] = [
     minTabs: 3,
     variantSrcs: buildVariantSrcs("16-template-security", "security"),
   },
+  {
+    id: "17-define-component",
+    labels: { es: "defineComponent", en: "defineComponent" },
+    category: "architecture",
+    kind: "feature",
+    minTabs: 3,
+    variantSrcs: buildVariantSrcs("17-define-component", "counter"),
+  },
+  {
+    id: "18-define-pick",
+    labels: { es: "definePick", en: "definePick" },
+    category: "architecture",
+    kind: "feature",
+    minTabs: 3,
+    variantSrcs: buildVariantSrcs("18-define-pick", "counter"),
+  },
 ];

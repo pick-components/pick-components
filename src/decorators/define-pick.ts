@@ -1,0 +1,67 @@
+import type { InlineContext } from "./pick/types.js";
+import { ComponentKind } from "../providers/framework-bootstrap.js";
+import type { ComponentDefinition } from "../providers/framework-bootstrap.js";
+
+/**
+ * Creates a component definition descriptor using a functional setup — no class, no decorators.
+ *
+ * @description
+ * Decorator-free alternative to `@Pick`. The component is defined entirely
+ * through the `setup` function via `InlineContext` (`ctx.state`, `ctx.html`,
+ * `ctx.listen`, `ctx.on`, `ctx.lifecycle`, etc.).
+ *
+ * Returns a `ComponentDefinition` descriptor that can be passed to
+ * `bootstrapFramework` via the `components` option. Registration happens inside
+ * the bootstrap phase, once all framework services are available. No class
+ * declaration is required at any point.
+ *
+ * @template TState - Type of component state (from `ctx.state()`)
+ * @param selector - Custom element tag name (e.g., `"my-counter"`)
+ * @param setup - Setup function receiving `InlineContext`
+ * @returns A `ComponentDefinition` descriptor
+ * @throws {Error} If `selector` is falsy (null, undefined, or empty string)
+ * @throws {Error} If `setup` is not provided
+ *
+ * @example
+ * ```typescript
+ * await bootstrapFramework(Services, {}, {
+ *   components: [
+ *     definePick('my-counter', (ctx) => {
+ *       ctx.state({ count: 0 });
+ *       ctx.html('<p>{{count}}</p>');
+ *     }),
+ *   ],
+ * });
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // With actions and lifecycle
+ * const counter = definePick<{ count: number }>('my-counter', (ctx) => {
+ *   ctx.state({ count: 0 });
+ *   ctx.on({
+ *     increment: (state) => ({ count: state.count + 1 }),
+ *   });
+ *   ctx.lifecycle({
+ *     onInit: (component, subs) => {
+ *       subs.addSubscription(someSignal.subscribe(() => { ... }));
+ *     },
+ *   });
+ *   ctx.html(`
+ *     <p>{{count}}</p>
+ *     <button pick-action="increment">+1</button>
+ *   `);
+ * });
+ *
+ * await bootstrapFramework(Services, {}, { components: [counter] });
+ * ```
+ */
+export function definePick<TState = unknown>(
+  selector: string,
+  setup: (ctx: InlineContext<TState>) => void,
+): ComponentDefinition {
+  if (!selector) throw new Error("[definePick] selector is required");
+  if (!setup) throw new Error("[definePick] setup is required");
+
+  return { kind: ComponentKind.Pick, selector, setup: setup as (ctx: InlineContext) => void };
+}

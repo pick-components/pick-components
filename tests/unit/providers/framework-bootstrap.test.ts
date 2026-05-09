@@ -639,4 +639,24 @@ test.describe("bootstrapFramework", () => {
       "<div>Default dialog</div>",
     );
   });
+
+  test("should succeed when components option is an empty array", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert — no error when components is empty
+    await expect(
+      bootstrapFramework(mock as any, {}, { components: [] }),
+    ).resolves.toBeUndefined();
+  });
+
+  test("should succeed when components option is undefined", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert — no error when components is absent
+    await expect(
+      bootstrapFramework(mock as any, {}, {}),
+    ).resolves.toBeUndefined();
+  });
 });
