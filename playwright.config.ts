@@ -28,7 +28,12 @@ export default defineConfig({
     {
       name: "browser",
       testDir: "./tests/browser",
-      testMatch: "**/*.test.ts",
+      testMatch: "**/browser-ready-distribution.test.ts",
+    },
+    {
+      name: "compat",
+      testDir: "./tests/browser",
+      testMatch: "**/compat-*.test.ts",
     },
     {
       name: "playground",

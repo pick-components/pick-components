@@ -10,7 +10,9 @@ Nota de tooling: los ejemplos con clases usan `@Reactive count = 0` sin exigir
 la palabra clave `accessor`. Pick Components acepta por defecto decoradores
 estándar de TypeScript y el pipeline `experimentalDecorators`. Usa
 `{ decorators: "strict" }` solo cuando un proyecto quiera aceptar únicamente
-decoradores estándar TC39.
+decoradores estándar TC39. Consulta
+[DECORATOR-COMPATIBILITY.es.md](DECORATOR-COMPATIBILITY.es.md) para ver los
+setups de tsconfig y bundler verificados.
 
 ```
 @Pick(selector, setup)

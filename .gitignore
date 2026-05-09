@@ -37,6 +37,14 @@ test-screenshot.png
 Thumbs.db
 *.bak
 
+# Compat example build outputs
+examples/compat/*/dist/
+
+# Spurious tsc output in src/ (outDir should be dist/)
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+
 # Root build artifacts
 bundle.js
 

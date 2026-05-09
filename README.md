@@ -203,6 +203,9 @@ Strict decorator mode is available only when you intentionally want to accept TC
 await bootstrapFramework(Services, {}, { decorators: "strict" });
 ```
 
+For a full list of tested bundler and tsconfig combinations, see
+[docs/DECORATOR-COMPATIBILITY.md](docs/DECORATOR-COMPATIBILITY.md).
+
 ---
 
 ## Bootstrap
