@@ -84,8 +84,9 @@ export interface BootstrapOptions {
    * Optional shallow metadata patches applied by component selector.
    *
    * @description
-   * This enables consumers to override template/styles/lifecycle/initializer
-   * of components already present in `IComponentMetadataRegistry`.
+   * This enables consumers to override `template`, `styles`, `lifecycle`,
+   * `initializer`, `skeleton`, and `errorTemplate` of components already
+   * present in `IComponentMetadataRegistry`.
    *
    * Component metadata must already be registered before `bootstrapFramework`
    * processes `componentOverrides`. Recommended order: call `bootstrapFramework`

@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `bootstrapFramework` now validates all `componentOverrides` entries atomically before applying any patch.
-- `componentOverrides` now reject unknown selectors during pre-validation.
-- `componentOverrides` now validate that `patch.selector`, when provided, matches the override key during pre-validation.
+- `componentOverrides` now rejects unknown selectors during pre-validation.
+- `componentOverrides` now validates that `patch.selector`, when provided, matches the override key during pre-validation.
 - Updated repository and playground links from the old `janmbaco` namespace to `pick-components/pick-components`.
 
 ### Fixed
