@@ -325,6 +325,50 @@ export async function bootstrapFramework(
       new PickElementRegistrar(registry, registry.get("IPickElementFactory")),
   );
 
+  // Validate componentOverrides early (before side effects)
+  const componentOverrides =
+    (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
+  const overrideEntries = Object.entries(componentOverrides);
+
+  if (overrideEntries.length > 0) {
+    const metadataRegistry = registry.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
+
+    for (const [componentId, metadataPatch] of overrideEntries) {
+      if (!componentId || componentId.trim().length === 0) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides contains an empty selector key.",
+        );
+      }
+
+      if (
+        metadataPatch === null ||
+        typeof metadataPatch !== "object" ||
+        Array.isArray(metadataPatch)
+      ) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides for '${componentId}' must be a non-null object.`,
+        );
+      }
+
+      if (!metadataRegistry.has(componentId)) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
+        );
+      }
+
+      if (
+        metadataPatch.selector !== undefined &&
+        metadataPatch.selector !== componentId
+      ) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides selector mismatch for '${componentId}'. Received selector '${metadataPatch.selector}'.`,
+        );
+      }
+    }
+  }
+
   // Framework custom elements (dynamic imports avoid HTMLElement in Node)
   if (typeof customElements !== "undefined") {
     const [
@@ -359,52 +403,13 @@ export async function bootstrapFramework(
     }
   }
 
-  const componentOverrides =
-    (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
-  const overrideEntries = Object.entries(componentOverrides);
-
-  if (overrideEntries.length === 0) {
-    return;
-  }
-
-  const metadataRegistry = registry.get<IComponentMetadataRegistry>(
-    "IComponentMetadataRegistry",
-  );
-
-  for (const [componentId, metadataPatch] of overrideEntries) {
-    if (!componentId || componentId.trim().length === 0) {
-      throw new Error(
-        "[bootstrapFramework] componentOverrides contains an empty selector key.",
-      );
+  // Apply componentOverrides
+  if (overrideEntries.length > 0) {
+    const metadataRegistry = registry.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
+    for (const [componentId, metadataPatch] of overrideEntries) {
+      metadataRegistry.patch(componentId, metadataPatch);
     }
-
-    if (
-      metadataPatch === null ||
-      typeof metadataPatch !== "object" ||
-      Array.isArray(metadataPatch)
-    ) {
-      throw new Error(
-        `[bootstrapFramework] componentOverrides for '${componentId}' must be a non-null object.`,
-      );
-    }
-
-    if (!metadataRegistry.has(componentId)) {
-      throw new Error(
-        `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
-      );
-    }
-
-    if (
-      metadataPatch.selector !== undefined &&
-      metadataPatch.selector !== componentId
-    ) {
-      throw new Error(
-        `[bootstrapFramework] componentOverrides selector mismatch for '${componentId}'. Received selector '${metadataPatch.selector}'.`,
-      );
-    }
-  }
-
-  for (const [componentId, metadataPatch] of overrideEntries) {
-    metadataRegistry.patch(componentId, metadataPatch);
   }
 }

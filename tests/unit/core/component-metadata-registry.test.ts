@@ -122,7 +122,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
   test.describe("clear()", () => {
     test("should clear all registered metadata", () => {
-      // ARRANGE
+      // Arrange
       const metadata1: ComponentMetadata = {
         selector: "test1",
         template: "<div></div>",
@@ -134,16 +134,16 @@ test.describe("ComponentMetadataRegistry", () => {
       registry.register("test1", metadata1);
       registry.register("test2", metadata2);
 
-      // ACT
+      // Act
       registry.clear();
 
-      // ASSERT
+      // Assert
       expect(registry.has("test1")).toBe(false);
       expect(registry.has("test2")).toBe(false);
     });
 
     test("should allow re-registration after clear", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test",
         template: "<div></div>",
@@ -151,7 +151,7 @@ test.describe("ComponentMetadataRegistry", () => {
       registry.register("test", metadata);
       registry.clear();
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.register("test", metadata)).not.toThrow();
     });
   });
