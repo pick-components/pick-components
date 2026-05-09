@@ -166,4 +166,27 @@ test.describe("bootstrapFramework — components option", () => {
     const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
     expect(metadataRegistry.get("my-overridable")?.template).toBe("<p>overridden</p>");
   });
+
+  test("should throw when a component selector is already registered", async () => {
+    // Arrange — bootstrap and register a component
+    await bootstrapFramework(Services);
+    const def = defineComponent(PickComponent, {
+      selector: "already-registered-comp",
+      template: "<p>original</p>",
+    });
+    await bootstrapFramework(Services, {}, { components: [def] });
+
+    // Act — attempt to register the same selector again
+    const duplicate = defineComponent(PickComponent, {
+      selector: "already-registered-comp",
+      template: "<p>duplicate</p>",
+    });
+
+    // Assert — throws before any registration
+    await expect(
+      bootstrapFramework(Services, {}, { components: [duplicate] }),
+    ).rejects.toThrow(
+      "[bootstrapFramework] components[0]: selector 'already-registered-comp' is already registered.",
+    );
+  });
 });

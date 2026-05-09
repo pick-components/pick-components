@@ -364,7 +364,7 @@ export async function bootstrapFramework(
   const overrideEntries = Object.entries(componentOverrides);
 
   const metadataRegistry =
-    overrideEntries.length > 0
+    overrideEntries.length > 0 || componentDefinitions.length > 0
       ? registry.get<IComponentMetadataRegistry>("IComponentMetadataRegistry")
       : null;
 
@@ -446,6 +446,34 @@ export async function bootstrapFramework(
         }
         if (!def.setup || typeof def.setup !== "function") {
           throw new Error(`[bootstrapFramework] components[${i}]: setup must be a function.`);
+        }
+      }
+    }
+
+    // Collect resolved selectors for atomicity checks (per-entry validation already passed)
+    const resolvedSelectors = componentDefinitions.map((def) =>
+      def.kind === ComponentKind.Render ? (def.config.selector as string) : def.selector,
+    );
+
+    // Reject duplicate selectors within this call
+    const seenSelectors = new Set<string>();
+    for (let i = 0; i < resolvedSelectors.length; i++) {
+      const sel = resolvedSelectors[i];
+      if (seenSelectors.has(sel)) {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: duplicate selector '${sel}' — already present earlier in this components array.`,
+        );
+      }
+      seenSelectors.add(sel);
+    }
+
+    // Reject selectors that are already in the metadata registry
+    if (metadataRegistry !== null) {
+      for (let i = 0; i < resolvedSelectors.length; i++) {
+        if (metadataRegistry.has(resolvedSelectors[i])) {
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: selector '${resolvedSelectors[i]}' is already registered.`,
+          );
         }
       }
     }

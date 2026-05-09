@@ -689,4 +689,16 @@ test.describe("bootstrapFramework", () => {
       bootstrapFramework(mock as any, {}, { components: [undefined as any] }),
     ).rejects.toThrow("[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().");
   });
+
+  test("should throw when components array contains duplicate selectors", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const def1 = { kind: "pick" as const, selector: "dupe-selector", setup: (_ctx: any) => {} };
+    const def2 = { kind: "pick" as const, selector: "dupe-selector", setup: (_ctx: any) => {} };
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(mock as any, {}, { components: [def1, def2] as any }),
+    ).rejects.toThrow("[bootstrapFramework] components[1]: duplicate selector 'dupe-selector' — already present earlier in this components array.");
+  });
 });

@@ -3,16 +3,19 @@ import type { InlineContext } from "./pick/types.js";
 import type { PickComponent } from "../core/pick-component.js";
 
 /**
- * Discriminates between the two component definition variants.
+ * Convenience values for constructing `ComponentDefinition` descriptors.
+ * Each member is typed as its exact string literal value so that
+ * `ComponentKind.Render` is directly assignable to the `"render"` literal
+ * in `ComponentDefinition` without an explicit cast.
  *
  * @see {@link ComponentDefinition}
  */
-export enum ComponentKind {
+export const ComponentKind = {
   /** Class-based component, equivalent to `@PickRender`. */
-  Render = "render",
+  Render: "render",
   /** Functional component, equivalent to `@Pick`. */
-  Pick = "pick",
-}
+  Pick: "pick",
+} as const;
 
 /**
  * Descriptor for a component registered via `defineComponent` or `definePick`.
