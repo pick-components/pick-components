@@ -36,7 +36,7 @@ export type { ComponentMetadata };
  * ```
  */
 /** Fields that may be patched on a registered component's metadata. */
-export const ALLOWED_PATCH_FIELDS = new Set<string>([
+export const ALLOWED_PATCH_FIELDS: ReadonlySet<string> = new Set<string>([
   "selector",
   "template",
   "skeleton",

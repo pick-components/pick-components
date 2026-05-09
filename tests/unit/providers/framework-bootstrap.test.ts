@@ -325,7 +325,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides selector mismatch for 'pick-dialog'. Received selector 'pick-toast'.",
+      "Patch selector must match componentId",
     );
 
     expect(metadataRegistry.get("pick-dialog")?.template).toBe(
@@ -359,7 +359,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides selector mismatch for 'pick-dialog'. Received selector ''.",
+      "Patch selector must match componentId",
     );
   });
 
@@ -442,7 +442,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides template for 'pick-dialog' must be a string when provided.",
+      "Patch template must be a string when provided",
     );
   });
 
@@ -471,7 +471,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides template for 'pick-dialog' must be a string when provided.",
+      "Patch template must be a string when provided",
     );
   });
 
@@ -500,7 +500,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides initializer for 'pick-dialog' must be a function when provided.",
+      "Patch initializer must be a function when provided",
     );
   });
 
