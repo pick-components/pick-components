@@ -1,0 +1,7 @@
+{
+  "tabs": [
+    { "file": "security.example.ts", "label": "Componente" },
+    { "file": "security.styles.css", "label": "Estilos" },
+    { "file": "index.html", "label": "Montaje" }
+  ]
+}

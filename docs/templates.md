@@ -197,3 +197,59 @@ stable identifier. Each row exposes `$item` to its template.
 
 `<on>` branches render when their `condition` resolves truthy. If no `<on>`
 branch matches, `<otherwise>` renders.
+
+## Debugging template expressions
+
+Template expressions evaluate at runtime in the browser. A failing expression **never throws** — it resolves to an empty string. Some failure modes also emit `console.warn` with the `[ExpressionResolver]` prefix, while others are intentionally silent by design.
+
+### Why an expression evaluates to empty string
+
+| Cause | Example | Console warning |
+| ----- | ------- | --------------- |
+| IIFE or arrow function | `{{(() => x)()}}` | Yes |
+| Lifecycle method called | `{{onInit()}}` | Yes |
+| Property not on component | `{{unknownProp}}` | None |
+| Property starts with `_` | `{{_field}}` | None |
+
+### Console warning format
+
+When the template engine cannot evaluate an expression it emits one of:
+
+```
+[ExpressionResolver] Expression evaluation error: <message> in "<expression>"
+[ExpressionResolver] Accessing non-whitelisted property "<name>" in expression "<expression>"
+```
+
+### Checking for expression errors in browser devtools
+
+1. Open browser devtools → **Console** tab.
+2. Filter by `[ExpressionResolver]` to isolate template warnings.
+3. The warning includes the failing expression and the reason.
+
+### Invalid expression examples
+
+```html
+<!-- IIFE — evaluates to empty string, console.warn emitted -->
+<p>{{(() => count + 1)()}}</p>
+
+<!-- Lifecycle method — empty string after warning -->
+<p>{{onInit()}}</p>
+
+<!-- Property starting with _ — silently empty, no warning -->
+<p>{{_internalState}}</p>
+```
+
+### Blocked template positions
+
+Bindings in the following positions are **never extracted** and appear as literal text:
+
+```html
+<{{tag}}></{{tag}}>              <!-- tag name — not parsed -->
+<button onclick="{{handler}}">  <!-- event handler attribute — not parsed -->
+<script>{{code}}</script>       <!-- script content — not parsed -->
+<style>{{rule}}</style>         <!-- style content — not parsed -->
+```
+
+### Playground
+
+See the **Template Security** example in the playground for a live demonstration of allowed and silently ignored expressions.
