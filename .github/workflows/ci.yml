@@ -46,6 +46,7 @@ jobs:
           - unit
           - integration
           - browser
+          - compat
 
     steps:
       - name: Check out repository
@@ -61,8 +62,14 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browser
-        if: matrix.project == 'browser'
+        if: matrix.project == 'browser' || matrix.project == 'compat'
         run: npx playwright install --with-deps chromium
+
+      - name: Install bun (compat only)
+        if: matrix.project == 'compat'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Run ${{ matrix.project }} tests
         run: npm run test:${{ matrix.project }}

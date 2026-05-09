@@ -63,14 +63,20 @@ function createStaticRepositoryServer(): Server {
 function requireBuildArtifact(path: string): void {
   if (!existsSync(`${repositoryRoot}/${path}`)) {
     throw new Error(
-      `Missing build artifact: ${path}\nRun 'npm run build:lib' before the compat tests.`,
+      `Missing build artifact: ${path}\nRun 'npm run build:prod' before the compat tests.`,
     );
   }
 }
 
 function build(label: string, command: string): void {
   console.log(`\n  ▶ Building ${label}…`);
-  execSync(command, { cwd: repositoryRoot, stdio: "pipe" });
+  try {
+    execSync(command, { cwd: repositoryRoot, stdio: "pipe" });
+  } catch (error) {
+    const stderr = (error as NodeJS.ErrnoException & { stderr?: Buffer }).stderr?.toString() ?? "";
+    const stdout = (error as NodeJS.ErrnoException & { stdout?: Buffer }).stdout?.toString() ?? "";
+    throw new Error(`Build failed: ${label}\n${stdout}\n${stderr}`);
+  }
 }
 
 function isBunAvailable(): boolean {

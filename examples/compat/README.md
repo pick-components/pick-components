@@ -9,8 +9,10 @@ Each example registers a `<hello-compat>` custom element and renders a paragraph
 The library must be built before running any example:
 
 ```
-npm run build:lib
+npm run build:prod
 ```
+
+This produces both `dist/index.js` (used by bundler examples) and `dist/browser/pick-components.js` (used by import-map examples).
 
 ## Examples
 
@@ -57,7 +59,7 @@ Open the corresponding `index.html` via an HTTP server (not `file://`) to test i
 
 ## How it works
 
-Non-bundler examples (01 — tsc-legacy, 03 — swc) output a single compiled JS file. The `index.html` uses an import map to resolve the `pick-components` bare specifier to the browser bundle produced by `npm run build:lib`:
+Non-bundler examples (01 — tsc-legacy, 03 — swc) output a single compiled JS file. The `index.html` uses an import map to resolve the `pick-components` bare specifier to the browser bundle produced by `npm run build:prod`:
 
 ```html
 <script type="importmap">

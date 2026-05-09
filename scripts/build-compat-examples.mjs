@@ -1,6 +1,7 @@
 /**
  * Builds all compat examples from the repository root.
- * Prerequisite: npm run build:lib must have been run first.
+ * Prerequisite: npm run build:prod must have been run first
+ * (produces both dist/index.js and dist/browser/pick-components.js).
  */
 import { execSync } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
@@ -18,12 +19,13 @@ function run(label, cmd, ensureDir) {
 function requireArtifact(path) {
   if (!existsSync(resolve(root, path))) {
     console.error(`\n❌ Missing: ${path}`);
-    console.error("   Run 'npm run build:lib' first.\n");
+    console.error("   Run 'npm run build:prod' first.\n");
     process.exit(1);
   }
 }
 
 requireArtifact("dist/index.js");
+requireArtifact("dist/browser/pick-components.js");
 
 run(
   "01 — tsc + legacy experimentalDecorators",

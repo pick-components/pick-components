@@ -95,18 +95,18 @@ Vite uses esbuild internally. No additional configuration beyond the tsconfig op
 
 | Bundler | Decorator pipeline | Tested | Notes |
 | ------- | ------------------ | ------ | ----- |
-| `tsc` | TC39 Stage 3 | ✅ automated | Library source (CI unit + integration tests) |
-| `tsc` | Legacy `experimentalDecorators` | ✅ automated | `examples/compat/01-tsc-legacy/` |
-| esbuild standalone | TC39 Stage 3 | ✅ automated | Playground downloads (CI build) |
-| Rollup | TC39 Stage 3 | ✅ automated | Browser distribution build (CI build) |
-| webpack + ts-loader | TC39 Stage 3 | ✅ automated | `examples/compat/02-webpack-tc39/` |
-| swc standalone | TC39 Stage 3 | ✅ automated | `examples/compat/03-swc-tc39/` |
-| webpack + babel-loader | Legacy `experimentalDecorators` | ✅ automated | `examples/compat/04-babel-legacy/` |
-| webpack + babel-loader | TC39 Stage 3 (2023-11) | ✅ automated | `examples/compat/05-babel-tc39/` |
+| `tsc` | TC39 Stage 3 | ✅ CI | Library source (unit + integration CI) |
+| `tsc` | Legacy `experimentalDecorators` | ✅ CI | `examples/compat/01-tsc-legacy/` |
+| esbuild standalone | TC39 Stage 3 | ✅ CI | Playground downloads (CI build) |
+| Rollup | TC39 Stage 3 | ✅ CI | Browser distribution build (CI build) |
+| webpack + ts-loader | TC39 Stage 3 | ✅ CI | `examples/compat/02-webpack-tc39/` |
+| swc standalone | TC39 Stage 3 | ✅ CI | `examples/compat/03-swc-tc39/` |
+| webpack + babel-loader | Legacy `experimentalDecorators` | ✅ CI | `examples/compat/04-babel-legacy/` |
+| webpack + babel-loader | TC39 Stage 3 (2023-11) | ✅ CI | `examples/compat/05-babel-tc39/` |
 | Vite (esbuild) | Legacy `experimentalDecorators` | ✅ known working | No dedicated compat example; requires `useDefineForClassFields: false` |
-| bun | TC39 Stage 3 | ✅ automated | `examples/compat/06-bun-tc39/` — requires bun runtime |
+| bun | TC39 Stage 3 | ✅ CI | `examples/compat/06-bun-tc39/` |
 
-Setups labelled **automated** are verified by either `tests/browser/compat-decorator-setups.test.ts` (compat examples) or the standard CI pipeline (library source, esbuild, Rollup). Setups labelled **known working** have been validated manually but do not have a dedicated compat example in this repository.
+Setups labelled **CI** are verified on every pull request by either `tests/browser/compat-decorator-setups.test.ts` (compat examples, `.github/workflows/ci.yml` compat project) or the standard CI pipeline (library source, esbuild, Rollup). Setups labelled **known working** have been validated manually but do not have a dedicated compat example in this repository.
 
 ---
 
