@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  max-width: 32rem;
+  color: var(--security-fg, #0f172a);
+}
+
+.panel {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--security-border, #cbd5e1);
+  border-radius: 1rem;
+  background: var(--security-bg, #ffffff);
+  box-shadow: var(--security-shadow, none);
+}
+
+.group {
+  display: grid;
+  gap: 0.5rem;
+}
+
+h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--security-muted, #475569);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+code {
+  color: var(--security-muted, #475569);
+  font-size: 0.8rem;
+}
+
+output {
+  font-weight: 600;
+  color: var(--security-accent, #2563eb);
+  min-width: 5rem;
+  text-align: right;
+}
+
+.note {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--security-muted, #475569);
+  line-height: 1.55;
+}
+
+.note code {
+  font-size: 0.78rem;
+}

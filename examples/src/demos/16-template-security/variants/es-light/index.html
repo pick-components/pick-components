@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 1rem;
+        background: #f8fafc;
+      }
+
+      template-security-example {
+        --security-bg: #ffffff;
+        --security-fg: #0f172a;
+        --security-muted: #475569;
+        --security-border: #cbd5e1;
+        --security-accent: #2563eb;
+        --security-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      }
+    </style>
+    <script type="module">
+      import { bootstrapFramework, Services } from "pick-components";
+      import "./security.example.js";
+      await bootstrapFramework(Services);
+    </script>
+  </head>
+  <body>
+    <template-security-example></template-security-example>
+  </body>
+</html>

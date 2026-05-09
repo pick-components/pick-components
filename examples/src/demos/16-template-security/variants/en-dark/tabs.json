@@ -1,0 +1,7 @@
+{
+  "tabs": [
+    { "file": "security.example.ts", "label": "Component" },
+    { "file": "security.styles.css", "label": "Styles" },
+    { "file": "index.html", "label": "HTML" }
+  ]
+}

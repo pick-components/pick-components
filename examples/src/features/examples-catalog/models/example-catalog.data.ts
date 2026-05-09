@@ -176,4 +176,12 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExampleDefinition[] = [
     minTabs: 3,
     variantSrcs: buildVariantSrcs("15-slots", "slots"),
   },
+  {
+    id: "16-template-security",
+    labels: { es: "Seguridad de Templates", en: "Template Security" },
+    category: "basics",
+    kind: "primitive",
+    minTabs: 3,
+    variantSrcs: buildVariantSrcs("16-template-security", "security"),
+  },
 ];
