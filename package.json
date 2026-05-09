@@ -60,7 +60,7 @@
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
-    "pretest:compat": "npm run build:lib",
+    "pretest:compat": "npm run build:prod",
     "test:compat": "cross-env SKIP_WEBSERVER=1 playwright test --project=compat",
     "build:compat": "node scripts/build-compat-examples.mjs",
     "lint": "eslint . --ext .ts",

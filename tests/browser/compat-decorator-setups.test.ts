@@ -87,9 +87,13 @@ test.describe("Decorator compatibility setups", () => {
   let baseUrl: string;
   const bunAvailable = isBunAvailable();
 
-  test.beforeAll(async () => {
+  test.beforeAll(async ({ }, testInfo) => {
+    // Allow time for all bundler/compiler builds on CI
+    testInfo.setTimeout(180_000);
+
     // Arrange — verify prerequisites
     requireBuildArtifact("dist/index.js");
+    requireBuildArtifact("dist/browser/pick-components.js");
 
     // Act — build all compat examples
     build(
@@ -123,6 +127,9 @@ test.describe("Decorator compatibility setups", () => {
     );
 
     if (bunAvailable) {
+      mkdirSync(`${repositoryRoot}/examples/compat/06-bun-tc39/dist`, {
+        recursive: true,
+      });
       build(
         "06 — bun + TC39",
         "bun build examples/compat/06-bun-tc39/src/main.ts" +

@@ -57,11 +57,11 @@ Open the corresponding `index.html` via an HTTP server (not `file://`) to test i
 
 ## How it works
 
-Non-bundler examples (01 — tsc-legacy, 03 — swc) output a single compiled JS file. The `index.html` uses an import map to resolve the `pick-components` bare specifier to the vendor file:
+Non-bundler examples (01 — tsc-legacy, 03 — swc) output a single compiled JS file. The `index.html` uses an import map to resolve the `pick-components` bare specifier to the browser bundle produced by `npm run build:lib`:
 
 ```html
 <script type="importmap">
-  { "imports": { "pick-components": "../../vendor/pick-components.js" } }
+  { "imports": { "pick-components": "../../../dist/browser/pick-components.js" } }
 </script>
 ```
 

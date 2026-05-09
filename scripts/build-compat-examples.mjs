@@ -3,12 +3,13 @@
  * Prerequisite: npm run build:lib must have been run first.
  */
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = process.cwd();
 
-function run(label, cmd) {
+function run(label, cmd, ensureDir) {
+  if (ensureDir) mkdirSync(resolve(root, ensureDir), { recursive: true });
   console.log(`\n▶ ${label}`);
   execSync(cmd, { cwd: root, stdio: "inherit" });
   console.log(`✅ ${label}`);
@@ -39,6 +40,7 @@ run(
   "node_modules/.bin/swc examples/compat/03-swc-tc39/src/main.ts" +
     " --out-file examples/compat/03-swc-tc39/dist/main.js" +
     " --config-file examples/compat/03-swc-tc39/.swcrc",
+  "examples/compat/03-swc-tc39/dist",
 );
 
 run(
@@ -65,6 +67,7 @@ if (bunAvailable) {
     "bun build examples/compat/06-bun-tc39/src/main.ts" +
       " --outfile examples/compat/06-bun-tc39/dist/bundle.js" +
       " --target browser",
+    "examples/compat/06-bun-tc39/dist",
   );
 } else {
   console.log("\n⚠️  06 — bun + TC39 skipped (bun runtime not installed)");

@@ -95,18 +95,18 @@ Vite uses esbuild internally. No additional configuration beyond the tsconfig op
 
 | Bundler | Decorator pipeline | Tested | Notes |
 | ------- | ------------------ | ------ | ----- |
-| `tsc` | TC39 Stage 3 | ✅ | Library source |
-| `tsc` | Legacy `experimentalDecorators` | ✅ | `examples/compat/01-tsc-legacy/` |
-| esbuild standalone | TC39 Stage 3 | ✅ | Playground downloads |
-| Rollup | TC39 Stage 3 | ✅ | Browser distribution build |
-| webpack + ts-loader | TC39 Stage 3 | ✅ | `examples/compat/02-webpack-tc39/` |
-| swc standalone | TC39 Stage 3 | ✅ | `examples/compat/03-swc-tc39/` |
-| webpack + babel-loader | Legacy `experimentalDecorators` | ✅ | `examples/compat/04-babel-legacy/` |
-| webpack + babel-loader | TC39 Stage 3 (2023-11) | ✅ | `examples/compat/05-babel-tc39/` |
-| Vite (esbuild) | Legacy `experimentalDecorators` | ✅ | Requires `useDefineForClassFields: false` |
-| bun | TC39 Stage 3 | ✅ | `examples/compat/06-bun-tc39/` — requires bun runtime |
+| `tsc` | TC39 Stage 3 | ✅ automated | Library source (CI unit + integration tests) |
+| `tsc` | Legacy `experimentalDecorators` | ✅ automated | `examples/compat/01-tsc-legacy/` |
+| esbuild standalone | TC39 Stage 3 | ✅ automated | Playground downloads (CI build) |
+| Rollup | TC39 Stage 3 | ✅ automated | Browser distribution build (CI build) |
+| webpack + ts-loader | TC39 Stage 3 | ✅ automated | `examples/compat/02-webpack-tc39/` |
+| swc standalone | TC39 Stage 3 | ✅ automated | `examples/compat/03-swc-tc39/` |
+| webpack + babel-loader | Legacy `experimentalDecorators` | ✅ automated | `examples/compat/04-babel-legacy/` |
+| webpack + babel-loader | TC39 Stage 3 (2023-11) | ✅ automated | `examples/compat/05-babel-tc39/` |
+| Vite (esbuild) | Legacy `experimentalDecorators` | ✅ known working | No dedicated compat example; requires `useDefineForClassFields: false` |
+| bun | TC39 Stage 3 | ✅ automated | `examples/compat/06-bun-tc39/` — requires bun runtime |
 
-All setups above are verified by the Playwright test suite in `tests/browser/compat-decorator-setups.test.ts`.
+Setups labelled **automated** are verified by either `tests/browser/compat-decorator-setups.test.ts` (compat examples) or the standard CI pipeline (library source, esbuild, Rollup). Setups labelled **known working** have been validated manually but do not have a dedicated compat example in this repository.
 
 ---
 
