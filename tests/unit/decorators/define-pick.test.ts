@@ -59,7 +59,7 @@ test.describe("definePick", () => {
     // Act & Assert
     expect(() =>
       definePick("", setup),
-    ).toThrow("[definePick] selector is required");
+    ).toThrow("[definePick] selector is required and must not be empty");
   });
 
   test("should throw when selector is null", () => {
@@ -69,7 +69,7 @@ test.describe("definePick", () => {
     // Act & Assert
     expect(() =>
       definePick(null as any, setup),
-    ).toThrow("[definePick] selector is required");
+    ).toThrow("[definePick] selector is required and must not be empty");
   });
 
   test("should throw when selector is undefined", () => {
@@ -79,7 +79,7 @@ test.describe("definePick", () => {
     // Act & Assert
     expect(() =>
       definePick(undefined as any, setup),
-    ).toThrow("[definePick] selector is required");
+    ).toThrow("[definePick] selector is required and must not be empty");
   });
 
   test("should throw when setup is null", () => {

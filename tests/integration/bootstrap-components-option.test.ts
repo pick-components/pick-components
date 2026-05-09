@@ -23,6 +23,8 @@ import { definePick } from "../../src/decorators/define-pick.js";
  * so registering them in a live customElements registry would corrupt other tests.
  */
 test.describe("bootstrapFramework — components option", () => {
+  test.describe.configure({ mode: "serial" });
+
   let savedCustomElements: unknown;
 
   test.beforeEach(() => {

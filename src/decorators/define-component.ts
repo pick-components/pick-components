@@ -45,7 +45,7 @@ export function defineComponent<T extends new (...args: unknown[]) => PickCompon
 ): ComponentDefinition {
   if (!Class) throw new Error("[defineComponent] Class is required");
   if (!config) throw new Error("[defineComponent] config is required");
-  if (!config.selector || config.selector.trim().length === 0) {
+  if (!config.selector || typeof config.selector !== "string" || config.selector.trim().length === 0) {
     throw new Error("[defineComponent] config.selector is required and must not be empty");
   }
   if (config.selector !== config.selector.trim()) {

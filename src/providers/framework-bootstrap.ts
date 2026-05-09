@@ -421,8 +421,8 @@ export async function bootstrapFramework(
       }
 
       if (def.kind === ComponentKind.Render) {
-        if (!def.config) {
-          throw new Error(`[bootstrapFramework] components[${i}]: config is required for kind '${ComponentKind.Render}'.`);
+        if (!def.config || !isPlainObject(def.config)) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config must be a plain object for kind '${ComponentKind.Render}'.`);
         }
         const selector = def.config.selector;
         if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
