@@ -390,6 +390,24 @@ test.describe("bootstrapFramework", () => {
     );
   });
 
+  test("should fail when componentOverrides option is not a plain object", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {},
+        {
+          componentOverrides: "invalid" as any,
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides must be a plain object when provided.",
+    );
+  });
+
   test("should fail when componentOverrides contains an empty selector key", async () => {
     // Arrange
     const mock = createMockServiceRegistry();

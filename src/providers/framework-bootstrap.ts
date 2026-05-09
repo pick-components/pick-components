@@ -84,8 +84,12 @@ export interface BootstrapOptions {
    *
    * @description
    * This enables consumers to override template/styles/lifecycle/initializer
-   * of already registered components (including third-party library components)
-   * before the first mount.
+   * of components already present in `IComponentMetadataRegistry`.
+   *
+   * For decorator-based components, import component modules (so metadata is
+   * registered) before calling `bootstrapFramework(..., { componentOverrides })`.
+   * A common pattern is: bootstrap services, import components, then call
+   * `bootstrapFramework` again with overrides before first mount.
    */
   readonly componentOverrides?: ComponentMetadataOverrides;
 }
@@ -126,6 +130,20 @@ export async function bootstrapFramework(
   if (!registry) throw new Error("Service registry is required");
 
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
+  const rawComponentOverrides = options.componentOverrides;
+
+  if (
+    rawComponentOverrides !== undefined &&
+    (rawComponentOverrides === null ||
+      typeof rawComponentOverrides !== "object" ||
+      Array.isArray(rawComponentOverrides) ||
+      (Object.getPrototypeOf(rawComponentOverrides) !== Object.prototype &&
+        Object.getPrototypeOf(rawComponentOverrides) !== null))
+  ) {
+    throw new Error(
+      "[bootstrapFramework] componentOverrides must be a plain object when provided.",
+    );
+  }
 
   const register = <T>(token: string, defaultFactory: () => T): void => {
     if (token in overrides) {
@@ -341,7 +359,8 @@ export async function bootstrapFramework(
     }
   }
 
-  const componentOverrides = options.componentOverrides ?? {};
+  const componentOverrides =
+    (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
   const overrideEntries = Object.entries(componentOverrides);
 
   if (overrideEntries.length === 0) {

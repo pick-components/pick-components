@@ -202,7 +202,35 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() => registry.patch("test-component", null as any)).toThrow(
-        "Patch is required",
+        "Patch must be a non-null object",
+      );
+    });
+
+    test("should throw if patch is a primitive value", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() => registry.patch("test-component", "invalid" as any)).toThrow(
+        "Patch must be a non-null object",
+      );
+    });
+
+    test("should throw if patch is an array", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() => registry.patch("test-component", [] as any)).toThrow(
+        "Patch must be a non-null object",
       );
     });
 

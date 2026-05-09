@@ -110,7 +110,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
    * @throws Error if componentId is null, undefined, or an empty string
-   * @throws Error if patch is null or undefined
+   * @throws Error if patch is not a non-null object
    * @throws Error if patch.selector is defined and does not match componentId
    *
    * @example
@@ -122,7 +122,9 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    */
   patch(componentId: string, patch: Partial<ComponentMetadata>): void {
     if (!componentId) throw new Error("ComponentId is required");
-    if (!patch) throw new Error("Patch is required");
+    if (patch === null || typeof patch !== "object" || Array.isArray(patch)) {
+      throw new Error("Patch must be a non-null object");
+    }
     if (patch.selector !== undefined && patch.selector !== componentId) {
       throw new Error("Patch selector must match componentId");
     }

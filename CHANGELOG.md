@@ -21,4 +21,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed stale references to old `janmbaco` GitHub repository and legacy playground URL in project metadata and guidance docs.
 
-[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.6...HEAD
