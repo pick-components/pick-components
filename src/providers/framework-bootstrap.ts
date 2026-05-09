@@ -413,7 +413,6 @@ export async function bootstrapFramework(
           `[bootstrapFramework] components[${i}]: each entry must be a non-null object produced by defineComponent() or definePick().`,
         );
       }
-
       if (def.kind !== ComponentKind.Render && def.kind !== ComponentKind.Pick) {
         throw new Error(
           `[bootstrapFramework] components[${i}]: unknown kind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
@@ -477,7 +476,6 @@ export async function bootstrapFramework(
         }
       }
     }
-
     const [{ PickRender }, { Pick }] = await Promise.all([
       import("../decorators/pick-render.decorator.js"),
       import("../decorators/pick.decorator.js"),
@@ -489,10 +487,6 @@ export async function bootstrapFramework(
       } else if (def.kind === ComponentKind.Pick) {
         class PickBase {}
         Pick(def.selector, def.setup, registry)(PickBase as Parameters<ClassDecorator>[0]);
-      } else {
-        throw new Error(
-          `[bootstrapFramework] Unknown ComponentKind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
-        );
       }
     }
   }
