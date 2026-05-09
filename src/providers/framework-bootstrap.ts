@@ -38,6 +38,11 @@ import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
 import { isPlainObject } from "../utils/is-plain-object.js";
 import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
+import { ComponentKind } from "../decorators/component-kind.js";
+import type { ComponentDefinition } from "../decorators/component-kind.js";
+
+export { ComponentKind } from "../decorators/component-kind.js";
+export type { ComponentDefinition } from "../decorators/component-kind.js";
 
 /**
  * Map of service token overrides.
@@ -84,18 +89,39 @@ export interface BootstrapOptions {
    * Optional shallow metadata patches applied by component selector.
    *
    * @description
-   * This enables consumers to override `template`, `styles`, `lifecycle`,
-   * `initializer`, `skeleton`, and `errorTemplate` of components already
-   * present in `IComponentMetadataRegistry`.
+   * Enables overriding `template`, `styles`, `lifecycle`, `initializer`,
+   * `skeleton`, and `errorTemplate` for components already registered in
+   * `IComponentMetadataRegistry` at the time of this call.
    *
-   * Component metadata must already be registered before `bootstrapFramework`
-   * processes `componentOverrides`. Recommended order: call `bootstrapFramework`
-   * once to register framework services, import component modules so decorators
-   * register their metadata, then call `bootstrapFramework` a second time with
-   * only `componentOverrides` before the first mount. Alternatively, call
-   * `registry.get('IComponentMetadataRegistry').patch(id, patch)` directly.
+   * When using decorator-based components (`@PickRender`, `@Pick`), decorators
+   * run at module-import time, so components must be imported before this call.
+   * When using the `components` option, both can be provided together — the
+   * framework registers `components` first, then validates and applies overrides.
    */
   readonly componentOverrides?: ComponentMetadataOverrides;
+
+  /**
+   * Component definitions to register as part of the bootstrap phase.
+   *
+   * @description
+   * Accepts descriptors produced by `defineComponent` and `definePick`.
+   * Registrations happen after all framework services are ready, giving
+   * a single explicit composition root instead of relying on decorator
+   * side effects from module imports.
+   *
+   * @example
+   * ```typescript
+   * import { defineComponent, definePick } from 'pick-components';
+   *
+   * await bootstrapFramework(Services, {}, {
+   *   components: [
+   *     defineComponent(MyCounter, { selector: 'my-counter', template: '...' }),
+   *     definePick('my-form', (ctx) => { ctx.html('...'); }),
+   *   ],
+   * });
+   * ```
+   */
+  readonly components?: ComponentDefinition[];
 }
 
 /**
@@ -141,6 +167,12 @@ export async function bootstrapFramework(
       "[bootstrapFramework] componentOverrides must be a plain object when provided.",
     );
   }
+
+  const rawComponents = options.components;
+  if (rawComponents !== undefined && !Array.isArray(rawComponents)) {
+    throw new Error("[bootstrapFramework] options.components must be an array.");
+  }
+  const componentDefinitions = rawComponents ?? [];
 
   const register = <T>(token: string, defaultFactory: () => T): void => {
     if (token in overrides) {
@@ -305,7 +337,11 @@ export async function bootstrapFramework(
   );
 
   // Pick Component class factory (@Pick decorator)
-  register("IPickComponentFactory", () => new DefaultPickComponentFactory());
+  register("IPickComponentFactory", () =>
+    new DefaultPickComponentFactory(
+      registry.get("IListenerMetadataRegistry"),
+    ),
+  );
 
   // Listener metadata registry (@Listen decorator)
   register(
@@ -322,39 +358,15 @@ export async function bootstrapFramework(
       new PickElementRegistrar(registry, registry.get("IPickElementFactory")),
   );
 
-  // Apply componentOverrides: validate all entries first, then patch (atomic)
+  // Prepare componentOverrides — validation and patching happen after all components are registered
   const componentOverrides =
     (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
   const overrideEntries = Object.entries(componentOverrides);
 
   const metadataRegistry =
-    overrideEntries.length > 0
+    overrideEntries.length > 0 || componentDefinitions.length > 0
       ? registry.get<IComponentMetadataRegistry>("IComponentMetadataRegistry")
       : null;
-
-  if (metadataRegistry !== null) {
-    for (const [componentId, metadataPatch] of overrideEntries) {
-      if (componentId.trim().length === 0) {
-        throw new Error(
-          "[bootstrapFramework] componentOverrides contains an empty selector key.",
-        );
-      }
-
-      if (componentId !== componentId.trim()) {
-        throw new Error(
-          "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
-        );
-      }
-
-      metadataRegistry.validatePatch(componentId, metadataPatch);
-
-      if (!metadataRegistry.has(componentId)) {
-        throw new Error(
-          `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
-        );
-      }
-    }
-  }
 
   // Framework custom elements (dynamic imports avoid HTMLElement in Node)
   if (typeof customElements !== "undefined") {
@@ -387,6 +399,122 @@ export async function bootstrapFramework(
 
     if (!customElements.get("pick-select")) {
       customElements.define("pick-select", PickSelectElement);
+    }
+  }
+
+  // Register component definitions (defineComponent / definePick)
+  if (componentDefinitions.length > 0) {
+    // Validate all entries upfront before any registration
+    for (let i = 0; i < componentDefinitions.length; i++) {
+      const def = componentDefinitions[i];
+
+      if (def == null || typeof def !== "object") {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: each entry must be a non-null object produced by defineComponent() or definePick().`,
+        );
+      }
+
+      if (def.kind !== ComponentKind.Render && def.kind !== ComponentKind.Pick) {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: unknown kind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
+        );
+      }
+
+      if (def.kind === ComponentKind.Render) {
+        if (!def.config || !isPlainObject(def.config)) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config must be a plain object for kind '${ComponentKind.Render}'.`);
+        }
+        const selector = def.config.selector;
+        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config.selector is required and must not be empty.`);
+        }
+        if (selector !== selector.trim()) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config.selector must not have leading or trailing whitespace.`);
+        }
+        if (!def.Class || typeof def.Class !== "function") {
+          throw new Error(`[bootstrapFramework] components[${i}]: Class must be a constructor function.`);
+        }
+      }
+
+      if (def.kind === ComponentKind.Pick) {
+        const selector = def.selector;
+        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
+          throw new Error(`[bootstrapFramework] components[${i}]: selector is required and must not be empty.`);
+        }
+        if (selector !== selector.trim()) {
+          throw new Error(`[bootstrapFramework] components[${i}]: selector must not have leading or trailing whitespace.`);
+        }
+        if (!def.setup || typeof def.setup !== "function") {
+          throw new Error(`[bootstrapFramework] components[${i}]: setup must be a function.`);
+        }
+      }
+    }
+
+    // Collect resolved selectors for atomicity checks (per-entry validation already passed)
+    const resolvedSelectors = componentDefinitions.map((def) =>
+      def.kind === ComponentKind.Render ? (def.config.selector as string) : def.selector,
+    );
+
+    // Reject duplicate selectors within this call
+    const seenSelectors = new Set<string>();
+    for (let i = 0; i < resolvedSelectors.length; i++) {
+      const sel = resolvedSelectors[i];
+      if (seenSelectors.has(sel)) {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: duplicate selector '${sel}' — already present earlier in this components array.`,
+        );
+      }
+      seenSelectors.add(sel);
+    }
+
+    // Reject selectors that are already in the metadata registry
+    if (metadataRegistry !== null) {
+      for (let i = 0; i < resolvedSelectors.length; i++) {
+        if (metadataRegistry.has(resolvedSelectors[i])) {
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: selector '${resolvedSelectors[i]}' is already registered.`,
+          );
+        }
+      }
+    }
+
+    const [{ PickRender }, { Pick }] = await Promise.all([
+      import("../decorators/pick-render.decorator.js"),
+      import("../decorators/pick.decorator.js"),
+    ]);
+
+    for (const def of componentDefinitions) {
+      if (def.kind === ComponentKind.Render) {
+        PickRender(def.config, registry)(def.Class as Parameters<ClassDecorator>[0]);
+      } else if (def.kind === ComponentKind.Pick) {
+        class PickBase {}
+        Pick(def.selector, def.setup, registry)(PickBase as Parameters<ClassDecorator>[0]);
+      }
+    }
+  }
+
+  // Validate componentOverrides against the now-fully-registered metadata (components + decorators)
+  if (metadataRegistry !== null) {
+    for (const [componentId, metadataPatch] of overrideEntries) {
+      if (componentId.trim().length === 0) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides contains an empty selector key.",
+        );
+      }
+
+      if (componentId !== componentId.trim()) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+        );
+      }
+
+      metadataRegistry.validatePatch(componentId, metadataPatch);
+
+      if (!metadataRegistry.has(componentId)) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
+        );
+      }
     }
   }
 

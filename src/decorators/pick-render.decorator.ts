@@ -1,9 +1,11 @@
 import { Services } from "../providers/service-provider.js";
+import type { IServiceProvider } from "../providers/service-provider.interface.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
 import type { IPickElementRegistrar } from "../registration/pick-element-registrar.interface.js";
 import type { PickElementOptions } from "../registration/pick-element-factory.js";
 import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { PickComponent } from "../core/pick-component.js";
+import { resolveDecoratorService } from "./resolve-decorator-service.js";
 
 /**
  * Defines the configuration for a PickComponent decorator.
@@ -11,22 +13,12 @@ import type { PickComponent } from "../core/pick-component.js";
  */
 export type ComponentConfig = Partial<ComponentMetadata>;
 
-function getRequiredDecoratorService<T>(token: string): T {
-  if (!Services.has(token)) {
-    throw new Error(
-      `[PickRender] Framework services are not available. ` +
-        `Call bootstrapFramework(Services) before importing or defining components ` +
-        `that use @PickRender. Missing service: '${token}'.`,
-    );
-  }
-
-  return Services.get<T>(token);
-}
-
 /**
  * @PickRender decorator - Marks a class as a PickComponent with declarative configuration.
  *
  * @param config - Component configuration (selector, template, lifecycle, etc.)
+ * @param provider - Service provider used to resolve framework dependencies. Defaults to the global
+ *   `Services` singleton. Pass a registry only when bootstrapping outside the default service context.
  * @throws Error if config is null or undefined
  *
  * @example
@@ -42,7 +34,7 @@ function getRequiredDecoratorService<T>(token: string): T {
  * }
  * ```
  */
-export function PickRender(config: ComponentConfig): ClassDecorator {
+export function PickRender(config: ComponentConfig, provider: IServiceProvider = Services): ClassDecorator {
   if (!config) throw new Error("Config is required");
 
   return (target) => {
@@ -53,8 +45,10 @@ export function PickRender(config: ComponentConfig): ClassDecorator {
         template: config.template || "",
       };
 
-      getRequiredDecoratorService<IComponentMetadataRegistry>(
+      resolveDecoratorService<IComponentMetadataRegistry>(
         "IComponentMetadataRegistry",
+        provider,
+        "PickRender",
       ).register(config.selector, metadata);
 
       const options: PickElementOptions<PickComponent> = {
@@ -62,8 +56,10 @@ export function PickRender(config: ComponentConfig): ClassDecorator {
         lifecycle: config.lifecycle,
       };
 
-      getRequiredDecoratorService<IPickElementRegistrar>(
+      resolveDecoratorService<IPickElementRegistrar>(
         "IPickElementRegistrar",
+        provider,
+        "PickRender",
       ).register(
         config.selector,
         target as unknown as new (...args: unknown[]) => PickComponent,

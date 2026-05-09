@@ -663,3 +663,84 @@ Componente explícito de clase  →  @PickRender
 ```
 
 Si el equipo puede leerlo cómodamente en ambas formas, cualquiera de las dos está bien. Mantener consistencia dentro de una feature importa más que imponer un decorador global.
+
+---
+
+## Sin decoradores: `defineComponent` y `definePick`
+
+`defineComponent` y `definePick` son los equivalentes sin decoradores de `@PickRender` y `@Pick`. Devuelven un descriptor `ComponentDefinition` en vez de registrar nada inmediatamente. El registro ocurre dentro de `bootstrapFramework` cuando se pasan a través de la opción `components`.
+
+Este patrón elimina el *efecto secundario de registro* provocado por la importación de módulos: ningún componente se registra hasta que se ejecuta `bootstrapFramework`. Ten en cuenta que otros decoradores a nivel de clase, como `@Reactive` y `@Listen`, pueden seguir ejecutándose en el momento de la definición de la clase; en el modo de decoradores legacy de TypeScript, `@Listen` requiere que los servicios ya estén bootstrapeados, por lo que el orden de bootstrap/importación sigue siendo relevante.
+
+### `defineComponent` — basado en clase, sin decorador
+
+```typescript
+import { PickComponent, Reactive, Listen, defineComponent } from "pick-components";
+
+class ContadorComponente extends PickComponent {
+  @Reactive count = 0;
+
+  @Listen("#incrementButton", "click")
+  increment(): void {
+    this.count++;
+  }
+}
+
+export const counterDef = defineComponent(ContadorComponente, {
+  selector: "my-counter",
+  template: `
+    <p>{{count}}</p>
+    <button id="incrementButton">+1</button>
+  `,
+});
+```
+
+### `definePick` — sin clase, sin decoradores
+
+```typescript
+import { definePick } from "pick-components";
+
+export const counterDef = definePick<{ count: number }>("my-counter", (ctx) => {
+  ctx.state({ count: 0 });
+
+  ctx.on({
+    increment() { this.count++; },
+  });
+
+  ctx.html(`
+    <p>{{count}}</p>
+    <button pick-action="increment">+1</button>
+  `);
+});
+```
+
+### Composition root explícito en `bootstrapFramework`
+
+Importa los descriptores y pásalos a `bootstrapFramework`. Ningún componente se registra hasta que corra el bootstrap.
+
+```typescript
+import { bootstrapFramework, Services } from "pick-components";
+import { counterDef } from "./counter.js";
+import { formDef } from "./form.js";
+
+await bootstrapFramework(Services, {}, {
+  components: [counterDef, formDef],
+});
+```
+
+### Comparación
+
+| API                | Sintaxis   | Clase requerida | Decoradores requeridos |
+| ------------------ | ---------- | --------------- | ---------------------- |
+| `@PickRender`      | decorador  | sí              | sí                     |
+| `@Pick`            | decorador  | no (generada)   | sí                     |
+| `defineComponent`  | función    | sí              | no (para @Reactive, @Listen — opcionales) |
+| `definePick`       | función    | no              | no                     |
+
+`defineComponent` y `definePick` usan el mismo pipeline de render, registry de metadata y sistema de bindings que los decoradores. No son un nivel inferior de capacidades.
+
+## Docs relacionados
+
+- Guía de DI: [DEPENDENCY-INJECTION.md](DEPENDENCY-INJECTION.md)
+- Internos de render: [RENDERING-ARCHITECTURE.md](RENDERING-ARCHITECTURE.md)
+- Versión en inglés: [PICK-VS-PICKRENDER.md](PICK-VS-PICKRENDER.md)

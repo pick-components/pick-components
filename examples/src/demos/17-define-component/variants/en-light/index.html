@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 1rem;
+        background: #f8fafc;
+      }
+
+      counter-example {
+        --counter-fg: #0f172a;
+        --counter-border: #cbd5e1;
+        --counter-button-bg: #ffffff;
+        --counter-button-fg: #0f172a;
+      }
+    </style>
+    <script type="module">
+      import { bootstrapFramework, Services } from "pick-components";
+      // Import the descriptor — no side effects until bootstrapFramework runs.
+      import { counterDef } from "./counter.example.js";
+      // Pass the descriptor to bootstrapFramework for explicit registration.
+      await bootstrapFramework(Services, {}, { components: [counterDef] });
+    </script>
+  </head>
+  <body>
+    <counter-example></counter-example>
+  </body>
+</html>

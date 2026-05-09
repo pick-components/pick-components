@@ -19,6 +19,8 @@ export type {
   DecoratorMode,
   ComponentMetadataOverrides,
 } from "./providers/framework-bootstrap.js";
+export { ComponentKind } from "./decorators/component-kind.js";
+export type { ComponentDefinition } from "./decorators/component-kind.js";
 export { IntentSignal, StateSignal } from "./reactive/signal.js";
 export type {
   IIntentSignal,
@@ -42,6 +44,8 @@ export {
   Listen,
   Pick,
   InlineContext,
+  defineComponent,
+  definePick,
 } from "./decorators/index.js";
 export type {
   ComponentConfig,

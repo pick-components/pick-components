@@ -656,6 +656,81 @@ Explicit class component      →  @PickRender
 
 If the team can read it comfortably in either form, either form is fine. Keep consistency within a feature more important than enforcing one decorator globally.
 
+---
+
+## Using without decorators: `defineComponent` and `definePick`
+
+`defineComponent` and `definePick` are the decorator-free equivalents of `@PickRender` and `@Pick`. They return a `ComponentDefinition` descriptor instead of registering anything immediately. Registration happens inside `bootstrapFramework` when you pass them through the `components` option.
+
+This pattern removes the *registration* side effect triggered by module imports: no component is registered until `bootstrapFramework` runs. Note that other class-level decorators such as `@Reactive` and `@Listen` may still execute at class-definition time; in TypeScript legacy decorator mode, `@Listen` requires services to already be bootstrapped, so bootstrap/import ordering rules still apply.
+
+### `defineComponent` — class-based, no decorator
+
+```typescript
+import { PickComponent, Reactive, Listen, defineComponent } from "pick-components";
+
+class CounterComponent extends PickComponent {
+  @Reactive count = 0;
+
+  @Listen("#incrementButton", "click")
+  increment(): void {
+    this.count++;
+  }
+}
+
+export const counterDef = defineComponent(CounterComponent, {
+  selector: "my-counter",
+  template: `
+    <p>{{count}}</p>
+    <button id="incrementButton">+1</button>
+  `,
+});
+```
+
+### `definePick` — no class, no decorators at all
+
+```typescript
+import { definePick } from "pick-components";
+
+export const counterDef = definePick<{ count: number }>("my-counter", (ctx) => {
+  ctx.state({ count: 0 });
+
+  ctx.on({
+    increment() { this.count++; },
+  });
+
+  ctx.html(`
+    <p>{{count}}</p>
+    <button pick-action="increment">+1</button>
+  `);
+});
+```
+
+### Explicit composition root in `bootstrapFramework`
+
+Import descriptors and pass them to `bootstrapFramework`. No component is registered until bootstrap runs.
+
+```typescript
+import { bootstrapFramework, Services } from "pick-components";
+import { counterDef } from "./counter.js";
+import { formDef } from "./form.js";
+
+await bootstrapFramework(Services, {}, {
+  components: [counterDef, formDef],
+});
+```
+
+### Comparison
+
+| API                | Syntax     | Class required | Decorators required |
+| ------------------ | ---------- | -------------- | ------------------- |
+| `@PickRender`      | decorator  | yes            | yes                 |
+| `@Pick`            | decorator  | no (generated) | yes                 |
+| `defineComponent`  | function   | yes            | no (for @Reactive, @Listen — optional) |
+| `definePick`       | function   | no             | no                  |
+
+`defineComponent` and `definePick` use the same rendering pipeline, metadata registry, and binding system as the decorator-based APIs. They are not a different capability tier.
+
 ## Related Docs
 
 - DI guide: [DEPENDENCY-INJECTION.md](DEPENDENCY-INJECTION.md)

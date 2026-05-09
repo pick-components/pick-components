@@ -2,18 +2,8 @@ import { PickRender as PickComponentDecorator } from "./pick-render.decorator.js
 import type { InlineContext } from "./pick/types.js";
 import type { IPickComponentFactory } from "./pick/pick-component-factory.interface.js";
 import { Services } from "../providers/service-provider.js";
-
-function getRequiredDecoratorService<T>(token: string): T {
-  if (!Services.has(token)) {
-    throw new Error(
-      `[Pick] Framework services are not available. ` +
-        `Call bootstrapFramework(Services) before importing or defining components ` +
-        `that use @Pick. Missing service: '${token}'.`,
-    );
-  }
-
-  return Services.get<T>(token);
-}
+import type { IServiceProvider } from "../providers/service-provider.interface.js";
+import { resolveDecoratorService } from "./resolve-decorator-service.js";
 
 /**
  * Implements the responsibility of providing a functional decorator for Pick Components.
@@ -21,6 +11,8 @@ function getRequiredDecoratorService<T>(token: string): T {
  * @template TState - Type of component state (from `ctx.state()`)
  * @param selector - Custom element tag name (e.g., "my-counter")
  * @param setup - Setup function receiving `InlineContext`
+ * @param provider - Service provider used to resolve framework dependencies. Defaults to the global
+ *   `Services` singleton. Pass a registry only when bootstrapping outside the default service context.
  * @returns Class decorator that transforms the target into a PickComponent
  *
  * @example
@@ -35,13 +27,16 @@ function getRequiredDecoratorService<T>(token: string): T {
 export function Pick<TState = unknown>(
   selector: string,
   setup: (ctx: InlineContext<TState>) => void,
+  provider: IServiceProvider = Services,
 ): ClassDecorator {
   if (!selector) throw new Error("selector is required");
   if (!setup) throw new Error("setup is required");
 
   const decorator = ((target: unknown) => {
-    const factory = getRequiredDecoratorService<IPickComponentFactory>(
+    const factory = resolveDecoratorService<IPickComponentFactory>(
       "IPickComponentFactory",
+      provider,
+      "Pick",
     );
     const config = factory.captureConfig(setup);
     const EnhancedClass = factory.createEnhancedClass(target, config);
@@ -56,7 +51,7 @@ export function Pick<TState = unknown>(
       styles: config.styles,
       initializer: InitializerClass ? () => new InitializerClass() : undefined,
       lifecycle: LifecycleClass ? () => new LifecycleClass() : undefined,
-    });
+    }, provider);
 
     return ComponentDecorator(EnhancedClass);
   }) as ClassDecorator;
