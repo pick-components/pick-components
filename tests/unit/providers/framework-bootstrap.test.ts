@@ -333,6 +333,36 @@ test.describe("bootstrapFramework", () => {
     );
   });
 
+  test("should fail when componentOverrides patch selector is empty string", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              selector: "",
+              template: "<div>Custom dialog</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides selector mismatch for 'pick-dialog'. Received selector ''.",
+    );
+  });
+
   test("should fail when componentOverrides patch value is not an object", async () => {
     // Arrange
     const mock = createMockServiceRegistry();

@@ -222,5 +222,22 @@ test.describe("ComponentMetadataRegistry", () => {
         }),
       ).toThrow("Patch selector must match componentId");
     });
+
+    test("should throw if patch selector is empty string", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() =>
+        registry.patch("test-component", {
+          selector: "",
+          template: "<div>Overridden</div>",
+        }),
+      ).toThrow("Patch selector must match componentId");
+    });
   });
 });

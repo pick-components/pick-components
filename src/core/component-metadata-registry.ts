@@ -123,7 +123,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   patch(componentId: string, patch: Partial<ComponentMetadata>): void {
     if (!componentId) throw new Error("ComponentId is required");
     if (!patch) throw new Error("Patch is required");
-    if (patch.selector && patch.selector !== componentId) {
+    if (patch.selector !== undefined && patch.selector !== componentId) {
       throw new Error("Patch selector must match componentId");
     }
 

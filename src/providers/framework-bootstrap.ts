@@ -375,7 +375,10 @@ export async function bootstrapFramework(
       );
     }
 
-    if (metadataPatch.selector && metadataPatch.selector !== componentId) {
+    if (
+      metadataPatch.selector !== undefined &&
+      metadataPatch.selector !== componentId
+    ) {
       throw new Error(
         `[bootstrapFramework] componentOverrides selector mismatch for '${componentId}'. Received selector '${metadataPatch.selector}'.`,
       );
