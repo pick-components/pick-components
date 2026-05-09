@@ -192,6 +192,13 @@ test.describe("ComponentMetadataRegistry", () => {
       );
     });
 
+    test("should throw if componentId is empty whitespace", () => {
+      // Act & Assert
+      expect(() => registry.patch("   ", { template: "<div></div>" })).toThrow(
+        "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
     test("should throw if patch is null", () => {
       // Arrange
       const metadata: ComponentMetadata = {
@@ -230,6 +237,20 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() => registry.patch("test-component", [] as any)).toThrow(
+        "Patch must be a plain object",
+      );
+    });
+
+    test("should throw if patch is a non-plain object", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() => registry.patch("test-component", new Date() as any)).toThrow(
         "Patch must be a plain object",
       );
     });

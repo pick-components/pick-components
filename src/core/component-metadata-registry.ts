@@ -1,22 +1,6 @@
 import { ComponentMetadata } from "./component-metadata.js";
 import type { IComponentMetadataRegistry } from "./component-metadata-registry.interface.js";
-
-/**
- * Validates that a value is a plain object (prototype is Object.prototype or null).
- *
- * @private
- * @param value - Value to check
- * @returns true if value is a plain object
- */
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    !Array.isArray(value) &&
-    (Object.getPrototypeOf(value) === Object.prototype ||
-      Object.getPrototypeOf(value) === null)
-  );
-}
+import { isPlainObject } from "../utils/is-plain-object.js";
 
 
 /**

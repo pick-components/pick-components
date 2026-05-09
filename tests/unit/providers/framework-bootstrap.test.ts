@@ -363,7 +363,7 @@ test.describe("bootstrapFramework", () => {
     );
   });
 
-  test("should fail when componentOverrides patch value is not an object", async () => {
+  test("should fail when componentOverrides patch value is not a plain object", async () => {
     // Arrange
     const mock = createMockServiceRegistry();
     const metadataRegistry = new ComponentMetadataRegistry();
@@ -382,6 +382,33 @@ test.describe("bootstrapFramework", () => {
         {
           componentOverrides: {
             "pick-dialog": null as any,
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides for 'pick-dialog' must be a plain object.",
+    );
+  });
+
+  test("should fail when componentOverrides patch value is a non-plain object", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": new Date() as any,
           },
         },
       ),

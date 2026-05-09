@@ -35,6 +35,7 @@ import { WeakRefObjectRegistry } from "../utils/object-registry.js";
 import { BrowserNavigationService } from "../components/pick-router/navigation.js";
 import { SharedStylesRegistry } from "../rendering/styles/shared-styles-registry.js";
 import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
+import { isPlainObject } from "../utils/is-plain-object.js";
 import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
 
@@ -132,14 +133,7 @@ export async function bootstrapFramework(
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
   const rawComponentOverrides = options.componentOverrides;
 
-  if (
-    rawComponentOverrides !== undefined &&
-    (rawComponentOverrides === null ||
-      typeof rawComponentOverrides !== "object" ||
-      Array.isArray(rawComponentOverrides) ||
-      (Object.getPrototypeOf(rawComponentOverrides) !== Object.prototype &&
-        Object.getPrototypeOf(rawComponentOverrides) !== null))
-  ) {
+  if (rawComponentOverrides !== undefined && !isPlainObject(rawComponentOverrides)) {
     throw new Error(
       "[bootstrapFramework] componentOverrides must be a plain object when provided.",
     );
@@ -342,13 +336,7 @@ export async function bootstrapFramework(
         );
       }
 
-      if (
-        metadataPatch === null ||
-        typeof metadataPatch !== "object" ||
-        Array.isArray(metadataPatch) ||
-        (Object.getPrototypeOf(metadataPatch) !== Object.prototype &&
-          Object.getPrototypeOf(metadataPatch) !== null)
-      ) {
+      if (!isPlainObject(metadataPatch)) {
         throw new Error(
           `[bootstrapFramework] componentOverrides for '${componentId}' must be a plain object.`,
         );
