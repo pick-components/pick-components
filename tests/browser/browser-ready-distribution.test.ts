@@ -1,68 +1,11 @@
 import { test, expect } from "@playwright/test";
-import { createServer, type Server } from "node:http";
-import { readFileSync } from "node:fs";
-import { extname } from "node:path";
+import { type Server } from "node:http";
 import type { AddressInfo } from "node:net";
-import { resolveStaticAssetPath } from "../support/resolve-static-asset-path.js";
+import { createStaticRepositoryServer } from "../support/create-static-repository-server.js";
 
 const repositoryRoot = process.cwd();
 const defaultBrowserFixturePath =
   "tests/fixtures/browser/browser-ready-smoke.html";
-const mimeTypes: Record<string, string> = {
-  ".css": "text/css",
-  ".html": "text/html",
-  ".js": "application/javascript",
-  ".json": "application/json",
-  ".mjs": "application/javascript",
-  ".svg": "image/svg+xml",
-};
-
-function createStaticRepositoryServer(): Server {
-  return createServer((request, response) => {
-    const requestPath = getRequestPath(request.url ?? "/");
-    if (requestPath === null) {
-      response.writeHead(403, { "Content-Type": "text/plain" });
-      response.end("403 Forbidden");
-      return;
-    }
-
-    const assetPath = resolveStaticAssetPath(
-      repositoryRoot,
-      requestPath,
-      defaultBrowserFixturePath,
-    );
-
-    if (!assetPath.ok) {
-      response.writeHead(assetPath.statusCode, {
-        "Content-Type": "text/plain",
-      });
-      response.end(
-        assetPath.statusCode === 403 ? "403 Forbidden" : "404 Not Found",
-      );
-      return;
-    }
-
-    const contentType =
-      mimeTypes[extname(assetPath.absolutePath)] ?? "application/octet-stream";
-
-    try {
-      const fileContents = readFileSync(assetPath.absolutePath);
-      response.writeHead(200, { "Content-Type": contentType });
-      response.end(fileContents);
-    } catch {
-      response.writeHead(404, { "Content-Type": "text/plain" });
-      response.end("404 Not Found");
-    }
-  });
-}
-
-function getRequestPath(requestUrl: string): string | null {
-  try {
-    return new URL(requestUrl, "http://127.0.0.1").pathname;
-  } catch {
-    return null;
-  }
-}
 
 test.describe("Browser-ready distribution", () => {
   let server: Server;
@@ -70,7 +13,7 @@ test.describe("Browser-ready distribution", () => {
 
   test.beforeAll(async () => {
     // Arrange
-    server = createStaticRepositoryServer();
+    server = createStaticRepositoryServer(repositoryRoot, defaultBrowserFixturePath);
 
     // Act
     await new Promise<void>((resolve) => {

@@ -1,64 +1,11 @@
 import { test, expect } from "@playwright/test";
-import { createServer, type Server } from "node:http";
-import { readFileSync, existsSync, mkdirSync } from "node:fs";
+import { type Server } from "node:http";
+import { existsSync, mkdirSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { extname } from "node:path";
 import type { AddressInfo } from "node:net";
-import { resolveStaticAssetPath } from "../support/resolve-static-asset-path.js";
+import { createStaticRepositoryServer } from "../support/create-static-repository-server.js";
 
 const repositoryRoot = process.cwd();
-
-const mimeTypes: Record<string, string> = {
-  ".css": "text/css",
-  ".html": "text/html",
-  ".js": "application/javascript",
-  ".mjs": "application/javascript",
-  ".json": "application/json",
-};
-
-function createStaticRepositoryServer(): Server {
-  return createServer((request, response) => {
-    const requestPath = (() => {
-      try {
-        return new URL(request.url ?? "/", "http://127.0.0.1").pathname;
-      } catch {
-        return null;
-      }
-    })();
-
-    if (requestPath === null) {
-      response.writeHead(403, { "Content-Type": "text/plain" });
-      response.end("403 Forbidden");
-      return;
-    }
-
-    const assetPath = resolveStaticAssetPath(
-      repositoryRoot,
-      requestPath,
-      "examples/compat/01-tsc-legacy/index.html",
-    );
-
-    if (!assetPath.ok) {
-      response.writeHead(assetPath.statusCode, { "Content-Type": "text/plain" });
-      response.end(
-        assetPath.statusCode === 403 ? "403 Forbidden" : "404 Not Found",
-      );
-      return;
-    }
-
-    const contentType =
-      mimeTypes[extname(assetPath.absolutePath)] ?? "application/octet-stream";
-
-    try {
-      const contents = readFileSync(assetPath.absolutePath);
-      response.writeHead(200, { "Content-Type": contentType });
-      response.end(contents);
-    } catch {
-      response.writeHead(404, { "Content-Type": "text/plain" });
-      response.end("404 Not Found");
-    }
-  });
-}
 
 function requireBuildArtifact(path: string): void {
   if (!existsSync(`${repositoryRoot}/${path}`)) {
@@ -104,12 +51,12 @@ test.describe("Decorator compatibility setups", () => {
     // Act — build all compat examples
     build(
       "01 — tsc + legacy experimentalDecorators",
-      "node_modules/.bin/tsc -p examples/compat/01-tsc-legacy/tsconfig.json",
+      "npm exec -- tsc -p examples/compat/01-tsc-legacy/tsconfig.json",
     );
 
     build(
       "02 — webpack + ts-loader + TC39",
-      "node_modules/.bin/webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs",
+      "npm exec -- webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs",
     );
 
     mkdirSync(`${repositoryRoot}/examples/compat/03-swc-tc39/dist`, {
@@ -117,19 +64,19 @@ test.describe("Decorator compatibility setups", () => {
     });
     build(
       "03 — swc + TC39",
-      "node_modules/.bin/swc examples/compat/03-swc-tc39/src/main.ts" +
+      "npm exec -- swc examples/compat/03-swc-tc39/src/main.ts" +
         " --out-file examples/compat/03-swc-tc39/dist/main.js" +
         " --config-file examples/compat/03-swc-tc39/.swcrc",
     );
 
     build(
       "04 — webpack + babel-loader + legacy",
-      "node_modules/.bin/webpack --config examples/compat/04-babel-legacy/webpack.config.mjs",
+      "npm exec -- webpack --config examples/compat/04-babel-legacy/webpack.config.mjs",
     );
 
     build(
       "05 — webpack + babel-loader + TC39 (2023-11)",
-      "node_modules/.bin/webpack --config examples/compat/05-babel-tc39/webpack.config.mjs",
+      "npm exec -- webpack --config examples/compat/05-babel-tc39/webpack.config.mjs",
     );
 
     if (bunAvailable) {
@@ -145,7 +92,10 @@ test.describe("Decorator compatibility setups", () => {
     }
 
     // Act — start static file server
-    server = createStaticRepositoryServer();
+    server = createStaticRepositoryServer(
+      repositoryRoot,
+      "examples/compat/01-tsc-legacy/index.html",
+    );
     await new Promise<void>((resolve) => {
       server.listen(0, "127.0.0.1", () => {
         const address = server.address() as AddressInfo;
@@ -156,6 +106,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.afterAll(async () => {
+    if (!server) return;
     await new Promise<void>((resolve, reject) => {
       server.close((error) => (error ? reject(error) : resolve()));
     });

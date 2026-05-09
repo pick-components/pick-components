@@ -12,7 +12,12 @@ const root = process.cwd();
 function run(label, cmd, ensureDir) {
   if (ensureDir) mkdirSync(resolve(root, ensureDir), { recursive: true });
   console.log(`\n▶ ${label}`);
-  execSync(cmd, { cwd: root, stdio: "inherit" });
+  try {
+    execSync(cmd, { cwd: root, stdio: "inherit" });
+  } catch (error) {
+    console.error(`\n❌ Build failed: ${label}`);
+    process.exit(1);
+  }
   console.log(`✅ ${label}`);
 }
 
@@ -29,17 +34,17 @@ requireArtifact("dist/browser/pick-components.js");
 
 run(
   "01 — tsc + legacy experimentalDecorators",
-  "node_modules/.bin/tsc -p examples/compat/01-tsc-legacy/tsconfig.json",
+  "npm exec -- tsc -p examples/compat/01-tsc-legacy/tsconfig.json",
 );
 
 run(
   "02 — webpack + ts-loader + TC39",
-  "node_modules/.bin/webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs",
+  "npm exec -- webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs",
 );
 
 run(
   "03 — swc + TC39",
-  "node_modules/.bin/swc examples/compat/03-swc-tc39/src/main.ts" +
+  "npm exec -- swc examples/compat/03-swc-tc39/src/main.ts" +
     " --out-file examples/compat/03-swc-tc39/dist/main.js" +
     " --config-file examples/compat/03-swc-tc39/.swcrc",
   "examples/compat/03-swc-tc39/dist",
@@ -47,12 +52,12 @@ run(
 
 run(
   "04 — webpack + babel-loader + legacy decorators",
-  "node_modules/.bin/webpack --config examples/compat/04-babel-legacy/webpack.config.mjs",
+  "npm exec -- webpack --config examples/compat/04-babel-legacy/webpack.config.mjs",
 );
 
 run(
   "05 — webpack + babel-loader + TC39 (2023-11)",
-  "node_modules/.bin/webpack --config examples/compat/05-babel-tc39/webpack.config.mjs",
+  "npm exec -- webpack --config examples/compat/05-babel-tc39/webpack.config.mjs",
 );
 
 let bunAvailable = false;

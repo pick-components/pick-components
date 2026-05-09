@@ -37,19 +37,19 @@ Or individually:
 
 ```
 # 01 — tsc + legacy decorators
-node_modules/.bin/tsc -p examples/compat/01-tsc-legacy/tsconfig.json
+npm exec -- tsc -p examples/compat/01-tsc-legacy/tsconfig.json
 
 # 02 — webpack + ts-loader + TC39
-node_modules/.bin/webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs
+npm exec -- webpack --config examples/compat/02-webpack-tc39/webpack.config.mjs
 
 # 03 — swc + TC39
-node_modules/.bin/swc examples/compat/03-swc-tc39/src/main.ts --out-file examples/compat/03-swc-tc39/dist/main.js --config-file examples/compat/03-swc-tc39/.swcrc
+npm exec -- swc examples/compat/03-swc-tc39/src/main.ts --out-file examples/compat/03-swc-tc39/dist/main.js --config-file examples/compat/03-swc-tc39/.swcrc
 
 # 04 — webpack + babel-loader + legacy
-node_modules/.bin/webpack --config examples/compat/04-babel-legacy/webpack.config.mjs
+npm exec -- webpack --config examples/compat/04-babel-legacy/webpack.config.mjs
 
 # 05 — webpack + babel-loader + TC39
-node_modules/.bin/webpack --config examples/compat/05-babel-tc39/webpack.config.mjs
+npm exec -- webpack --config examples/compat/05-babel-tc39/webpack.config.mjs
 
 # 06 — bun (requires bun runtime installed separately)
 bun build examples/compat/06-bun-tc39/src/main.ts --outfile examples/compat/06-bun-tc39/dist/bundle.js --target browser
