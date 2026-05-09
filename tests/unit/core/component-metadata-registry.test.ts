@@ -70,6 +70,19 @@ test.describe("ComponentMetadataRegistry", () => {
       );
     });
 
+    test("should throw if metadata.selector does not match componentId", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "other-component",
+        template: "<div></div>",
+      };
+
+      // Act & Assert
+      expect(() => registry.register("test", metadata)).toThrow(
+        "Metadata selector 'other-component' must match componentId 'test'",
+      );
+    });
+
     test("should throw if componentId is already registered", () => {
       // Arrange
       const metadata: ComponentMetadata = {

@@ -24,6 +24,7 @@ export interface IComponentMetadataRegistry {
    * @throws Error if componentId is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if metadata is null or undefined
+   * @throws Error if metadata.selector does not match componentId
    * @throws Error if componentId is already registered
    */
   register(componentId: string, metadata: ComponentMetadata): void;

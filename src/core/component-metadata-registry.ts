@@ -102,7 +102,9 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param metadata - Component metadata
    * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if metadata is null or undefined
+   * @throws Error if metadata.selector does not match componentId
    * @throws Error if componentId is already registered
    *
    * @example
@@ -116,6 +118,12 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   register(componentId: string, metadata: ComponentMetadata): void {
     this.validateComponentId(componentId);
     if (!metadata) throw new Error("Metadata is required");
+
+    if (metadata.selector !== componentId) {
+      throw new Error(
+        `Metadata selector '${metadata.selector}' must match componentId '${componentId}'`,
+      );
+    }
 
     if (this.metadata.has(componentId)) {
       throw new Error(`Component ${componentId} is already registered`);
