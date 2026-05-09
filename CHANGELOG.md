@@ -22,7 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `defineComponent()` as a decorator-free alternative to `@PickRender` (closes #4).
 - Added `definePick()` as a decorator-free alternative to `@Pick` with no class required (closes #4).
 - Added `components` option to `bootstrapFramework` for explicit composition root registration (closes #4).
-- Added `ComponentDefinition` discriminated union type exported from `pick-components`.
+- Added `ComponentDefinition` discriminated union type exported from `pick-components`. The `kind` field uses string literal types (`'render' | 'pick'`), so descriptors can be constructed without importing `ComponentKind`.
+- Added `ComponentKind` convenience enum exported from `pick-components` with members `Render = 'render'` and `Pick = 'pick'`.
 - Added playground examples `17-define-component` and `18-define-pick` (4 locale variants each).
 - Added "Using without decorators" section to `docs/PICK-VS-PICKRENDER.md` and its Spanish translation.
 

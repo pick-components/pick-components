@@ -95,4 +95,34 @@ test.describe("definePick", () => {
       definePick("my-comp", undefined as any),
     ).toThrow("[definePick] setup is required");
   });
+
+  test("should throw when selector is whitespace-only", () => {
+    // Arrange
+    const setup = (_ctx: any) => {};
+
+    // Act & Assert
+    expect(() =>
+      definePick("   ", setup),
+    ).toThrow("[definePick] selector is required and must not be empty");
+  });
+
+  test("should throw when selector has leading whitespace", () => {
+    // Arrange
+    const setup = (_ctx: any) => {};
+
+    // Act & Assert
+    expect(() =>
+      definePick(" my-comp", setup),
+    ).toThrow("[definePick] selector must not have leading or trailing whitespace");
+  });
+
+  test("should throw when selector has trailing whitespace", () => {
+    // Arrange
+    const setup = (_ctx: any) => {};
+
+    // Act & Assert
+    expect(() =>
+      definePick("my-comp ", setup),
+    ).toThrow("[definePick] selector must not have leading or trailing whitespace");
+  });
 });

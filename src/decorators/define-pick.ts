@@ -19,7 +19,8 @@ import type { ComponentDefinition } from "./component-kind.js";
  * @param selector - Custom element tag name (e.g., `"my-counter"`)
  * @param setup - Setup function receiving `InlineContext`
  * @returns A `ComponentDefinition` descriptor
- * @throws {Error} If `selector` is falsy (null, undefined, or empty string)
+ * @throws {Error} If `selector` is null, undefined, empty, or whitespace-only
+ * @throws {Error} If `selector` has leading or trailing whitespace
  * @throws {Error} If `setup` is not provided
  *
  * @example
@@ -60,7 +61,8 @@ export function definePick<TState = unknown>(
   selector: string,
   setup: (ctx: InlineContext<TState>) => void,
 ): ComponentDefinition {
-  if (!selector) throw new Error("[definePick] selector is required");
+  if (!selector || selector.trim().length === 0) throw new Error("[definePick] selector is required and must not be empty");
+  if (selector !== selector.trim()) throw new Error("[definePick] selector must not have leading or trailing whitespace");
   if (!setup) throw new Error("[definePick] setup is required");
 
   return { kind: ComponentKind.Pick, selector, setup: setup as (ctx: InlineContext) => void };

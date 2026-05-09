@@ -669,4 +669,24 @@ test.describe("bootstrapFramework", () => {
       bootstrapFramework(mock as any, {}, { components: {} as any }),
     ).rejects.toThrow("[bootstrapFramework] options.components must be an array.");
   });
+
+  test("should throw when a components entry is null", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(mock as any, {}, { components: [null as any] }),
+    ).rejects.toThrow("[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().");
+  });
+
+  test("should throw when a components entry is undefined", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(mock as any, {}, { components: [undefined as any] }),
+    ).rejects.toThrow("[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().");
+  });
 });

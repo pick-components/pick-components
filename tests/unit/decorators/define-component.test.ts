@@ -107,4 +107,56 @@ test.describe("defineComponent", () => {
       ),
     ).toThrow("[defineComponent] config is required");
   });
+
+  test("should throw when config.selector is an empty string", () => {
+    // Arrange
+    class MyComponent {}
+
+    // Act & Assert
+    expect(() =>
+      defineComponent(
+        MyComponent as unknown as new (...args: unknown[]) => PickComponent,
+        { selector: "", template: "<p />" },
+      ),
+    ).toThrow("[defineComponent] config.selector is required and must not be empty");
+  });
+
+  test("should throw when config.selector is whitespace-only", () => {
+    // Arrange
+    class MyComponent {}
+
+    // Act & Assert
+    expect(() =>
+      defineComponent(
+        MyComponent as unknown as new (...args: unknown[]) => PickComponent,
+        { selector: "   ", template: "<p />" },
+      ),
+    ).toThrow("[defineComponent] config.selector is required and must not be empty");
+  });
+
+  test("should throw when config.selector has leading whitespace", () => {
+    // Arrange
+    class MyComponent {}
+
+    // Act & Assert
+    expect(() =>
+      defineComponent(
+        MyComponent as unknown as new (...args: unknown[]) => PickComponent,
+        { selector: " my-comp", template: "<p />" },
+      ),
+    ).toThrow("[defineComponent] config.selector must not have leading or trailing whitespace");
+  });
+
+  test("should throw when config.selector has trailing whitespace", () => {
+    // Arrange
+    class MyComponent {}
+
+    // Act & Assert
+    expect(() =>
+      defineComponent(
+        MyComponent as unknown as new (...args: unknown[]) => PickComponent,
+        { selector: "my-comp ", template: "<p />" },
+      ),
+    ).toThrow("[defineComponent] config.selector must not have leading or trailing whitespace");
+  });
 });

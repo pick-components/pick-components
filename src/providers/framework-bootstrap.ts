@@ -408,6 +408,12 @@ export async function bootstrapFramework(
     for (let i = 0; i < componentDefinitions.length; i++) {
       const def = componentDefinitions[i];
 
+      if (def == null || typeof def !== "object") {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: each entry must be a non-null object produced by defineComponent() or definePick().`,
+        );
+      }
+
       if (def.kind !== ComponentKind.Render && def.kind !== ComponentKind.Pick) {
         throw new Error(
           `[bootstrapFramework] components[${i}]: unknown kind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
@@ -419,7 +425,7 @@ export async function bootstrapFramework(
           throw new Error(`[bootstrapFramework] components[${i}]: config is required for kind '${ComponentKind.Render}'.`);
         }
         const selector = def.config.selector;
-        if (!selector || selector.trim().length === 0) {
+        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
           throw new Error(`[bootstrapFramework] components[${i}]: config.selector is required and must not be empty.`);
         }
         if (selector !== selector.trim()) {
@@ -432,7 +438,7 @@ export async function bootstrapFramework(
 
       if (def.kind === ComponentKind.Pick) {
         const selector = def.selector;
-        if (!selector || selector.trim().length === 0) {
+        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
           throw new Error(`[bootstrapFramework] components[${i}]: selector is required and must not be empty.`);
         }
         if (selector !== selector.trim()) {

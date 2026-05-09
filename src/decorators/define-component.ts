@@ -20,6 +20,8 @@ import type { ComponentDefinition } from "./component-kind.js";
  * @returns A `ComponentDefinition` descriptor
  * @throws {Error} If `Class` is not provided
  * @throws {Error} If `config` is not provided
+ * @throws {Error} If `config.selector` is empty or whitespace-only
+ * @throws {Error} If `config.selector` has leading or trailing whitespace
  *
  * @example
  * ```typescript

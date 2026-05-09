@@ -670,7 +670,7 @@ Si el equipo puede leerlo cómodamente en ambas formas, cualquiera de las dos es
 
 `defineComponent` y `definePick` son los equivalentes sin decoradores de `@PickRender` y `@Pick`. Devuelven un descriptor `ComponentDefinition` en vez de registrar nada inmediatamente. El registro ocurre dentro de `bootstrapFramework` cuando se pasan a través de la opción `components`.
 
-Este patrón habilita un composition root explícito: todos los componentes se listan en un solo lugar, sin depender de los efectos secundarios de los decoradores al importar módulos.
+Este patrón elimina el *efecto secundario de registro* provocado por la importación de módulos: ningún componente se registra hasta que se ejecuta `bootstrapFramework`. Ten en cuenta que otros decoradores a nivel de clase, como `@Reactive` y `@Listen`, pueden seguir ejecutándose en el momento de la definición de la clase; en el modo de decoradores legacy de TypeScript, `@Listen` requiere que los servicios ya estén bootstrapeados, por lo que el orden de bootstrap/importación sigue siendo relevante.
 
 ### `defineComponent` — basado en clase, sin decorador
 

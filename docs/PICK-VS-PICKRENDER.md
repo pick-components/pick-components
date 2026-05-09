@@ -662,7 +662,7 @@ If the team can read it comfortably in either form, either form is fine. Keep co
 
 `defineComponent` and `definePick` are the decorator-free equivalents of `@PickRender` and `@Pick`. They return a `ComponentDefinition` descriptor instead of registering anything immediately. Registration happens inside `bootstrapFramework` when you pass them through the `components` option.
 
-This pattern enables an explicit composition root: all components are listed in one place, with no reliance on decorator side effects triggered by module imports.
+This pattern removes the *registration* side effect triggered by module imports: no component is registered until `bootstrapFramework` runs. Note that other class-level decorators such as `@Reactive` and `@Listen` may still execute at class-definition time; in TypeScript legacy decorator mode, `@Listen` requires services to already be bootstrapped, so bootstrap/import ordering rules still apply.
 
 ### `defineComponent` — class-based, no decorator
 

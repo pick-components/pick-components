@@ -27,12 +27,12 @@ export enum ComponentKind {
  */
 export type ComponentDefinition =
   | {
-      readonly kind: typeof ComponentKind.Render;
+      readonly kind: "render";
       readonly Class: new (...args: unknown[]) => PickComponent;
       readonly config: ComponentConfig;
     }
   | {
-      readonly kind: typeof ComponentKind.Pick;
+      readonly kind: "pick";
       readonly selector: string;
       readonly setup: (ctx: InlineContext) => void;
     };
