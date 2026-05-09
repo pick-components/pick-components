@@ -40,7 +40,7 @@ import type { ComponentDefinition } from "../providers/framework-bootstrap.js";
  * const counter = definePick<{ count: number }>('my-counter', (ctx) => {
  *   ctx.state({ count: 0 });
  *   ctx.on({
- *     increment: (state) => ({ count: state.count + 1 }),
+ *     increment() { this.count++; },
  *   });
  *   ctx.lifecycle({
  *     onInit: (component, subs) => {

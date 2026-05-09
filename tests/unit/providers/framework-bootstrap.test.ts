@@ -659,4 +659,14 @@ test.describe("bootstrapFramework", () => {
       bootstrapFramework(mock as any, {}, {}),
     ).resolves.toBeUndefined();
   });
+
+  test("should throw when options.components is not an array", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(mock as any, {}, { components: {} as any }),
+    ).rejects.toThrow("[bootstrapFramework] options.components must be an array.");
+  });
 });

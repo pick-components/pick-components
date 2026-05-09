@@ -142,4 +142,26 @@ test.describe("bootstrapFramework — components option", () => {
     expect(metadataRegistry.has("my-label-e2e")).toBe(true);
     expect(metadataRegistry.get("my-label-e2e")?.template).toBe("<span>{{label}}</span>");
   });
+
+  test("should apply componentOverrides to a component registered in the same call via components", async () => {
+    // Arrange
+    await bootstrapFramework(Services);
+
+    const def = defineComponent(PickComponent, {
+      selector: "my-overridable",
+      template: "<p>original</p>",
+    });
+
+    // Act — components and componentOverrides in a single bootstrapFramework call
+    await bootstrapFramework(Services, {}, {
+      components: [def],
+      componentOverrides: {
+        "my-overridable": { selector: "my-overridable", template: "<p>overridden</p>" },
+      },
+    });
+
+    // Assert
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    expect(metadataRegistry.get("my-overridable")?.template).toBe("<p>overridden</p>");
+  });
 });
