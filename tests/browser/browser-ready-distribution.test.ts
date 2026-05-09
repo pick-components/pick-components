@@ -8,7 +8,7 @@ const defaultBrowserFixturePath =
   "tests/fixtures/browser/browser-ready-smoke.html";
 
 test.describe("Browser-ready distribution", () => {
-  let server: Server;
+  let server: Server | undefined;
   let baseUrl: string;
 
   test.beforeAll(async () => {

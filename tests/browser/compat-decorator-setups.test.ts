@@ -38,7 +38,7 @@ function isBunAvailable(): boolean {
 }
 
 test.describe("Decorator compatibility setups", () => {
-  let server: Server;
+  let server: Server | undefined;
   let baseUrl: string;
   const bunAvailable = isBunAvailable();
 
@@ -115,7 +115,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("01 — tsc + legacy experimentalDecorators", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when compiled with tsc and legacy decorators", async ({ page }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/01-tsc-legacy/index.html`;
 
@@ -130,7 +130,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("02 — webpack + ts-loader + TC39 decorators", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when bundled with webpack and TC39 decorators via ts-loader", async ({ page }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/02-webpack-tc39/index.html`;
 
@@ -145,7 +145,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("03 — swc + TC39 decorators", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when compiled with swc and TC39 decorators", async ({ page }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/03-swc-tc39/index.html`;
 
@@ -160,7 +160,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("04 — webpack + babel-loader + legacy decorators", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when bundled with babel-loader and legacy decorators", async ({ page }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/04-babel-legacy/index.html`;
 
@@ -175,7 +175,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("05 — webpack + babel-loader + TC39 decorators (2023-11)", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when bundled with babel-loader and TC39 2023-11 decorators", async ({ page }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/05-babel-tc39/index.html`;
 
@@ -190,7 +190,7 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("06 — bun + TC39 decorators", () => {
-    test("component renders", async ({ page }) => {
+    test("should render the component when bundled with bun and TC39 decorators", async ({ page }) => {
       // Arrange
       if (!bunAvailable) {
         test.skip();
