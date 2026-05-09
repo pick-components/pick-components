@@ -111,7 +111,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @returns void
    * @throws Error if componentId is null or undefined
    * @throws Error if patch is null or undefined
-    * @throws Error if patch.selector is defined and does not match componentId
+   * @throws Error if patch.selector is defined and does not match componentId
    *
    * @example
    * ```typescript

@@ -19,7 +19,14 @@ jobs:
         id: version
         run: |
           # Extract the first version that's not "Unreleased"
-          VERSION=$(grep -m 1 '## \[\d\+\.\d\+\.\d\+\]' CHANGELOG.md | sed 's/## \[\(.*\)\].*/\1/')
+          VERSION=$(grep -m 1 -E '## \[[0-9]+\.[0-9]+\.[0-9]+\]' CHANGELOG.md | sed 's/## \[\(.*\)\].*/\1/')
+          
+          # Guard: fail if no version found (only Unreleased section exists)
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: No version found in CHANGELOG.md. Only Unreleased section is present."
+            exit 1
+          fi
+          
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Detected version: $VERSION"
 
