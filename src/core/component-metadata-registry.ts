@@ -2,7 +2,6 @@ import type { ComponentMetadata } from "./component-metadata.js";
 import type { IComponentMetadataRegistry } from "./component-metadata-registry.interface.js";
 import { isPlainObject } from "../utils/is-plain-object.js";
 
-
 /**
  * Exports ComponentMetadata for use in test files and components
  */
@@ -12,7 +11,7 @@ export type { ComponentMetadata };
  * Implements the responsibility of storing and retrieving component metadata.
  *
  * @description
- * Instanciable registry for component metadata indexed by selector (tag name).
+ * Instantiable registry for component metadata indexed by selector (tag name).
  * Registered in the service container under `'IComponentMetadataRegistry'` by `bootstrapFramework`.
  *
  * @example
@@ -38,6 +37,15 @@ export type { ComponentMetadata };
  */
 export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   private readonly metadata = new Map<string, ComponentMetadata>();
+  private static readonly ALLOWED_PATCH_FIELDS = new Set<string>([
+    "selector",
+    "template",
+    "skeleton",
+    "errorTemplate",
+    "styles",
+    "initializer",
+    "lifecycle",
+  ]);
 
   private validateComponentId(componentId: string): void {
     if (!componentId || componentId.trim().length === 0) {
@@ -49,6 +57,12 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
     patch: Partial<ComponentMetadata>,
     componentId: string,
   ): void {
+    for (const key of Object.keys(patch)) {
+      if (!ComponentMetadataRegistry.ALLOWED_PATCH_FIELDS.has(key)) {
+        throw new Error(`Patch contains unsupported field '${key}'`);
+      }
+    }
+
     if ("selector" in patch && typeof patch.selector !== "string") {
       throw new Error("Patch selector must be a string when provided");
     }
@@ -83,7 +97,8 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @param metadata - Component metadata
-   * @throws Error if componentId or metadata is null or undefined
+   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if metadata is null or undefined
    * @throws Error if componentId is already registered
    *
    * @example
@@ -110,7 +125,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns Component metadata or undefined if not found
-   * @throws Error if componentId is null or undefined
+   * @throws Error if componentId is null, undefined, or empty whitespace
    *
    * @example
    * ```typescript
@@ -130,7 +145,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns true if metadata exists, false otherwise
-   * @throws Error if componentId is null or undefined
+   * @throws Error if componentId is null, undefined, or empty whitespace
    *
    * @example
    * ```typescript
@@ -146,7 +161,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
 
   /**
    * Applies a shallow patch over existing component metadata.
-   * If the component is not registered, this operation is a no-op.
+   * If the component is not registered, this operation is a no-op after input validation.
    *
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata

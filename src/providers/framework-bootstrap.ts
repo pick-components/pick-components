@@ -323,6 +323,15 @@ export async function bootstrapFramework(
   const componentOverrides =
     (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
   const overrideEntries = Object.entries(componentOverrides);
+  const allowedMetadataPatchFields = new Set<string>([
+    "selector",
+    "template",
+    "skeleton",
+    "errorTemplate",
+    "styles",
+    "initializer",
+    "lifecycle",
+  ]);
 
   if (overrideEntries.length > 0) {
     const metadataRegistry = registry.get<IComponentMetadataRegistry>(
@@ -340,6 +349,14 @@ export async function bootstrapFramework(
         throw new Error(
           `[bootstrapFramework] componentOverrides for '${componentId}' must be a plain object.`,
         );
+      }
+
+      for (const key of Object.keys(metadataPatch)) {
+        if (!allowedMetadataPatchFields.has(key)) {
+          throw new Error(
+            `[bootstrapFramework] componentOverrides for '${componentId}' contains unsupported field '${key}'.`,
+          );
+        }
       }
 
       if ("selector" in metadataPatch && typeof metadataPatch.selector !== "string") {

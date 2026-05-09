@@ -347,6 +347,22 @@ test.describe("ComponentMetadataRegistry", () => {
       ).toThrow("Patch initializer must be a function when provided");
     });
 
+    test("should throw if patch contains unsupported field", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() =>
+        registry.patch("test-component", {
+          foo: "bar",
+        } as any),
+      ).toThrow("Patch contains unsupported field 'foo'");
+    });
+
     test("should throw if patch selector is empty string", () => {
       // Arrange
       const metadata: ComponentMetadata = {
