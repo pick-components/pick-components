@@ -155,4 +155,72 @@ test.describe("ComponentMetadataRegistry", () => {
       expect(() => registry.register("test", metadata)).not.toThrow();
     });
   });
+
+  test.describe("patch()", () => {
+    test("should patch existing metadata with shallow merge", () => {
+      // ARRANGE
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+        styles: ".original { color: red; }",
+      };
+      registry.register("test-component", metadata);
+
+      // ACT
+      registry.patch("test-component", {
+        template: "<div>Overridden</div>",
+      });
+
+      // ASSERT
+      const result = registry.get("test-component");
+      expect(result?.template).toBe("<div>Overridden</div>");
+      expect(result?.styles).toBe(".original { color: red; }");
+    });
+
+    test("should ignore patch for non-registered component", () => {
+      // ACT & ASSERT
+      expect(() =>
+        registry.patch("non-existent", { template: "<div>Ignored</div>" }),
+      ).not.toThrow();
+      expect(registry.get("non-existent")).toBeUndefined();
+    });
+
+    test("should throw if componentId is null", () => {
+      // ACT & ASSERT
+      expect(() => registry.patch(null as any, { template: "<div></div>" })).toThrow(
+        "ComponentId is required",
+      );
+    });
+
+    test("should throw if patch is null", () => {
+      // ARRANGE
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // ACT & ASSERT
+      expect(() => registry.patch("test-component", null as any)).toThrow(
+        "Patch is required",
+      );
+    });
+
+    test("should throw if patch selector does not match componentId", () => {
+      // ARRANGE
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // ACT & ASSERT
+      expect(() =>
+        registry.patch("test-component", {
+          selector: "other-component",
+          template: "<div>Overridden</div>",
+        }),
+      ).toThrow("Patch selector must match componentId");
+    });
+  });
 });

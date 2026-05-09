@@ -35,6 +35,8 @@ import { WeakRefObjectRegistry } from "../utils/object-registry.js";
 import { BrowserNavigationService } from "../components/pick-router/navigation.js";
 import { SharedStylesRegistry } from "../rendering/styles/shared-styles-registry.js";
 import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
+import type { ComponentMetadata } from "../core/component-metadata.js";
+import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
 
 /**
  * Map of service token overrides.
@@ -56,6 +58,18 @@ export type FrameworkOverrides = Record<string, (() => unknown) | unknown>;
 export type DecoratorMode = "strict" | "auto";
 
 /**
+ * Component metadata overrides applied during framework bootstrap.
+ *
+ * @description
+ * Each key is a component selector and each value is a shallow patch merged
+ * over the metadata previously registered by decorators.
+ */
+export type ComponentMetadataOverrides = Record<
+  string,
+  Partial<ComponentMetadata>
+>;
+
+/**
  * Configuration options for `bootstrapFramework`.
  */
 export interface BootstrapOptions {
@@ -64,6 +78,16 @@ export interface BootstrapOptions {
    * Defaults to `'auto'` (TC39 Stage 3 and `experimentalDecorators`).
    */
   readonly decorators?: DecoratorMode;
+
+  /**
+   * Optional shallow metadata patches applied by component selector.
+   *
+   * @description
+   * This enables consumers to override template/styles/lifecycle/initializer
+   * of already registered components (including third-party library components)
+   * before the first mount.
+   */
+  readonly componentOverrides?: ComponentMetadataOverrides;
 }
 
 /**
@@ -315,5 +339,34 @@ export async function bootstrapFramework(
     if (!customElements.get("pick-select")) {
       customElements.define("pick-select", PickSelectElement);
     }
+  }
+
+  const componentOverrides = options.componentOverrides ?? {};
+  const overrideEntries = Object.entries(componentOverrides);
+
+  if (overrideEntries.length === 0) {
+    return;
+  }
+
+  const metadataRegistry = registry.get<IComponentMetadataRegistry>(
+    "IComponentMetadataRegistry",
+  );
+
+  for (const [componentId, metadataPatch] of overrideEntries) {
+    if (!metadataRegistry.has(componentId)) {
+      throw new Error(
+        `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
+      );
+    }
+
+    if (metadataPatch.selector && metadataPatch.selector !== componentId) {
+      throw new Error(
+        `[bootstrapFramework] componentOverrides selector mismatch for '${componentId}'. Received selector '${metadataPatch.selector}'.`,
+      );
+    }
+  }
+
+  for (const [componentId, metadataPatch] of overrideEntries) {
+    metadataRegistry.patch(componentId, metadataPatch);
   }
 }

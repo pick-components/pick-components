@@ -104,6 +104,38 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   }
 
   /**
+   * Applies a shallow patch over existing component metadata.
+   *
+   * @param componentId - Component selector (tag name)
+   * @param patch - Partial metadata to merge with current metadata
+   * @returns void
+   * @throws Error if componentId is null or undefined
+   * @throws Error if patch is null or undefined
+    * @throws Error if patch.selector is defined and does not match componentId
+   *
+   * @example
+   * ```typescript
+   * registry.patch('my-counter', {
+   *   template: '<div class="custom">{{count}}</div>'
+   * });
+   * ```
+   */
+  patch(componentId: string, patch: Partial<ComponentMetadata>): void {
+    if (!componentId) throw new Error("ComponentId is required");
+    if (!patch) throw new Error("Patch is required");
+    if (patch.selector && patch.selector !== componentId) {
+      throw new Error("Patch selector must match componentId");
+    }
+
+    const currentMetadata = this.metadata.get(componentId);
+    if (!currentMetadata) {
+      return;
+    }
+
+    this.metadata.set(componentId, { ...currentMetadata, ...patch });
+  }
+
+  /**
    * Clears all registered metadata.
    *
    * @description

@@ -8,6 +8,7 @@ export {
   type FrameworkOverrides,
   type BootstrapOptions,
   type DecoratorMode,
+  type ComponentMetadataOverrides,
 } from "./providers/framework-bootstrap.js";
 export {
   Services,

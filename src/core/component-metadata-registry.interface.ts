@@ -43,4 +43,16 @@ export interface IComponentMetadataRegistry {
    * @throws Error if componentId is null or undefined
    */
   has(componentId: string): boolean;
+
+  /**
+   * Applies a shallow patch over existing component metadata.
+   *
+   * @param componentId - Component selector (tag name)
+   * @param patch - Partial metadata to merge with current metadata
+   * @returns void
+   * @throws Error if componentId is null or undefined
+   * @throws Error if patch is null or undefined
+   * @throws Error if patch.selector is defined and does not match componentId
+   */
+  patch(componentId: string, patch: Partial<ComponentMetadata>): void;
 }
