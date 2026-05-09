@@ -158,7 +158,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
   test.describe("patch()", () => {
     test("should patch existing metadata with shallow merge", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test-component",
         template: "<div>Original</div>",
@@ -166,19 +166,19 @@ test.describe("ComponentMetadataRegistry", () => {
       };
       registry.register("test-component", metadata);
 
-      // ACT
+      // Act
       registry.patch("test-component", {
         template: "<div>Overridden</div>",
       });
 
-      // ASSERT
+      // Assert
       const result = registry.get("test-component");
       expect(result?.template).toBe("<div>Overridden</div>");
       expect(result?.styles).toBe(".original { color: red; }");
     });
 
     test("should ignore patch for non-registered component", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(() =>
         registry.patch("non-existent", { template: "<div>Ignored</div>" }),
       ).not.toThrow();
@@ -186,35 +186,35 @@ test.describe("ComponentMetadataRegistry", () => {
     });
 
     test("should throw if componentId is null", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.patch(null as any, { template: "<div></div>" })).toThrow(
         "ComponentId is required",
       );
     });
 
     test("should throw if patch is null", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test-component",
         template: "<div>Original</div>",
       };
       registry.register("test-component", metadata);
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.patch("test-component", null as any)).toThrow(
         "Patch is required",
       );
     });
 
     test("should throw if patch selector does not match componentId", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test-component",
         template: "<div>Original</div>",
       };
       registry.register("test-component", metadata);
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(() =>
         registry.patch("test-component", {
           selector: "other-component",

@@ -353,6 +353,22 @@ export async function bootstrapFramework(
   );
 
   for (const [componentId, metadataPatch] of overrideEntries) {
+    if (!componentId || componentId.trim().length === 0) {
+      throw new Error(
+        "[bootstrapFramework] componentOverrides contains an empty selector key.",
+      );
+    }
+
+    if (
+      metadataPatch === null ||
+      typeof metadataPatch !== "object" ||
+      Array.isArray(metadataPatch)
+    ) {
+      throw new Error(
+        `[bootstrapFramework] componentOverrides for '${componentId}' must be a non-null object.`,
+      );
+    }
+
     if (!metadataRegistry.has(componentId)) {
       throw new Error(
         `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,

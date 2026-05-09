@@ -109,7 +109,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
-   * @throws Error if componentId is null or undefined
+  * @throws Error if componentId is null, undefined, or an empty string
    * @throws Error if patch is null or undefined
    * @throws Error if patch.selector is defined and does not match componentId
    *
