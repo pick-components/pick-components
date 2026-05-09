@@ -24,6 +24,19 @@ test.describe("ComponentMetadataRegistry", () => {
       expect(registry.has("test-component")).toBe(true);
     });
 
+    test("should throw if componentId is not a string", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test",
+        template: "<div></div>",
+      };
+
+      // Act & Assert
+      expect(() => registry.register(123 as any, metadata)).toThrow(
+        "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
     test("should throw if componentId is null", () => {
       // Arrange
       const metadata: ComponentMetadata = {

@@ -21,7 +21,7 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @param metadata - Component metadata to store
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if metadata is null or undefined
    * @throws Error if metadata.selector does not match componentId
@@ -34,7 +34,7 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns Component metadata or undefined if not found
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    */
   get(componentId: string): ComponentMetadata | undefined;
@@ -44,7 +44,7 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns true if metadata exists, false otherwise
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    */
   has(componentId: string): boolean;
@@ -56,7 +56,7 @@ export interface IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
    * @throws Error if patch fields have invalid runtime types

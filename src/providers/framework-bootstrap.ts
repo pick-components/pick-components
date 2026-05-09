@@ -3,7 +3,7 @@ import type { IServiceRegistry } from "./service-provider.interface.js";
 import { BrowserDomAdapter } from "../rendering/dom/browser-dom-adapter.js";
 import { SkeletonValidator } from "../rendering/skeleton/skeleton-validator.js";
 import { SkeletonRenderer } from "../rendering/skeleton/skeleton-renderer.js";
-import { ComponentMetadataRegistry } from "../core/component-metadata-registry.js";
+import { ComponentMetadataRegistry, ALLOWED_PATCH_FIELDS } from "../core/component-metadata-registry.js";
 import { ComponentInstanceRegistry } from "../core/component-instance-registry.js";
 import { DomContextHostResolver } from "../rendering/dom-context/dom-context-host-resolver.js";
 import { ExpressionParserService } from "../rendering/expression-parser/expression-parser.service.js";
@@ -69,17 +69,6 @@ export type ComponentMetadataOverrides = Record<
   string,
   Partial<ComponentMetadata>
 >;
-
-/** Fields allowed in a componentOverrides patch. */
-const ALLOWED_METADATA_PATCH_FIELDS = new Set<string>([
-  "selector",
-  "template",
-  "skeleton",
-  "errorTemplate",
-  "styles",
-  "initializer",
-  "lifecycle",
-]);
 
 /**
  * Configuration options for `bootstrapFramework`.
@@ -360,7 +349,7 @@ export async function bootstrapFramework(
       }
 
       for (const key of Object.keys(metadataPatch)) {
-        if (!ALLOWED_METADATA_PATCH_FIELDS.has(key)) {
+        if (!ALLOWED_PATCH_FIELDS.has(key)) {
           throw new Error(
             `[bootstrapFramework] componentOverrides for '${componentId}' contains unsupported field '${key}'.`,
           );

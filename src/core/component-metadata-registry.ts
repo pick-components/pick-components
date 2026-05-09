@@ -35,20 +35,22 @@ export type { ComponentMetadata };
  * registry.clear();
  * ```
  */
+/** Fields that may be patched on a registered component's metadata. */
+export const ALLOWED_PATCH_FIELDS = new Set<string>([
+  "selector",
+  "template",
+  "skeleton",
+  "errorTemplate",
+  "styles",
+  "initializer",
+  "lifecycle",
+]);
+
 export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   private readonly metadata = new Map<string, ComponentMetadata>();
-  private static readonly ALLOWED_PATCH_FIELDS = new Set<string>([
-    "selector",
-    "template",
-    "skeleton",
-    "errorTemplate",
-    "styles",
-    "initializer",
-    "lifecycle",
-  ]);
 
   private validateComponentId(componentId: string): void {
-    if (!componentId || componentId.trim().length === 0) {
+    if (typeof componentId !== "string" || componentId.trim().length === 0) {
       throw new Error("ComponentId is required and cannot be empty or whitespace");
     }
 
@@ -62,7 +64,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
     componentId: string,
   ): void {
     for (const key of Object.keys(patch)) {
-      if (!ComponentMetadataRegistry.ALLOWED_PATCH_FIELDS.has(key)) {
+      if (!ALLOWED_PATCH_FIELDS.has(key)) {
         throw new Error(`Patch contains unsupported field '${key}'`);
       }
     }
