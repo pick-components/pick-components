@@ -7,6 +7,17 @@ import { isPlainObject } from "../utils/is-plain-object.js";
  */
 export type { ComponentMetadata };
 
+/** Fields that may be patched on a registered component's metadata. */
+const ALLOWED_PATCH_FIELDS: ReadonlySet<string> = new Set<string>([
+  "selector",
+  "template",
+  "skeleton",
+  "errorTemplate",
+  "styles",
+  "initializer",
+  "lifecycle",
+]);
+
 /**
  * Implements the responsibility of storing and retrieving component metadata.
  *
@@ -35,17 +46,6 @@ export type { ComponentMetadata };
  * registry.clear();
  * ```
  */
-/** Fields that may be patched on a registered component's metadata. */
-export const ALLOWED_PATCH_FIELDS: ReadonlySet<string> = new Set<string>([
-  "selector",
-  "template",
-  "skeleton",
-  "errorTemplate",
-  "styles",
-  "initializer",
-  "lifecycle",
-]);
-
 export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   private readonly metadata = new Map<string, ComponentMetadata>();
 
@@ -103,7 +103,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @param metadata - Component metadata
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if metadata is null or undefined
    * @throws Error if metadata.selector does not match componentId
@@ -139,7 +139,8 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns Component metadata or undefined if not found
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    *
    * @example
    * ```typescript
@@ -159,7 +160,8 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns true if metadata exists, false otherwise
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    *
    * @example
    * ```typescript
@@ -180,9 +182,9 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to validate
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
    * @throws Error if componentId contains leading or trailing whitespace
-   * @throws Error if patch is not a plain object
+   * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
    * @throws Error if patch fields have invalid runtime types
    * @throws Error if patch.selector is defined and does not match componentId
    *
@@ -206,7 +208,8 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
-   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
    * @throws Error if patch fields have invalid runtime types
    * @throws Error if patch.selector is defined and does not match componentId

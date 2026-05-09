@@ -35,12 +35,22 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Detected version: $VERSION"
 
+      - name: Validate version matches package.json
+        if: steps.version.outputs.has_version == 'true'
+        run: |
+          PKG_VERSION=$(jq -r '.version' package.json)
+          if [ "$PKG_VERSION" != "${{ steps.version.outputs.version }}" ]; then
+            echo "Version mismatch: CHANGELOG has ${{ steps.version.outputs.version }} but package.json has $PKG_VERSION"
+            exit 1
+          fi
+          echo "Version match confirmed: $PKG_VERSION"
+
       - name: Check if tag already exists
         if: steps.version.outputs.has_version == 'true'
         id: check_tag
         run: |
           git fetch --tags
-          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+          if git show-ref --tags --verify --quiet "refs/tags/v${{ steps.version.outputs.version }}"; then
             echo "tag_exists=true" >> $GITHUB_OUTPUT
             echo "Tag v${{ steps.version.outputs.version }} already exists"
           else

@@ -326,13 +326,14 @@ export async function bootstrapFramework(
     (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
   const overrideEntries = Object.entries(componentOverrides);
 
-  if (overrideEntries.length > 0) {
-    const metadataRegistry = registry.get<IComponentMetadataRegistry>(
-      "IComponentMetadataRegistry",
-    );
+  const metadataRegistry =
+    overrideEntries.length > 0
+      ? registry.get<IComponentMetadataRegistry>("IComponentMetadataRegistry")
+      : null;
 
+  if (metadataRegistry !== null) {
     for (const [componentId, metadataPatch] of overrideEntries) {
-      if (!componentId || componentId.trim().length === 0) {
+      if (componentId.trim().length === 0) {
         throw new Error(
           "[bootstrapFramework] componentOverrides contains an empty selector key.",
         );
@@ -389,10 +390,7 @@ export async function bootstrapFramework(
   }
 
   // Apply componentOverrides
-  if (overrideEntries.length > 0) {
-    const metadataRegistry = registry.get<IComponentMetadataRegistry>(
-      "IComponentMetadataRegistry",
-    );
+  if (metadataRegistry !== null) {
     for (const [componentId, metadataPatch] of overrideEntries) {
       metadataRegistry.patch(componentId, metadataPatch);
     }
