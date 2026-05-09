@@ -386,7 +386,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides for 'pick-dialog' must be a plain object.",
+      "Patch must be a plain object",
     );
   });
 
@@ -413,7 +413,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides for 'pick-dialog' must be a plain object.",
+      "Patch must be a plain object",
     );
   });
 
@@ -529,7 +529,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides for 'pick-dialog' contains unsupported field 'foo'.",
+      "Patch contains unsupported field 'foo'",
     );
   });
 
@@ -598,6 +598,45 @@ test.describe("bootstrapFramework", () => {
       ),
     ).rejects.toThrow(
       "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+    );
+  });
+
+  test("should not apply any patch when a later override has an invalid field type", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+    metadataRegistry.register("pick-alert", {
+      selector: "pick-alert",
+      template: "<div>Default alert</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              template: "<div>Custom dialog</div>",
+            },
+            "pick-alert": {
+              template: 123 as any,
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow("Patch template must be a string when provided");
+
+    // Assert: first override must not have been applied (atomicity)
+    expect(metadataRegistry.get("pick-dialog")?.template).toBe(
+      "<div>Default dialog</div>",
     );
   });
 });

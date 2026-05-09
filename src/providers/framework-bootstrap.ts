@@ -3,7 +3,7 @@ import type { IServiceRegistry } from "./service-provider.interface.js";
 import { BrowserDomAdapter } from "../rendering/dom/browser-dom-adapter.js";
 import { SkeletonValidator } from "../rendering/skeleton/skeleton-validator.js";
 import { SkeletonRenderer } from "../rendering/skeleton/skeleton-renderer.js";
-import { ComponentMetadataRegistry, ALLOWED_PATCH_FIELDS } from "../core/component-metadata-registry.js";
+import { ComponentMetadataRegistry } from "../core/component-metadata-registry.js";
 import { ComponentInstanceRegistry } from "../core/component-instance-registry.js";
 import { DomContextHostResolver } from "../rendering/dom-context/dom-context-host-resolver.js";
 import { ExpressionParserService } from "../rendering/expression-parser/expression-parser.service.js";
@@ -87,10 +87,12 @@ export interface BootstrapOptions {
    * This enables consumers to override template/styles/lifecycle/initializer
    * of components already present in `IComponentMetadataRegistry`.
    *
-   * For decorator-based components, import component modules (so metadata is
-   * registered) before calling `bootstrapFramework(registry, {}, { componentOverrides })`.
-   * A common pattern is: bootstrap services, import components, then call
-   * `bootstrapFramework` again with overrides before first mount.
+   * Component metadata must already be registered before `bootstrapFramework`
+   * processes `componentOverrides`. Recommended order: call `bootstrapFramework`
+   * once to register framework services, import component modules so decorators
+   * register their metadata, then call `bootstrapFramework` a second time with
+   * only `componentOverrides` before the first mount. Alternatively, call
+   * `registry.get('IComponentMetadataRegistry').patch(id, patch)` directly.
    */
   readonly componentOverrides?: ComponentMetadataOverrides;
 }
@@ -342,19 +344,7 @@ export async function bootstrapFramework(
         );
       }
 
-      if (!isPlainObject(metadataPatch)) {
-        throw new Error(
-          `[bootstrapFramework] componentOverrides for '${componentId}' must be a plain object.`,
-        );
-      }
-
-      for (const key of Object.keys(metadataPatch)) {
-        if (!ALLOWED_PATCH_FIELDS.has(key)) {
-          throw new Error(
-            `[bootstrapFramework] componentOverrides for '${componentId}' contains unsupported field '${key}'.`,
-          );
-        }
-      }
+      metadataRegistry.validatePatch(componentId, metadataPatch);
 
       if (!metadataRegistry.has(componentId)) {
         throw new Error(

@@ -440,4 +440,54 @@ test.describe("ComponentMetadataRegistry", () => {
       ).toThrow("Patch selector must match componentId");
     });
   });
+
+  test.describe("validatePatch()", () => {
+    test("should not throw for a valid patch", () => {
+      // Arrange
+      registry.register("test-component", {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      });
+
+      // Act & Assert
+      expect(() =>
+        registry.validatePatch("test-component", { template: "<div>New</div>" }),
+      ).not.toThrow();
+    });
+
+    test("should not mutate the registry", () => {
+      // Arrange
+      registry.register("test-component", {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      });
+
+      // Act
+      registry.validatePatch("test-component", { template: "<div>New</div>" });
+
+      // Assert
+      expect(registry.get("test-component")?.template).toBe("<div>Original</div>");
+    });
+
+    test("should throw if patch has unsupported field", () => {
+      // Act & Assert
+      expect(() =>
+        registry.validatePatch("test-component", { foo: "bar" } as any),
+      ).toThrow("Patch contains unsupported field 'foo'");
+    });
+
+    test("should throw if patch template is not a string", () => {
+      // Act & Assert
+      expect(() =>
+        registry.validatePatch("test-component", { template: 123 as any }),
+      ).toThrow("Patch template must be a string when provided");
+    });
+
+    test("should throw if componentId is invalid", () => {
+      // Act & Assert
+      expect(() =>
+        registry.validatePatch("", { template: "<div></div>" }),
+      ).toThrow("ComponentId is required and cannot be empty or whitespace");
+    });
+  });
 });

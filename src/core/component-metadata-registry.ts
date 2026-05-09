@@ -174,6 +174,32 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
   }
 
   /**
+   * Validates a patch against component metadata without applying it.
+   * Performs all the same validation as patch(), but does not mutate the registry.
+   * Use this to pre-validate multiple patches before applying them atomically.
+   *
+   * @param componentId - Component selector (tag name)
+   * @param patch - Partial metadata to validate
+   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
+   * @throws Error if patch is not a plain object
+   * @throws Error if patch fields have invalid runtime types
+   * @throws Error if patch.selector is defined and does not match componentId
+   *
+   * @example
+   * ```typescript
+   * registry.validatePatch('my-counter', { template: '<div>{{count}}</div>' });
+   * ```
+   */
+  validatePatch(componentId: string, patch: Partial<ComponentMetadata>): void {
+    this.validateComponentId(componentId);
+    if (!isPlainObject(patch)) {
+      throw new Error("Patch must be a plain object");
+    }
+    this.validatePatchFields(patch, componentId);
+  }
+
+  /**
    * Applies a shallow patch over existing component metadata.
    * If the component is not registered, this operation is a no-op after input validation.
    *
@@ -193,11 +219,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * ```
    */
   patch(componentId: string, patch: Partial<ComponentMetadata>): void {
-    this.validateComponentId(componentId);
-    if (!isPlainObject(patch)) {
-      throw new Error("Patch must be a plain object");
-    }
-    this.validatePatchFields(patch, componentId);
+    this.validatePatch(componentId, patch);
 
     const currentMetadata = this.metadata.get(componentId);
     if (!currentMetadata) {

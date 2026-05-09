@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `.github/release.yml` to standardize automatic GitHub Release Notes categories.
 
 ### Changed
-- `bootstrapFramework` now validates `componentOverrides` atomically before applying patches.
-- `componentOverrides` now fail fast when a selector does not exist.
-- `componentOverrides` now fail fast when `patch.selector` does not match the override key.
+- `bootstrapFramework` now validates all `componentOverrides` entries atomically before applying any patch.
+- `componentOverrides` now reject unknown selectors during pre-validation.
+- `componentOverrides` now validate that `patch.selector`, when provided, matches the override key during pre-validation.
 - Updated repository and playground links from the old `janmbaco` namespace to `pick-components/pick-components`.
 
 ### Fixed
