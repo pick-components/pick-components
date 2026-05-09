@@ -18,10 +18,12 @@ function requireBuildArtifact(path: string): void {
 function build(label: string, command: string): void {
   console.log(`\n  ▶ Building ${label}…`);
   try {
-    execSync(command, { cwd: repositoryRoot, stdio: "pipe" });
+    execSync(command, { cwd: repositoryRoot, stdio: "pipe", maxBuffer: 10 * 1024 * 1024 });
   } catch (error) {
-    const stderr = (error as NodeJS.ErrnoException & { stderr?: Buffer }).stderr?.toString() ?? "";
-    const stdout = (error as NodeJS.ErrnoException & { stdout?: Buffer }).stdout?.toString() ?? "";
+    type ExecError = NodeJS.ErrnoException & { stderr?: Buffer; stdout?: Buffer };
+    const err = error as ExecError;
+    const stderr = err.stderr?.toString() ?? "";
+    const stdout = err.stdout?.toString() ?? "";
     throw new Error(`Build failed: ${label}\n${stdout}\n${stderr}`);
   }
 }

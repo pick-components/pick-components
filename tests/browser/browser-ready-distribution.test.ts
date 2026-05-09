@@ -26,6 +26,7 @@ test.describe("Browser-ready distribution", () => {
   });
 
   test.afterAll(async () => {
+    if (!server) return;
     // Act
     await new Promise<void>((resolve, reject) => {
       server.close((error) => {
