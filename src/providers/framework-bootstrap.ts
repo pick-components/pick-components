@@ -489,6 +489,10 @@ export async function bootstrapFramework(
       } else if (def.kind === ComponentKind.Pick) {
         class PickBase {}
         Pick(def.selector, def.setup, registry)(PickBase as Parameters<ClassDecorator>[0]);
+      } else {
+        throw new Error(
+          `[bootstrapFramework] Unknown ComponentKind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
+        );
       }
     }
   }

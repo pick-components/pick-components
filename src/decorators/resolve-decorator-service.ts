@@ -18,8 +18,8 @@ export function resolveDecoratorService<T>(
     throw new Error(
       `[${caller}] Framework services are not available. ` +
         `Call bootstrapFramework() on your service registry ` +
-        `(e.g. bootstrapFramework(Services) in the default setup) ` +
-        `before defining components that use @${caller}. Missing service: '${token}'.`,
+        `(e.g. bootstrapFramework(Services) in the default setup) before importing or defining ` +
+        `components that use @${caller}. Missing service: '${token}'.`,
     );
   }
 
