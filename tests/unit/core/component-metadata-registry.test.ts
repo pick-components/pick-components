@@ -11,48 +11,61 @@ test.describe("ComponentMetadataRegistry", () => {
 
   test.describe("register()", () => {
     test("should register component metadata", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test-component",
         template: "<div>Test</div>",
       };
 
-      // ACT
+      // Act
       registry.register("test-component", metadata);
 
-      // ASSERT
+      // Assert
       expect(registry.has("test-component")).toBe(true);
     });
 
     test("should throw if componentId is null", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test",
         template: "<div></div>",
       };
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.register(null as any, metadata)).toThrow(
-        "ComponentId is required",
+        "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
+    test("should throw if componentId is empty whitespace", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test",
+        template: "<div></div>",
+      };
+
+      // Act & Assert
+      expect(() => registry.register("   ", metadata)).toThrow(
+        "ComponentId is required and cannot be empty or whitespace",
       );
     });
 
     test("should throw if metadata is null", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.register("test", null as any)).toThrow(
         "Metadata is required",
       );
     });
 
     test("should throw if componentId is already registered", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test",
         template: "<div></div>",
       };
       registry.register("test", metadata);
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.register("test", metadata)).toThrow(
         "Component test is already registered",
       );
@@ -61,7 +74,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
   test.describe("get()", () => {
     test("should retrieve registered metadata", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test-component",
         template: "<div>Test</div>",
@@ -69,53 +82,67 @@ test.describe("ComponentMetadataRegistry", () => {
       };
       registry.register("test-component", metadata);
 
-      // ACT
+      // Act
       const result = registry.get("test-component");
 
-      // ASSERT
+      // Assert
       expect(result).toBe(metadata);
       expect(result?.template).toBe("<div>Test</div>");
       expect(result?.styles).toBe(".container { color: red; }");
     });
 
     test("should return undefined for non-existent component", () => {
-      // ACT
+      // Act
       const result = registry.get("non-existent");
 
-      // ASSERT
+      // Assert
       expect(result).toBeUndefined();
     });
 
     test("should throw if componentId is null", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.get(null as any)).toThrow(
-        "ComponentId is required",
+        "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
+    test("should throw if componentId is empty whitespace", () => {
+      // Act & Assert
+      expect(() => registry.get("   ")).toThrow(
+        "ComponentId is required and cannot be empty or whitespace",
       );
     });
   });
 
   test.describe("has()", () => {
     test("should return true for registered component", () => {
-      // ARRANGE
+      // Arrange
       const metadata: ComponentMetadata = {
         selector: "test",
         template: "<div></div>",
       };
       registry.register("test", metadata);
 
-      // ACT & ASSERT
+      // Act & Assert
       expect(registry.has("test")).toBe(true);
     });
 
     test("should return false for non-registered component", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(registry.has("non-existent")).toBe(false);
     });
 
     test("should throw if componentId is null", () => {
-      // ACT & ASSERT
+      // Act & Assert
       expect(() => registry.has(null as any)).toThrow(
-        "ComponentId is required",
+        "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
+    test("should throw if componentId is empty whitespace", () => {
+      // Act & Assert
+      expect(() => registry.has("   ")).toThrow(
+        "ComponentId is required and cannot be empty or whitespace",
       );
     });
   });
@@ -270,6 +297,54 @@ test.describe("ComponentMetadataRegistry", () => {
           template: "<div>Overridden</div>",
         }),
       ).toThrow("Patch selector must match componentId");
+    });
+
+    test("should throw if patch template is not a string", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() =>
+        registry.patch("test-component", {
+          template: 123 as any,
+        }),
+      ).toThrow("Patch template must be a string when provided");
+    });
+
+    test("should throw if patch template is undefined", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() =>
+        registry.patch("test-component", {
+          template: undefined as any,
+        }),
+      ).toThrow("Patch template must be a string when provided");
+    });
+
+    test("should throw if patch initializer is not a function", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test-component",
+        template: "<div>Original</div>",
+      };
+      registry.register("test-component", metadata);
+
+      // Act & Assert
+      expect(() =>
+        registry.patch("test-component", {
+          initializer: "invalid" as any,
+        }),
+      ).toThrow("Patch initializer must be a function when provided");
     });
 
     test("should throw if patch selector is empty string", () => {

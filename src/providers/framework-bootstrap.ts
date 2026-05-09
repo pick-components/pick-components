@@ -342,6 +342,57 @@ export async function bootstrapFramework(
         );
       }
 
+      if ("selector" in metadataPatch && typeof metadataPatch.selector !== "string") {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides selector for '${componentId}' must be a string when provided.`,
+        );
+      }
+
+      if ("template" in metadataPatch && typeof metadataPatch.template !== "string") {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides template for '${componentId}' must be a string when provided.`,
+        );
+      }
+
+      if ("skeleton" in metadataPatch && typeof metadataPatch.skeleton !== "string") {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides skeleton for '${componentId}' must be a string when provided.`,
+        );
+      }
+
+      if (
+        "errorTemplate" in metadataPatch &&
+        typeof metadataPatch.errorTemplate !== "string"
+      ) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides errorTemplate for '${componentId}' must be a string when provided.`,
+        );
+      }
+
+      if ("styles" in metadataPatch && typeof metadataPatch.styles !== "string") {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides styles for '${componentId}' must be a string when provided.`,
+        );
+      }
+
+      if (
+        "initializer" in metadataPatch &&
+        typeof metadataPatch.initializer !== "function"
+      ) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides initializer for '${componentId}' must be a function when provided.`,
+        );
+      }
+
+      if (
+        "lifecycle" in metadataPatch &&
+        typeof metadataPatch.lifecycle !== "function"
+      ) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides lifecycle for '${componentId}' must be a function when provided.`,
+        );
+      }
+
       if (!metadataRegistry.has(componentId)) {
         throw new Error(
           `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
