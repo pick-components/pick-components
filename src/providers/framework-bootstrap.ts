@@ -345,10 +345,12 @@ export async function bootstrapFramework(
       if (
         metadataPatch === null ||
         typeof metadataPatch !== "object" ||
-        Array.isArray(metadataPatch)
+        Array.isArray(metadataPatch) ||
+        (Object.getPrototypeOf(metadataPatch) !== Object.prototype &&
+          Object.getPrototypeOf(metadataPatch) !== null)
       ) {
         throw new Error(
-          `[bootstrapFramework] componentOverrides for '${componentId}' must be a non-null object.`,
+          `[bootstrapFramework] componentOverrides for '${componentId}' must be a plain object.`,
         );
       }
 

@@ -50,8 +50,8 @@ export interface IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
-   * @throws Error if componentId is null, undefined, or an empty string
-   * @throws Error if patch is not a non-null object
+   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
    * @throws Error if patch.selector is defined and does not match componentId
    */
   patch(componentId: string, patch: Partial<ComponentMetadata>): void;

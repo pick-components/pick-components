@@ -2,6 +2,24 @@ import { ComponentMetadata } from "./component-metadata.js";
 import type { IComponentMetadataRegistry } from "./component-metadata-registry.interface.js";
 
 /**
+ * Validates that a value is a plain object (prototype is Object.prototype or null).
+ *
+ * @private
+ * @param value - Value to check
+ * @returns true if value is a plain object
+ */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    (Object.getPrototypeOf(value) === Object.prototype ||
+      Object.getPrototypeOf(value) === null)
+  );
+}
+
+
+/**
  * Exports ComponentMetadata for use in test files and components
  */
 export type { ComponentMetadata };
@@ -109,8 +127,8 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * @param componentId - Component selector (tag name)
    * @param patch - Partial metadata to merge with current metadata
    * @returns void
-   * @throws Error if componentId is null, undefined, or an empty string
-   * @throws Error if patch is not a non-null object
+   * @throws Error if componentId is null, undefined, or empty whitespace
+   * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
    * @throws Error if patch.selector is defined and does not match componentId
    *
    * @example
@@ -124,13 +142,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
     if (!componentId || componentId.trim().length === 0) {
       throw new Error("ComponentId is required and cannot be empty or whitespace");
     }
-    if (
-      patch === null ||
-      typeof patch !== "object" ||
-      Array.isArray(patch) ||
-      (Object.getPrototypeOf(patch) !== Object.prototype &&
-        Object.getPrototypeOf(patch) !== null)
-    ) {
+    if (!isPlainObject(patch)) {
       throw new Error("Patch must be a plain object");
     }
     if (patch.selector !== undefined && patch.selector !== componentId) {

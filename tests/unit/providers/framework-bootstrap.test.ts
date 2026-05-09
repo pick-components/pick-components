@@ -386,7 +386,7 @@ test.describe("bootstrapFramework", () => {
         },
       ),
     ).rejects.toThrow(
-      "[bootstrapFramework] componentOverrides for 'pick-dialog' must be a non-null object.",
+      "[bootstrapFramework] componentOverrides for 'pick-dialog' must be a plain object.",
     );
   });
 
