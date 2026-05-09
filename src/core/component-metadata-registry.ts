@@ -121,9 +121,17 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
    * ```
    */
   patch(componentId: string, patch: Partial<ComponentMetadata>): void {
-    if (!componentId) throw new Error("ComponentId is required");
-    if (patch === null || typeof patch !== "object" || Array.isArray(patch)) {
-      throw new Error("Patch must be a non-null object");
+    if (!componentId || componentId.trim().length === 0) {
+      throw new Error("ComponentId is required and cannot be empty or whitespace");
+    }
+    if (
+      patch === null ||
+      typeof patch !== "object" ||
+      Array.isArray(patch) ||
+      (Object.getPrototypeOf(patch) !== Object.prototype &&
+        Object.getPrototypeOf(patch) !== null)
+    ) {
+      throw new Error("Patch must be a plain object");
     }
     if (patch.selector !== undefined && patch.selector !== componentId) {
       throw new Error("Patch selector must match componentId");

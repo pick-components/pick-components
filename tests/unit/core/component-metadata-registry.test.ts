@@ -188,7 +188,7 @@ test.describe("ComponentMetadataRegistry", () => {
     test("should throw if componentId is null", () => {
       // Act & Assert
       expect(() => registry.patch(null as any, { template: "<div></div>" })).toThrow(
-        "ComponentId is required",
+        "ComponentId is required and cannot be empty or whitespace",
       );
     });
 
@@ -202,7 +202,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() => registry.patch("test-component", null as any)).toThrow(
-        "Patch must be a non-null object",
+        "Patch must be a plain object",
       );
     });
 
@@ -216,7 +216,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() => registry.patch("test-component", "invalid" as any)).toThrow(
-        "Patch must be a non-null object",
+        "Patch must be a plain object",
       );
     });
 
@@ -230,7 +230,7 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() => registry.patch("test-component", [] as any)).toThrow(
-        "Patch must be a non-null object",
+        "Patch must be a plain object",
       );
     });
 

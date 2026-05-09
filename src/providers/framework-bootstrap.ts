@@ -87,7 +87,7 @@ export interface BootstrapOptions {
    * of components already present in `IComponentMetadataRegistry`.
    *
    * For decorator-based components, import component modules (so metadata is
-   * registered) before calling `bootstrapFramework(..., { componentOverrides })`.
+   * registered) before calling `bootstrapFramework(registry, {}, { componentOverrides })`.
    * A common pattern is: bootstrap services, import components, then call
    * `bootstrapFramework` again with overrides before first mount.
    */
