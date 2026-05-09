@@ -21,7 +21,10 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @param metadata - Component metadata to store
-   * @throws Error if componentId or metadata is null or undefined
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
+   * @throws Error if metadata is null or undefined
+   * @throws Error if metadata.selector does not match componentId
    * @throws Error if componentId is already registered
    */
   register(componentId: string, metadata: ComponentMetadata): void;
@@ -31,7 +34,8 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns Component metadata or undefined if not found
-   * @throws Error if componentId is null or undefined
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    */
   get(componentId: string): ComponentMetadata | undefined;
 
@@ -40,7 +44,38 @@ export interface IComponentMetadataRegistry {
    *
    * @param componentId - Component selector (tag name)
    * @returns true if metadata exists, false otherwise
-   * @throws Error if componentId is null or undefined
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
    */
   has(componentId: string): boolean;
+
+  /**
+   * Validates a patch against component metadata without applying it.
+   * Performs all the same validation as patch(), but does not mutate the registry.
+   * Use this to pre-validate multiple patches before applying them atomically.
+   *
+   * @param componentId - Component selector (tag name)
+   * @param patch - Partial metadata to validate
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
+   * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
+   * @throws Error if patch fields have invalid runtime types
+   * @throws Error if patch.selector is defined and does not match componentId
+   */
+  validatePatch(componentId: string, patch: Partial<ComponentMetadata>): void;
+
+  /**
+   * Applies a shallow patch over existing component metadata.
+   * If the component is not registered, this operation is a no-op after input validation.
+   *
+   * @param componentId - Component selector (tag name)
+   * @param patch - Partial metadata to merge with current metadata
+   * @returns void
+   * @throws Error if componentId is not a string, or is null, undefined, or empty whitespace
+   * @throws Error if componentId contains leading or trailing whitespace
+   * @throws Error if patch is not a plain object (prototype must be Object.prototype or null)
+   * @throws Error if patch fields have invalid runtime types
+   * @throws Error if patch.selector is defined and does not match componentId
+   */
+  patch(componentId: string, patch: Partial<ComponentMetadata>): void;
 }

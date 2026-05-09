@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { bootstrapFramework } from "../../../src/providers/framework-bootstrap.js";
+import { ComponentMetadataRegistry } from "../../../src/core/component-metadata-registry.js";
 
 /**
  * Tests for bootstrapFramework responsibility.
@@ -188,5 +189,454 @@ test.describe("bootstrapFramework", () => {
 
     // Assert
     expect(mock.get("IDomAdapter")).toBe(singletonAdapter);
+  });
+
+  test("should apply componentOverrides for registered selectors", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+      styles: ".default { color: red; }",
+    });
+
+    // Act
+    await bootstrapFramework(
+      mock as any,
+      {
+        IComponentMetadataRegistry: metadataRegistry,
+      },
+      {
+        componentOverrides: {
+          "pick-dialog": {
+            template: "<div>Custom dialog</div>",
+          },
+        },
+      },
+    );
+
+    // Assert
+    const result = metadataRegistry.get("pick-dialog");
+    expect(result?.template).toBe("<div>Custom dialog</div>");
+    expect(result?.styles).toBe(".default { color: red; }");
+  });
+
+  test("should fail fast for unknown componentOverrides selectors", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-toast": {
+              template: "<div>Custom toast</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides references unregistered selector 'pick-toast'.",
+    );
+
+    expect(metadataRegistry.get("pick-dialog")?.template).toBe(
+      "<div>Default dialog</div>",
+    );
+  });
+
+  test("should validate all componentOverrides before applying any patch", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+      styles: ".default { color: red; }",
+    });
+    metadataRegistry.register("pick-alert", {
+      selector: "pick-alert",
+      template: "<div>Default alert</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              template: "<div>Custom dialog</div>",
+            },
+            "pick-toast": {
+              template: "<div>Custom toast</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides references unregistered selector 'pick-toast'.",
+    );
+
+    expect(metadataRegistry.get("pick-dialog")?.template).toBe(
+      "<div>Default dialog</div>",
+    );
+    expect(metadataRegistry.get("pick-alert")?.template).toBe(
+      "<div>Default alert</div>",
+    );
+  });
+
+  test("should fail when componentOverrides patch selector mismatches key", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              selector: "pick-toast",
+              template: "<div>Custom dialog</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch selector must match componentId",
+    );
+
+    expect(metadataRegistry.get("pick-dialog")?.template).toBe(
+      "<div>Default dialog</div>",
+    );
+  });
+
+  test("should fail when componentOverrides patch selector is empty string", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              selector: "",
+              template: "<div>Custom dialog</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch selector must match componentId",
+    );
+  });
+
+  test("should fail when componentOverrides patch value is not a plain object", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": null as any,
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch must be a plain object",
+    );
+  });
+
+  test("should fail when componentOverrides patch value is a non-plain object", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": new Date() as any,
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch must be a plain object",
+    );
+  });
+
+  test("should fail when componentOverrides template is not a string", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              template: 123 as any,
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch template must be a string when provided",
+    );
+  });
+
+  test("should fail when componentOverrides template is undefined", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              template: undefined as any,
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch template must be a string when provided",
+    );
+  });
+
+  test("should fail when componentOverrides initializer is not a function", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              initializer: "invalid" as any,
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch initializer must be a function when provided",
+    );
+  });
+
+  test("should fail when componentOverrides patch contains unsupported field", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              foo: "bar",
+            } as any,
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "Patch contains unsupported field 'foo'",
+    );
+  });
+
+  test("should fail when componentOverrides option is not a plain object", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {},
+        {
+          componentOverrides: "invalid" as any,
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides must be a plain object when provided.",
+    );
+  });
+
+  test("should fail when componentOverrides contains an empty selector key", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "": {
+              template: "<div>Invalid</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides contains an empty selector key.",
+    );
+  });
+
+  test("should fail when componentOverrides contains whitespace-padded selector key", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            " pick-dialog ": {
+              template: "<div>Invalid</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+    );
+  });
+
+  test("should not apply any patch when a later override has an invalid field type", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+    metadataRegistry.register("pick-dialog", {
+      selector: "pick-dialog",
+      template: "<div>Default dialog</div>",
+    });
+    metadataRegistry.register("pick-alert", {
+      selector: "pick-alert",
+      template: "<div>Default alert</div>",
+    });
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            "pick-dialog": {
+              template: "<div>Custom dialog</div>",
+            },
+            "pick-alert": {
+              template: 123 as any,
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow("Patch template must be a string when provided");
+
+    // Assert: first override must not have been applied (atomicity)
+    expect(metadataRegistry.get("pick-dialog")?.template).toBe(
+      "<div>Default dialog</div>",
+    );
   });
 });

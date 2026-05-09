@@ -3,7 +3,7 @@
 > A lightweight, reactive web components framework for TypeScript and modern browser ESM.  
 > Business logic stays in services. Components are pure presentation.
 
-Try the live playground: <https://janmbaco.github.io/PickComponents/>
+Try the live playground: <https://pick-components.github.io/pick-components/>
 
 [![npm](https://img.shields.io/npm/v/pick-components)](https://www.npmjs.com/package/pick-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -91,13 +91,13 @@ For this mode, use the browser-ready artifacts prepared for GitHub Releases rath
 
 Release assets are published here:
 
-- `https://github.com/janmbaco/pickcomponents/releases`
-- `https://github.com/janmbaco/pickcomponents/releases/tag/v<version>`
+- `https://github.com/pick-components/pick-components/releases`
+- `https://github.com/pick-components/pick-components/releases/tag/v<version>`
 
 Direct asset URLs follow this pattern:
 
-- `https://github.com/janmbaco/pickcomponents/releases/download/v<version>/pick-components.js`
-- `https://github.com/janmbaco/pickcomponents/releases/download/v<version>/pick-components-bootstrap.js`
+- `https://github.com/pick-components/pick-components/releases/download/v<version>/pick-components.js`
+- `https://github.com/pick-components/pick-components/releases/download/v<version>/pick-components-bootstrap.js`
 
 Recommended flow:
 
@@ -461,7 +461,7 @@ class ModeSelectorLifecycle extends PickLifecycleManager<ModeSelector> {
 
 The project ships with 15 interactive examples that run in the browser via a TypeScript playground with live preview. Each example has an editable code panel (CodeMirror) and an iframe sandbox that re-transpiles and re-executes on every change.
 
-Try it online: <https://janmbaco.github.io/PickComponents/>
+Try it online: <https://pick-components.github.io/pick-components/>
 
 ### Running the playground
 
@@ -523,6 +523,7 @@ docker run -p 8080:8080 pick-components
 | [docs/RENDERING-ARCHITECTURE.md](docs/RENDERING-ARCHITECTURE.md)             | Rendering pipeline overview                                  |
 | [docs/RENDERING-ARCHITECTURE.es.md](docs/RENDERING-ARCHITECTURE.es.md)       | Vista general de la arquitectura de renderizado               |
 | [docs/templates.md](docs/templates.md)                                       | Template system reference                                    |
+| [CHANGELOG.md](CHANGELOG.md)                                                 | Release history and notable changes                          |
 
 ---
 

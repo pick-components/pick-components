@@ -131,11 +131,11 @@ Create new `.md` files in `.github/skills/setup-pick-components/`
 
 ## Resources
 
-- [Pick Components GitHub](https://github.com/janmbaco/PickComponents)
+- [Pick Components GitHub](https://github.com/pick-components/pick-components)
 - [Framework Documentation](../../../docs/)
-- [Live Playground](https://janmbaco.github.io/PickComponents/)
+- [Live Playground](https://pick-components.github.io/pick-components/)
 - [npm Package](https://www.npmjs.com/package/pick-components)
 
 ---
 
-**Questions?** Check the [Pick Components Issues](https://github.com/janmbaco/PickComponents/issues) or contribute improvements.
+**Questions?** Check the [Pick Components Issues](https://github.com/pick-components/pick-components/issues) or contribute improvements.

@@ -35,6 +35,9 @@ import { WeakRefObjectRegistry } from "../utils/object-registry.js";
 import { BrowserNavigationService } from "../components/pick-router/navigation.js";
 import { SharedStylesRegistry } from "../rendering/styles/shared-styles-registry.js";
 import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
+import { isPlainObject } from "../utils/is-plain-object.js";
+import type { ComponentMetadata } from "../core/component-metadata.js";
+import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
 
 /**
  * Map of service token overrides.
@@ -56,6 +59,18 @@ export type FrameworkOverrides = Record<string, (() => unknown) | unknown>;
 export type DecoratorMode = "strict" | "auto";
 
 /**
+ * Component metadata overrides applied during framework bootstrap.
+ *
+ * @description
+ * Each key is a component selector and each value is a shallow patch merged
+ * over the metadata previously registered by decorators.
+ */
+export type ComponentMetadataOverrides = Record<
+  string,
+  Partial<ComponentMetadata>
+>;
+
+/**
  * Configuration options for `bootstrapFramework`.
  */
 export interface BootstrapOptions {
@@ -64,6 +79,23 @@ export interface BootstrapOptions {
    * Defaults to `'auto'` (TC39 Stage 3 and `experimentalDecorators`).
    */
   readonly decorators?: DecoratorMode;
+
+  /**
+   * Optional shallow metadata patches applied by component selector.
+   *
+   * @description
+   * This enables consumers to override `template`, `styles`, `lifecycle`,
+   * `initializer`, `skeleton`, and `errorTemplate` of components already
+   * present in `IComponentMetadataRegistry`.
+   *
+   * Component metadata must already be registered before `bootstrapFramework`
+   * processes `componentOverrides`. Recommended order: call `bootstrapFramework`
+   * once to register framework services, import component modules so decorators
+   * register their metadata, then call `bootstrapFramework` a second time with
+   * only `componentOverrides` before the first mount. Alternatively, call
+   * `registry.get('IComponentMetadataRegistry').patch(id, patch)` directly.
+   */
+  readonly componentOverrides?: ComponentMetadataOverrides;
 }
 
 /**
@@ -102,6 +134,13 @@ export async function bootstrapFramework(
   if (!registry) throw new Error("Service registry is required");
 
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
+  const rawComponentOverrides = options.componentOverrides;
+
+  if (rawComponentOverrides !== undefined && !isPlainObject(rawComponentOverrides)) {
+    throw new Error(
+      "[bootstrapFramework] componentOverrides must be a plain object when provided.",
+    );
+  }
 
   const register = <T>(token: string, defaultFactory: () => T): void => {
     if (token in overrides) {
@@ -283,6 +322,40 @@ export async function bootstrapFramework(
       new PickElementRegistrar(registry, registry.get("IPickElementFactory")),
   );
 
+  // Apply componentOverrides: validate all entries first, then patch (atomic)
+  const componentOverrides =
+    (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
+  const overrideEntries = Object.entries(componentOverrides);
+
+  const metadataRegistry =
+    overrideEntries.length > 0
+      ? registry.get<IComponentMetadataRegistry>("IComponentMetadataRegistry")
+      : null;
+
+  if (metadataRegistry !== null) {
+    for (const [componentId, metadataPatch] of overrideEntries) {
+      if (componentId.trim().length === 0) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides contains an empty selector key.",
+        );
+      }
+
+      if (componentId !== componentId.trim()) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+        );
+      }
+
+      metadataRegistry.validatePatch(componentId, metadataPatch);
+
+      if (!metadataRegistry.has(componentId)) {
+        throw new Error(
+          `[bootstrapFramework] componentOverrides references unregistered selector '${componentId}'.`,
+        );
+      }
+    }
+  }
+
   // Framework custom elements (dynamic imports avoid HTMLElement in Node)
   if (typeof customElements !== "undefined") {
     const [
@@ -314,6 +387,13 @@ export async function bootstrapFramework(
 
     if (!customElements.get("pick-select")) {
       customElements.define("pick-select", PickSelectElement);
+    }
+  }
+
+  // Apply componentOverrides
+  if (metadataRegistry !== null) {
+    for (const [componentId, metadataPatch] of overrideEntries) {
+      metadataRegistry.patch(componentId, metadataPatch);
     }
   }
 }

@@ -13,7 +13,12 @@ export {
 } from "./providers/service-provider.js";
 export type { ServiceToken } from "./providers/service-provider.interface.js";
 export { bootstrapFramework } from "./providers/framework-bootstrap.js";
-export type { FrameworkOverrides } from "./providers/framework-bootstrap.js";
+export type {
+  FrameworkOverrides,
+  BootstrapOptions,
+  DecoratorMode,
+  ComponentMetadataOverrides,
+} from "./providers/framework-bootstrap.js";
 export { IntentSignal, StateSignal } from "./reactive/signal.js";
 export type {
   IIntentSignal,
