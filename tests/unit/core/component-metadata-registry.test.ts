@@ -50,6 +50,19 @@ test.describe("ComponentMetadataRegistry", () => {
       );
     });
 
+    test("should throw if componentId has leading or trailing whitespace", () => {
+      // Arrange
+      const metadata: ComponentMetadata = {
+        selector: "test",
+        template: "<div></div>",
+      };
+
+      // Act & Assert
+      expect(() => registry.register(" test ", metadata)).toThrow(
+        "ComponentId cannot contain leading or trailing whitespace",
+      );
+    });
+
     test("should throw if metadata is null", () => {
       // Act & Assert
       expect(() => registry.register("test", null as any)).toThrow(
@@ -112,6 +125,13 @@ test.describe("ComponentMetadataRegistry", () => {
         "ComponentId is required and cannot be empty or whitespace",
       );
     });
+
+    test("should throw if componentId has leading or trailing whitespace", () => {
+      // Act & Assert
+      expect(() => registry.get(" test ")).toThrow(
+        "ComponentId cannot contain leading or trailing whitespace",
+      );
+    });
   });
 
   test.describe("has()", () => {
@@ -143,6 +163,13 @@ test.describe("ComponentMetadataRegistry", () => {
       // Act & Assert
       expect(() => registry.has("   ")).toThrow(
         "ComponentId is required and cannot be empty or whitespace",
+      );
+    });
+
+    test("should throw if componentId has leading or trailing whitespace", () => {
+      // Act & Assert
+      expect(() => registry.has(" test ")).toThrow(
+        "ComponentId cannot contain leading or trailing whitespace",
       );
     });
   });
@@ -224,6 +251,13 @@ test.describe("ComponentMetadataRegistry", () => {
       expect(() => registry.patch("   ", { template: "<div></div>" })).toThrow(
         "ComponentId is required and cannot be empty or whitespace",
       );
+    });
+
+    test("should throw if componentId has leading or trailing whitespace", () => {
+      // Act & Assert
+      expect(() =>
+        registry.patch(" test ", { template: "<div></div>" }),
+      ).toThrow("ComponentId cannot contain leading or trailing whitespace");
     });
 
     test("should throw if patch is null", () => {

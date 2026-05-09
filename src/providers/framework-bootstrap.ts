@@ -70,6 +70,17 @@ export type ComponentMetadataOverrides = Record<
   Partial<ComponentMetadata>
 >;
 
+/** Fields allowed in a componentOverrides patch. */
+const ALLOWED_METADATA_PATCH_FIELDS = new Set<string>([
+  "selector",
+  "template",
+  "skeleton",
+  "errorTemplate",
+  "styles",
+  "initializer",
+  "lifecycle",
+]);
+
 /**
  * Configuration options for `bootstrapFramework`.
  */
@@ -319,19 +330,10 @@ export async function bootstrapFramework(
       new PickElementRegistrar(registry, registry.get("IPickElementFactory")),
   );
 
-  // Validate componentOverrides early (before side effects)
+  // Apply componentOverrides: validate all entries first, then patch (atomic)
   const componentOverrides =
     (rawComponentOverrides as ComponentMetadataOverrides | undefined) ?? {};
   const overrideEntries = Object.entries(componentOverrides);
-  const allowedMetadataPatchFields = new Set<string>([
-    "selector",
-    "template",
-    "skeleton",
-    "errorTemplate",
-    "styles",
-    "initializer",
-    "lifecycle",
-  ]);
 
   if (overrideEntries.length > 0) {
     const metadataRegistry = registry.get<IComponentMetadataRegistry>(
@@ -345,6 +347,12 @@ export async function bootstrapFramework(
         );
       }
 
+      if (componentId !== componentId.trim()) {
+        throw new Error(
+          "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+        );
+      }
+
       if (!isPlainObject(metadataPatch)) {
         throw new Error(
           `[bootstrapFramework] componentOverrides for '${componentId}' must be a plain object.`,
@@ -352,7 +360,7 @@ export async function bootstrapFramework(
       }
 
       for (const key of Object.keys(metadataPatch)) {
-        if (!allowedMetadataPatchFields.has(key)) {
+        if (!ALLOWED_METADATA_PATCH_FIELDS.has(key)) {
           throw new Error(
             `[bootstrapFramework] componentOverrides for '${componentId}' contains unsupported field '${key}'.`,
           );

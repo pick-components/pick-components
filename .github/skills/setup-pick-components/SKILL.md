@@ -76,7 +76,7 @@ With this skill in the repository:
 These templates align with [Pick Components framework](https://github.com/pick-components/pick-components):
 - **Component patterns**: See [src/components/](../../../src/components/) examples
 - **DI architecture**: See [docs/DEPENDENCY-INJECTION.md](../../../docs/DEPENDENCY-INJECTION.md)
-- **Testing rules**: See [.github/instructions/testing.instructions.md](../instructions/testing.instructions.md)
+- **Testing rules**: See [.github/instructions/testing.instructions.md](../../instructions/testing.instructions.md)
 - **Rendering internals**: See [docs/RENDERING-ARCHITECTURE.md](../../../docs/RENDERING-ARCHITECTURE.md)
 
 ## Next Steps After Setup

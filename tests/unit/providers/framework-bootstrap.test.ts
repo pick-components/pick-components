@@ -575,4 +575,29 @@ test.describe("bootstrapFramework", () => {
       "[bootstrapFramework] componentOverrides contains an empty selector key.",
     );
   });
+
+  test("should fail when componentOverrides contains whitespace-padded selector key", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+    const metadataRegistry = new ComponentMetadataRegistry();
+
+    // Act & Assert
+    await expect(
+      bootstrapFramework(
+        mock as any,
+        {
+          IComponentMetadataRegistry: metadataRegistry,
+        },
+        {
+          componentOverrides: {
+            " pick-dialog ": {
+              template: "<div>Invalid</div>",
+            },
+          },
+        },
+      ),
+    ).rejects.toThrow(
+      "[bootstrapFramework] componentOverrides selector keys cannot contain leading or trailing whitespace.",
+    );
+  });
 });

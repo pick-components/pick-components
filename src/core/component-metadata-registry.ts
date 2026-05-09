@@ -51,6 +51,10 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
     if (!componentId || componentId.trim().length === 0) {
       throw new Error("ComponentId is required and cannot be empty or whitespace");
     }
+
+    if (componentId !== componentId.trim()) {
+      throw new Error("ComponentId cannot contain leading or trailing whitespace");
+    }
   }
 
   private validatePatchFields(
