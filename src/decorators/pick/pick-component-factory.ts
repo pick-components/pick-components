@@ -5,7 +5,6 @@ import { PickInitializer } from "../../behaviors/pick-initializer.js";
 import { PickLifecycleManager } from "../../behaviors/pick-lifecycle-manager.js";
 import { IntentSignal } from "../../reactive/signal.js";
 import type { IListenerMetadataRegistry } from "../listen/listener-metadata-registry.interface.js";
-import { Services } from "../../providers/service-provider.js";
 import type {
   DependencyBag,
   DependencyBagFactory,
@@ -30,6 +29,19 @@ let activeComputedTracker: Set<string> | null = null;
  * `bootstrapFramework`, so the `@Pick` decorator never references concrete construction directly.
  */
 export class DefaultPickComponentFactory implements IPickComponentFactory {
+  private readonly listenerMetadataRegistry: IListenerMetadataRegistry;
+
+  /**
+   * Initializes a new instance of DefaultPickComponentFactory.
+   *
+   * @param listenerMetadataRegistry - Registry for recording listener metadata on enhanced classes
+   * @throws Error if listenerMetadataRegistry is null or undefined
+   */
+  constructor(listenerMetadataRegistry: IListenerMetadataRegistry) {
+    if (!listenerMetadataRegistry) throw new Error("listenerMetadataRegistry is required");
+    this.listenerMetadataRegistry = listenerMetadataRegistry;
+  }
+
   /**
    * Resolves dependencies from a factory, returning a shallow copy or empty object if no factory provided.
    *
@@ -308,9 +320,7 @@ export class DefaultPickComponentFactory implements IPickComponentFactory {
         (Enhanced.prototype as unknown as Record<string, unknown>)[key] = (
           config.methods as Record<string, unknown>
         )[key];
-        Services.get<IListenerMetadataRegistry>(
-          "IListenerMetadataRegistry",
-        ).register(Enhanced.prototype, {
+        this.listenerMetadataRegistry.register(Enhanced.prototype, {
           methodName: key,
           eventName: key,
           selector: null,
@@ -326,9 +336,7 @@ export class DefaultPickComponentFactory implements IPickComponentFactory {
           writable: true,
           configurable: true,
         });
-        Services.get<IListenerMetadataRegistry>(
-          "IListenerMetadataRegistry",
-        ).register(Enhanced.prototype, {
+        this.listenerMetadataRegistry.register(Enhanced.prototype, {
           methodName,
           eventName: listener.eventName,
           selector: listener.selector,

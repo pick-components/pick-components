@@ -1,7 +1,7 @@
 import type { ComponentConfig } from "./pick-render.decorator.js";
 import type { PickComponent } from "../core/pick-component.js";
-import { ComponentKind } from "../providers/framework-bootstrap.js";
-import type { ComponentDefinition } from "../providers/framework-bootstrap.js";
+import { ComponentKind } from "./component-kind.js";
+import type { ComponentDefinition } from "./component-kind.js";
 
 /**
  * Creates a component definition descriptor for a PickComponent class.
@@ -43,6 +43,12 @@ export function defineComponent<T extends new (...args: unknown[]) => PickCompon
 ): ComponentDefinition {
   if (!Class) throw new Error("[defineComponent] Class is required");
   if (!config) throw new Error("[defineComponent] config is required");
+  if (!config.selector || config.selector.trim().length === 0) {
+    throw new Error("[defineComponent] config.selector is required and must not be empty");
+  }
+  if (config.selector !== config.selector.trim()) {
+    throw new Error("[defineComponent] config.selector must not have leading or trailing whitespace");
+  }
 
   return { kind: ComponentKind.Render, Class: Class as new (...args: unknown[]) => PickComponent, config };
 }

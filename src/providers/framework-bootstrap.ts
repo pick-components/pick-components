@@ -38,9 +38,11 @@ import { DefaultPrerenderAdoptionDecider } from "../ssr/prerender-manifest.js";
 import { isPlainObject } from "../utils/is-plain-object.js";
 import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
-import type { PickComponent } from "../core/pick-component.js";
-import type { ComponentConfig } from "../decorators/pick-render.decorator.js";
-import type { InlineContext } from "../decorators/pick/types.js";
+import { ComponentKind } from "../decorators/component-kind.js";
+import type { ComponentDefinition } from "../decorators/component-kind.js";
+
+export { ComponentKind } from "../decorators/component-kind.js";
+export type { ComponentDefinition } from "../decorators/component-kind.js";
 
 /**
  * Map of service token overrides.
@@ -72,41 +74,6 @@ export type ComponentMetadataOverrides = Record<
   string,
   Partial<ComponentMetadata>
 >;
-
-/**
- * Discriminates between the two component definition variants.
- *
- * @see {@link ComponentDefinition}
- */
-export enum ComponentKind {
-  /** Class-based component, equivalent to `@PickRender`. */
-  Render = "render",
-  /** Functional component, equivalent to `@Pick`. */
-  Pick = "pick",
-}
-
-/**
- * Descriptor for a component registered via `defineComponent` or `definePick`.
- *
- * @description
- * Produced by `defineComponent` and `definePick` when called before
- * `bootstrapFramework`. Pass descriptors through the `components` option to
- * let the framework register them once services are available.
- *
- * @see {@link defineComponent}
- * @see {@link definePick}
- */
-export type ComponentDefinition =
-  | {
-      readonly kind: typeof ComponentKind.Render;
-      readonly Class: new (...args: unknown[]) => PickComponent;
-      readonly config: ComponentConfig;
-    }
-  | {
-      readonly kind: typeof ComponentKind.Pick;
-      readonly selector: string;
-      readonly setup: (ctx: InlineContext) => void;
-    };
 
 /**
  * Configuration options for `bootstrapFramework`.
@@ -370,7 +337,11 @@ export async function bootstrapFramework(
   );
 
   // Pick Component class factory (@Pick decorator)
-  register("IPickComponentFactory", () => new DefaultPickComponentFactory());
+  register("IPickComponentFactory", () =>
+    new DefaultPickComponentFactory(
+      registry.get("IListenerMetadataRegistry"),
+    ),
+  );
 
   // Listener metadata registry (@Listen decorator)
   register(
@@ -433,6 +404,46 @@ export async function bootstrapFramework(
 
   // Register component definitions (defineComponent / definePick)
   if (componentDefinitions.length > 0) {
+    // Validate all entries upfront before any registration
+    for (let i = 0; i < componentDefinitions.length; i++) {
+      const def = componentDefinitions[i];
+
+      if (def.kind !== ComponentKind.Render && def.kind !== ComponentKind.Pick) {
+        throw new Error(
+          `[bootstrapFramework] components[${i}]: unknown kind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
+        );
+      }
+
+      if (def.kind === ComponentKind.Render) {
+        if (!def.config) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config is required for kind '${ComponentKind.Render}'.`);
+        }
+        const selector = def.config.selector;
+        if (!selector || selector.trim().length === 0) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config.selector is required and must not be empty.`);
+        }
+        if (selector !== selector.trim()) {
+          throw new Error(`[bootstrapFramework] components[${i}]: config.selector must not have leading or trailing whitespace.`);
+        }
+        if (!def.Class || typeof def.Class !== "function") {
+          throw new Error(`[bootstrapFramework] components[${i}]: Class must be a constructor function.`);
+        }
+      }
+
+      if (def.kind === ComponentKind.Pick) {
+        const selector = def.selector;
+        if (!selector || selector.trim().length === 0) {
+          throw new Error(`[bootstrapFramework] components[${i}]: selector is required and must not be empty.`);
+        }
+        if (selector !== selector.trim()) {
+          throw new Error(`[bootstrapFramework] components[${i}]: selector must not have leading or trailing whitespace.`);
+        }
+        if (!def.setup || typeof def.setup !== "function") {
+          throw new Error(`[bootstrapFramework] components[${i}]: setup must be a function.`);
+        }
+      }
+    }
+
     const [{ PickRender }, { Pick }] = await Promise.all([
       import("../decorators/pick-render.decorator.js"),
       import("../decorators/pick.decorator.js"),
@@ -444,10 +455,6 @@ export async function bootstrapFramework(
       } else if (def.kind === ComponentKind.Pick) {
         class PickBase {}
         Pick(def.selector, def.setup, registry)(PickBase as Parameters<ClassDecorator>[0]);
-      } else {
-        throw new Error(
-          `[bootstrapFramework] Unknown ComponentKind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
-        );
       }
     }
   }

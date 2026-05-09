@@ -27,8 +27,9 @@ test.describe("Decorator bootstrap order", () => {
     // Act & Assert
     expect(defineComponent).toThrow(
       "[PickRender] Framework services are not available. " +
-        "Call bootstrapFramework(Services) before importing or defining components " +
-        "that use @PickRender. Missing service: 'IComponentMetadataRegistry'.",
+        "Call bootstrapFramework() on your service registry " +
+        "(e.g. bootstrapFramework(Services) in the default setup) " +
+        "before defining components that use @PickRender. Missing service: 'IComponentMetadataRegistry'.",
     );
   });
 
@@ -46,8 +47,9 @@ test.describe("Decorator bootstrap order", () => {
     // Act & Assert
     expect(defineComponent).toThrow(
       "[Pick] Framework services are not available. " +
-        "Call bootstrapFramework(Services) before importing or defining components " +
-        "that use @Pick. Missing service: 'IPickComponentFactory'.",
+        "Call bootstrapFramework() on your service registry " +
+        "(e.g. bootstrapFramework(Services) in the default setup) " +
+        "before defining components that use @Pick. Missing service: 'IPickComponentFactory'.",
     );
   });
 });

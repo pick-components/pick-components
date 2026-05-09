@@ -704,7 +704,7 @@ export const counterDef = definePick<{ count: number }>("my-counter", (ctx) => {
   ctx.state({ count: 0 });
 
   ctx.on({
-    increment: (state) => ({ count: state.count + 1 }),
+    increment() { this.count++; },
   });
 
   ctx.html(`

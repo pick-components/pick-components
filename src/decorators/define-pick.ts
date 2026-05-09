@@ -1,6 +1,6 @@
 import type { InlineContext } from "./pick/types.js";
-import { ComponentKind } from "../providers/framework-bootstrap.js";
-import type { ComponentDefinition } from "../providers/framework-bootstrap.js";
+import { ComponentKind } from "./component-kind.js";
+import type { ComponentDefinition } from "./component-kind.js";
 
 /**
  * Creates a component definition descriptor using a functional setup — no class, no decorators.
