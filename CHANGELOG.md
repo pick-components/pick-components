@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added `docs/GETTING-STARTED.md` and `docs/GETTING-STARTED.es.md`: step-by-step guide (project → npm → Copilot skill → first component) covering all four component APIs (`@Pick`, `definePick`, `@PickRender`, `defineComponent`).
+- Added `.github/skills/setup-pick-components/05-inline-context-api.md`: complete `ctx.*` InlineContext API reference for `@Pick` and `definePick` (`ctx.state`, `ctx.on`, `ctx.listen`, `ctx.computed`, `ctx.intent`, `ctx.lifecycle`, `ctx.initializer`, `ctx.skeleton`, `ctx.errorTemplate`, `ctx.html`, `ctx.css`, `ctx.props`, `ctx.ref`, `ctx.rules`).
+
+### Changed
+- Updated `.github/skills/setup-pick-components/SKILL.md` description with all four API names and `ctx.*` keywords for better Copilot skill discovery.
+- Updated `.github/skills/setup-pick-components/01-create-components.md` with a 4-API comparison table, `@Pick`, `definePick`, and `defineComponent` sections, `getViewActions()` patterns, and `pick-action` custom element warning.
+- Updated `docs/README.md` and `docs/README.es.md` with `GETTING-STARTED` entries.
+- Updated `README.md` Start Paths with a link to `GETTING-STARTED.md`.
+- Fixed broken `SETUP.md` link in `.github/copilot-instructions.md`.
+
 ### Fixed
+- Fixed `definePick` playground example (`18-define-pick`) where `pick-action` was used as an HTML attribute instead of a custom element wrapper; all four locale variants updated.
 - Moved brand SVG assets from `examples/.github/brand/` to `examples/brand/` so GitHub Pages serves them correctly (`.github/` paths are not exposed as HTTP routes by GitHub Pages).
 - Fixed `release.yml` workflow never triggering: `GITHUB_TOKEN`-based tag pushes do not trigger other workflows. Added `workflow_dispatch` to `release.yml` and a `gh workflow run` step in `tag-release.yml` that explicitly triggers the release after tag creation.
 
