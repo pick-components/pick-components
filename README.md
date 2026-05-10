@@ -9,6 +9,8 @@
 > A lightweight, reactive web components framework for TypeScript and modern browser ESM.  
 > Business logic stays in services. Components are pure presentation.
 
+Spanish quick entry: [README.es.md](README.es.md)
+
 Try the live playground: <https://pick-components.github.io/pick-components/>
 
 [![npm](https://img.shields.io/npm/v/pick-components)](https://www.npmjs.com/package/pick-components)

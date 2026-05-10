@@ -42,7 +42,7 @@ HTML mínimo:
 
 ```html
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <body>
     <hello-card></hello-card>
     <script type="module" src="./hello-card.js"></script>
@@ -215,7 +215,7 @@ await bootstrapFramework(Services, {}, {
 });
 ```
 
-Para la comparación profunda y guía de migración, consulta [PICK-VS-PICKRENDER.md](PICK-VS-PICKRENDER.md#using-without-decorators-definecomponent-and-definepick).
+Para la comparación profunda y guía de migración, consulta [PICK-VS-PICKRENDER.es.md](PICK-VS-PICKRENDER.es.md#sin-decoradores-definecomponent-y-definepick).
 
 ## Bootstrap
 

@@ -5,6 +5,7 @@ Esta carpeta contiene la documentación canónica de Pick Components.
 ## Primeros Pasos
 
 - [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Motivación y origen del proyecto.
+- [WHY-PICK-COMPONENTS.es.md](WHY-PICK-COMPONENTS.es.md) - Traducción al español.
 - [GETTING-STARTED.md](GETTING-STARTED.md) - Guía paso a paso: proyecto → npm → skill → primer componente (EN).
 - [GETTING-STARTED.es.md](GETTING-STARTED.es.md) - Traducción al español.
 - [USAGE-GUIDE.md](USAGE-GUIDE.md) - Guía completa (EN) de setup, bootstrap, uso y playground.

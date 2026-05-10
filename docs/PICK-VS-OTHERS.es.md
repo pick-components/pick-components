@@ -34,7 +34,7 @@ Si ya usas Lit y cubre tus necesidades, mantener Lit es una decisión totalmente
 
 ### No es Angular
 
-Angular es un framework completo de aplicación con sistema de módulos, contenedor de inyección de dependencias, detección de cambios basada en zones, CLI, compilación AOT y una estructura de proyecto opinionada.
+Angular es un framework completo de aplicación con sistema de módulos, contenedor de inyección de dependencias, detección de cambios basada en zones, CLI, compilación AOT y una estructura de proyecto muy concreta.
 
 Pick Components es un framework de componentes, no de aplicación. No tiene router más allá de `<pick-router>` para el caso simple, ni sistema de módulos, ni CLI, ni paso AOT, ni zone.js. La inyección de dependencias es explícita y factory-first — no hay contenedor que auto-descubra o auto-conecte servicios.
 

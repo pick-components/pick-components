@@ -5,6 +5,7 @@ This folder contains the canonical documentation for Pick Components.
 ## Getting Started
 
 - [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Project motivation and origin story.
+- [WHY-PICK-COMPONENTS.es.md](WHY-PICK-COMPONENTS.es.md) - Spanish translation.
 - [GETTING-STARTED.md](GETTING-STARTED.md) - Step-by-step guide: project → npm → skill → first component.
 - [GETTING-STARTED.es.md](GETTING-STARTED.es.md) - Spanish translation.
 - [USAGE-GUIDE.md](USAGE-GUIDE.md) - Full setup, bootstrap, usage examples, and playground workflow.
