@@ -55,10 +55,10 @@ try {
   console.warn("⚠️  Pico CSS not found — run npm install");
 }
 
-// Copy brand SVG assets so /.github/brand/ resolves when served from examples/
+// Copy brand SVG assets so /brand/ resolves when served from examples/
 try {
-  await cp("./.github/brand", "./examples/.github/brand", { recursive: true });
-  console.log("✅ Brand assets copied (examples/.github/brand/)");
+  await cp("./.github/brand", "./examples/brand", { recursive: true });
+  console.log("✅ Brand assets copied (examples/brand/)");
 } catch {
   console.warn("⚠️  Brand assets not found — check .github/brand/");
 }

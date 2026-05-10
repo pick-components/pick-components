@@ -35,10 +35,10 @@ import { withPlaygroundBasePath } from "../../routing/models/playground-public-p
 })
 export class PlaygroundShell extends PickComponent {
   @Reactive brandLogoDarkSrc = withPlaygroundBasePath(
-    "/.github/brand/logo-primary-color-dark.svg",
+    "/brand/logo-primary-color-dark.svg",
   );
   @Reactive brandLogoLightSrc = withPlaygroundBasePath(
-    "/.github/brand/logo-primary-color-light.svg",
+    "/brand/logo-primary-color-light.svg",
   );
   @Reactive locale = "en";
   @Reactive homePath = withPlaygroundBasePath("/en");
