@@ -60,7 +60,7 @@ Type `/setup-pick-components` in Copilot chat to set up your project with pre-co
 - Test-specific rules (AAA, mocks, naming): [.github/instructions/testing.instructions.md](instructions/testing.instructions.md)
 - Dependency injection architecture: [docs/DEPENDENCY-INJECTION.md](../docs/DEPENDENCY-INJECTION.md)
 - Rendering internals: [docs/RENDERING-ARCHITECTURE.md](../docs/RENDERING-ARCHITECTURE.md)
-- Pick vs PickRender design: [docs/SMART-VS-SMARTRENDER.md](../docs/SMART-VS-SMARTRENDER.md)
+- Pick vs PickRender design: [docs/PICK-VS-PICKRENDER.md](../docs/PICK-VS-PICKRENDER.md)
 
 ## Anti-Patterns (Never)
 

@@ -6,6 +6,7 @@ import { PickComponent, PickRender, Reactive } from "pick-components";
     :host {
       display: inline-flex;
       flex: 0 0 auto;
+      background: transparent;
     }
 
     .lang-toggle {

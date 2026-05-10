@@ -11,6 +11,7 @@ import type { ThemeMode } from "../models/playground-theme.js";
     :host {
       display: inline-flex;
       flex: 0 0 auto;
+      background: transparent;
     }
 
     .theme-switcher-root {

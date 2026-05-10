@@ -226,8 +226,12 @@ async function renderBody({ locale, path, example }) {
     >
       <div class="pg-shell" data-pick-prerender-root="true">
         <div class="pg-topbar">
+          <button type="button" class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pg-mobile-sidebar">☰</button>
           <div class="brand">
-            <a href="${withPlaygroundBasePath(`/${locale}`)}"><span>Pick</span>Components</a>
+            <a href="${withPlaygroundBasePath(`/${locale}`)}" class="brand-logo-link" aria-label="Pick Components home">
+              <img class="brand-logo brand-logo--dark" src="${withPlaygroundBasePath("/.github/brand/logo-primary-color-dark.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
+              <img class="brand-logo brand-logo--light" src="${withPlaygroundBasePath("/.github/brand/logo-primary-color-light.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
+            </a>
           </div>
           <div class="spacer"></div>
           <div class="controls">
@@ -248,11 +252,12 @@ async function renderBody({ locale, path, example }) {
             </theme-switcher>
           </div>
         </div>
-        <aside class="pg-sidebar">
+        <aside id="pg-mobile-sidebar" class="pg-sidebar">
           <tab-nav>
             ${sidebar}
           </tab-nav>
         </aside>
+        <button type="button" class="mobile-nav-backdrop" aria-label="Close navigation menu"></button>
         <div class="pg-main">
           <playground-route-view locale="${locale}" src="${escapeHtml(activeExampleSrc)}">
             ${hydrationPreview}
@@ -488,6 +493,7 @@ export function renderPublicStyles() {
   return `
     :root {
       color-scheme: light dark;
+      --pg-topbar-height: 53px;
       --pg-topbar-bg: #1e1e1e;
       --pg-topbar-color: #e5e9f0;
       --pg-topbar-border: #3c3c3c;
@@ -502,26 +508,26 @@ export function renderPublicStyles() {
       --pg-action-hover-color: #e5e9f0;
       --pg-result-bg: #1b2430;
       --pg-result-lbl: #a1acbc;
-      --pg-shell-topbar-bg: #151b23;
+      --pg-shell-topbar-bg: #101a2a;
       --pg-shell-topbar-color: #eef2f7;
-      --pg-shell-panel-bg: #111822;
+      --pg-shell-panel-bg: #0f1826;
       --pg-shell-panel-border: #2a3443;
-      --pg-shell-brand-accent: #98c379;
+      --pg-shell-brand-accent: #8ac85a;
       --pg-shell-sidebar-heading: #7c8799;
       --pg-shell-sidebar-link: #e7edf7;
       --pg-shell-sidebar-hover-bg: #1a2331;
-      --pg-shell-sidebar-active-bg: rgba(97, 175, 239, 0.16);
-      --pg-shell-sidebar-active-border: #61afef;
-      --pg-shell-sidebar-active-color: #8ac6f5;
+      --pg-shell-sidebar-active-bg: rgba(138, 200, 90, 0.16);
+      --pg-shell-sidebar-active-border: #8ac85a;
+      --pg-shell-sidebar-active-color: #b7eb8f;
       --pg-shell-control-bg: #111827;
       --pg-shell-control-border: #2b3645;
       --pg-shell-control-color: #d8e0eb;
       --pg-shell-control-muted: #95a1b4;
       --pg-shell-control-hover-bg: #182233;
-      --pg-shell-control-active-bg: rgba(97, 175, 239, 0.18);
-      --pg-shell-control-active-color: #8ac6f5;
+      --pg-shell-control-active-bg: rgba(138, 200, 90, 0.2);
+      --pg-shell-control-active-color: #c9f3a8;
       --pg-shell-control-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      --pg-shell-control-focus: rgba(97, 175, 239, 0.28);
+      --pg-shell-control-focus: rgba(138, 200, 90, 0.28);
       --pg-page-bg: #0f1622;
       --pg-page-panel: #151e2c;
       --pg-page-text: #e9eef7;
@@ -545,26 +551,26 @@ export function renderPublicStyles() {
         --pg-action-hover-color: #24292e;
         --pg-result-bg: #f4f7fb;
         --pg-result-lbl: #6a737d;
-        --pg-shell-topbar-bg: #f4f7fb;
+        --pg-shell-topbar-bg: #f5f9fb;
         --pg-shell-topbar-color: #1d2735;
         --pg-shell-panel-bg: #f7f9fc;
         --pg-shell-panel-border: #d7dee8;
-        --pg-shell-brand-accent: #94bf67;
+        --pg-shell-brand-accent: #78b84b;
         --pg-shell-sidebar-heading: #6d7685;
         --pg-shell-sidebar-link: #243040;
         --pg-shell-sidebar-hover-bg: #edf3f8;
-        --pg-shell-sidebar-active-bg: rgba(16, 149, 193, 0.1);
-        --pg-shell-sidebar-active-border: #1095c1;
-        --pg-shell-sidebar-active-color: #0b76a6;
-        --pg-shell-control-bg: #f5f8fc;
+        --pg-shell-sidebar-active-bg: rgba(120, 184, 75, 0.14);
+        --pg-shell-sidebar-active-border: #78b84b;
+        --pg-shell-sidebar-active-color: #3f7d19;
+        --pg-shell-control-bg: #ffffff;
         --pg-shell-control-border: #d3dce8;
         --pg-shell-control-color: #243040;
         --pg-shell-control-muted: #667389;
         --pg-shell-control-hover-bg: #ebf1f7;
-        --pg-shell-control-active-bg: rgba(16, 149, 193, 0.1);
-        --pg-shell-control-active-color: #0b76a6;
+        --pg-shell-control-active-bg: rgba(120, 184, 75, 0.14);
+        --pg-shell-control-active-color: #3f7d19;
         --pg-shell-control-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
-        --pg-shell-control-focus: rgba(16, 149, 193, 0.24);
+        --pg-shell-control-focus: rgba(120, 184, 75, 0.24);
         --pg-page-bg: #f7f9fc;
         --pg-page-panel: #ffffff;
         --pg-page-text: #243040;
@@ -588,26 +594,26 @@ export function renderPublicStyles() {
       --pg-action-hover-color: #24292e;
       --pg-result-bg: #f4f7fb;
       --pg-result-lbl: #6a737d;
-      --pg-shell-topbar-bg: #f4f7fb;
+      --pg-shell-topbar-bg: #f5f9fb;
       --pg-shell-topbar-color: #1d2735;
       --pg-shell-panel-bg: #f7f9fc;
       --pg-shell-panel-border: #d7dee8;
-      --pg-shell-brand-accent: #94bf67;
+      --pg-shell-brand-accent: #78b84b;
       --pg-shell-sidebar-heading: #6d7685;
       --pg-shell-sidebar-link: #243040;
       --pg-shell-sidebar-hover-bg: #edf3f8;
-      --pg-shell-sidebar-active-bg: rgba(16, 149, 193, 0.1);
-      --pg-shell-sidebar-active-border: #1095c1;
-      --pg-shell-sidebar-active-color: #0b76a6;
-      --pg-shell-control-bg: #f5f8fc;
+      --pg-shell-sidebar-active-bg: rgba(120, 184, 75, 0.14);
+      --pg-shell-sidebar-active-border: #78b84b;
+      --pg-shell-sidebar-active-color: #3f7d19;
+      --pg-shell-control-bg: #ffffff;
       --pg-shell-control-border: #d3dce8;
       --pg-shell-control-color: #243040;
       --pg-shell-control-muted: #667389;
       --pg-shell-control-hover-bg: #ebf1f7;
-      --pg-shell-control-active-bg: rgba(16, 149, 193, 0.1);
-      --pg-shell-control-active-color: #0b76a6;
+      --pg-shell-control-active-bg: rgba(120, 184, 75, 0.14);
+      --pg-shell-control-active-color: #3f7d19;
       --pg-shell-control-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
-      --pg-shell-control-focus: rgba(16, 149, 193, 0.24);
+      --pg-shell-control-focus: rgba(120, 184, 75, 0.24);
       --pg-page-bg: #f7f9fc;
       --pg-page-panel: #ffffff;
       --pg-page-text: #243040;
@@ -664,19 +670,61 @@ export function renderPublicStyles() {
     }
 
     .brand {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: 0;
       color: inherit;
-      font-weight: 700;
-      white-space: nowrap;
     }
 
-    .brand a {
-      color: inherit;
+    .mobile-nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.1rem;
+      height: 2.1rem;
+      border: 1px solid var(--pg-shell-control-border);
+      border-radius: 0.6rem;
+      background: var(--pg-shell-control-bg);
+      color: var(--pg-shell-control-color);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
       text-decoration: none;
-      white-space: nowrap;
     }
 
-    .brand span {
-      color: var(--pg-shell-brand-accent);
+    .brand-logo {
+      display: block;
+      width: min(230px, 36vw);
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .brand-logo--light {
+      display: none;
+    }
+
+    html[data-theme="light"] .brand-logo--dark {
+      display: none;
+    }
+
+    html[data-theme="light"] .brand-logo--light {
+      display: block;
+    }
+
+    html[data-theme="dark"] .brand-logo--dark {
+      display: block;
+    }
+
+    html[data-theme="dark"] .brand-logo--light {
+      display: none;
     }
 
     .spacer {
@@ -733,6 +781,10 @@ export function renderPublicStyles() {
       padding: 0.75rem 0;
       border-right: 1px solid var(--pg-shell-panel-border);
       background: var(--pg-shell-panel-bg);
+    }
+
+    .mobile-nav-backdrop {
+      display: none;
     }
 
     .sidebar-nav ul {
@@ -1060,11 +1112,51 @@ export function renderPublicStyles() {
       }
 
       .pg-shell {
-        display: block;
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
       }
 
       .pg-sidebar {
-        display: none;
+        position: fixed;
+        top: var(--pg-topbar-height, 53px);
+        left: 0;
+        bottom: 0;
+        width: min(82vw, 320px);
+        border-right: 1px solid var(--pg-shell-panel-border);
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        z-index: 40;
+        max-height: none;
+        padding: 0.5rem 0;
+      }
+
+      .pg-sidebar.mobile-nav-open {
+        transform: translateX(0);
+      }
+
+      .mobile-nav-backdrop {
+        display: block;
+        position: fixed;
+        top: var(--pg-topbar-height, 53px);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border: none;
+        margin: 0;
+        padding: 0;
+        background: rgba(7, 13, 24, 0.48);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 30;
+      }
+
+      .mobile-nav-backdrop.mobile-nav-open {
+        opacity: 1;
+        pointer-events: auto;
       }
 
       .seo-page {
@@ -1081,6 +1173,10 @@ export function renderPublicStyles() {
 
       .hydration-result {
         display: none;
+      }
+
+      .brand-logo {
+        width: min(190px, 55vw);
       }
     }
   `;

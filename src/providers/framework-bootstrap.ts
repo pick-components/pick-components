@@ -477,7 +477,6 @@ export async function bootstrapFramework(
         }
       }
     }
-
     const [{ PickRender }, { Pick }] = await Promise.all([
       import("../decorators/pick-render.decorator.js"),
       import("../decorators/pick.decorator.js"),

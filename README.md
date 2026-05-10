@@ -1,4 +1,10 @@
-# Pick Components
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-light.svg">
+    <img src="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-dark.svg" alt="Pick Components" width="420">
+  </picture>
+</p>
 
 > A lightweight, reactive web components framework for TypeScript and modern browser ESM.  
 > Business logic stays in services. Components are pure presentation.
@@ -29,19 +35,9 @@ Try the live playground: <https://pick-components.github.io/pick-components/>
 
 ## Why Pick Components Exists
 
-Web frontend is not my full-time work. But every now and then I end up building something for the web — a personal project, something small, or a tool for a friend — and every time I step into that world I get the same feeling: too many layers, too many frameworks, too many libraries piled on top of each other, and not enough sense that I can still see the project from the ground up. At some point, it starts to feel like something is off.
+The full origin story is now documented in [docs/WHY-PICK-COMPONENTS.md](docs/WHY-PICK-COMPONENTS.md).
 
-Pick Components came from that feeling. It did not come from “I want to build another framework”, and it definitely did not come from any desire to compete with React, Angular, or Vue. It came from wanting something useful for my own needs: a way to build native Web Components with clearer boundaries, controlled templates, and less dependence on large runtimes.
-
-This idea is older than this repository. More than five years ago, in `FieldDocumentMaker`, inside `FieldDocumentMaker.Editor/src/components`, I had a base component that already contained the first rough shape of this idea. One intuition from that code never really left me: in JavaScript, `a.b` and `a["b"]` are just two ways of reaching the same property. That changed how I thought about UI. Less “just run code here”, more “resolve this from structure”.
-
-That old component already had early versions of ideas that later became central to this project: `{{...}}` template bindings, property-based bindings, reactive DOM updates, and a small DOM/template compilation step. What it still lacked was a cleaner architecture and a harder line around what templates were allowed to do.
-
-Over time, that became a design rule. I wanted expressions in templates, but I did not want `eval`, `new Function`, or arbitrary JavaScript running inside templates. That decision pushed the project toward parsing a limited expression language, building an AST, and evaluating it under explicit rules. A lot of what Pick Components is today comes from taking that idea seriously instead of treating templates as a place where anything goes.
-
-Language models helped a lot while building this. Not just as code generators — which they also were, thank God — but for exploring architecture, testing ideas, refactoring, formalizing vague intuitions, and speeding up implementation and documentation. The direction still had to come from me, but they made it much easier to iterate on the design of the framework.
-
-That is why I built Pick Components: to build native Web Components with a more explicit internal architecture, controlled templates, reactive state, a clear lifecycle, and less dependence on large runtimes. If that sounds useful, try it, read the code, question the design, open issues, and contribute if you want to help shape it.
+Short version: this framework was created to keep native Web Components explicit, predictable, and maintainable, with strict template safety and a smaller runtime surface.
 
 ---
 
@@ -51,82 +47,10 @@ That is why I built Pick Components: to build native Web Components with a more 
 npm install pick-components
 ```
 
-## Copilot AI Setup (Optional)
-
-If you want Copilot to follow Pick Components conventions (components, DI, tests, and templates), install the workspace skill into your project:
-
-```bash
-npx --package=pick-components pick-components-copilot
-```
-
-This copies `.github/skills/setup-pick-components/` into your project root. Commit the result to enable the skill for your whole team.
-
-To install into a specific directory:
-
-```bash
-npx --package=pick-components pick-components-copilot --target /path/to/your-project
-```
-
-Once installed, type `/setup-pick-components` in Copilot chat to activate the skill.
-
----
-
-## Choose Your Setup
-
-### Option A — npm + bundler
-
-Use this in Vite, Rollup, Webpack, esbuild, or similar toolchains.
+## Quickstart (npm + bundler)
 
 ```typescript
-import { bootstrapFramework, Services } from "pick-components";
-```
-
-This path does not specifically require Vite, but it does require a toolchain that can resolve npm package imports for the browser.
-
-### Option B — plain HTML + browser-ready ESM
-
-Use this when you want to import the framework directly in the browser with no bundler.
-
-For this mode, use the browser-ready artifacts prepared for GitHub Releases rather than trying to import the npm package directly in the browser.
-
-Release assets are published here:
-
-- `https://github.com/pick-components/pick-components/releases`
-- `https://github.com/pick-components/pick-components/releases/tag/v<version>`
-
-Direct asset URLs follow this pattern:
-
-- `https://github.com/pick-components/pick-components/releases/download/v<version>/pick-components.js`
-- `https://github.com/pick-components/pick-components/releases/download/v<version>/pick-components-bootstrap.js`
-
-Recommended flow:
-
-1. Download the browser bundle from the project's GitHub Release assets.
-2. Copy it into your site's public assets, for example `/vendor/pick-components.js`.
-3. Write your component source in TypeScript or modern JavaScript.
-4. Transpile it before serving it to the browser.
-5. Import the generated JavaScript from your HTML with `<script type="module">`.
-
-Minimal HTML:
-
-```html
-<!doctype html>
-<html lang="en">
-  <body>
-    <hello-card></hello-card>
-    <script type="module" src="./hello-card.js"></script>
-  </body>
-</html>
-```
-
-Minimal TypeScript source:
-
-```typescript
-import {
-  bootstrapFramework,
-  Services,
-  Pick,
-} from "/vendor/pick-components.js";
+import { bootstrapFramework, Services, Pick } from "pick-components";
 
 await bootstrapFramework(Services);
 
@@ -137,396 +61,64 @@ await bootstrapFramework(Services);
 class HelloCard {}
 ```
 
-The browser-ready distribution is self-contained and does not rely on external runtime packages or Node builtins. It is intended for direct browser import once the file is being served by your site.
+This is the fastest path when using Vite, Rollup, Webpack, esbuild, or similar toolchains.
 
-The npm package is optimized for development and consumption. The plain-browser distribution is documented and prepared as a separate release artifact flow, not as a browser-importable npm package entrypoint.
-
-For GitHub Releases, the project also prepares a heavier browser distribution with:
-
-- non-minified bundles
-- minified bundles
-- source maps for all browser bundles
-- SHA256 checksums
-
-Build the release artifacts locally with:
-
-```bash
-npm run build:release
-```
-
-This creates `.release-artifacts/v<version>/`, which mirrors the intended GitHub Release contents.
-
-This direct browser path assumes a modern browser environment with ESM. TypeScript syntax and decorators must still be transpiled unless your target runtime explicitly supports the exact JavaScript decorator syntax you are serving.
-
----
-
-## TypeScript And Decorators
-
-Pick Components works with both TypeScript decorator emits:
-
-- Standard decorators: `experimentalDecorators` omitted or `false`.
-- Legacy decorators: `experimentalDecorators: true`.
-
-You should not need to change a Vite/TypeScript project just to use Pick Components. The default bootstrap accepts both modes.
-
-Recommended public syntax:
-
-```typescript
-class Counter extends PickComponent {
-  @Reactive count = 0;
-}
-```
-
-`@Reactive accessor count = 0` is still supported for users who explicitly want TC39 auto-accessors, but it is not required.
-
-The playground and downloaded examples transpile with this compiler shape:
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "experimentalDecorators": false
-  }
-}
-```
-
-If your project uses TypeScript's `experimentalDecorators` pipeline, the default bootstrap already supports it:
-
-```typescript
-await bootstrapFramework(Services);
-```
-
-Strict decorator mode is available only when you intentionally want to accept TC39 standard decorators only:
-
-```typescript
-await bootstrapFramework(Services, {}, { decorators: "strict" });
-```
-
-For a full list of tested bundler and tsconfig combinations, see
-[docs/DECORATOR-COMPATIBILITY.md](docs/DECORATOR-COMPATIBILITY.md).
-
----
-
-## Bootstrap
-
-Call `bootstrapFramework()` once in your entry point before component modules that use `@Pick`, `@PickRender`, `@Reactive`, or `@Listen` are evaluated:
-
-```typescript
-import { bootstrapFramework, Services } from "pick-components";
-
-await bootstrapFramework(Services);
-await import("./my-component.js");
-```
-
----
-
-## Usage
-
-The examples below use the standard package import form:
-
-```typescript
-import { bootstrapFramework, Services } from "pick-components";
-
-await bootstrapFramework(Services);
-```
-
-### Presentational Component (Slot Projection)
-
-Components that wrap child content in a styled layout using native Shadow DOM slots. No state, no logic.
-
-```typescript
-import { Pick } from "pick-components";
-
-@Pick("card-container", (ctx) => {
-  ctx.html(`
-    <div class="card">
-      <div class="card-header">
-        <slot name="header">Default Header</slot>
-      </div>
-      <div class="card-body">
-        <slot>Default Content</slot>
-      </div>
-    </div>
-  `);
-})
-export class CardContainer {}
-```
-
-```html
-<card-container>
-  <h2 slot="header">Card Title</h2>
-  <p>Card body content goes here.</p>
-</card-container>
-```
-
----
-
-### Data Display Component (Reactive Props)
-
-Components that receive data via attributes and render it reactively.
-
-```typescript
-import { Pick } from "pick-components";
-
-@Pick("user-badge", (ctx) => {
-  ctx.props<{ name: string; role: string }>();
-
-  ctx.html(`
-    <div class="badge">
-      <span class="name">{{name}}</span>
-      <span class="role">{{role}}</span>
-    </div>
-  `);
-})
-export class UserBadge {}
-```
-
-```html
-<user-badge name="Alice" role="Engineer"></user-badge>
-```
-
----
-
-### Interactive Component (Local State + Events)
-
-Components with local state that responds to user interactions.
-
-```typescript
-import { Pick } from "pick-components";
-
-@Pick("simple-counter", (ctx) => {
-  ctx.state({ count: 0 });
-
-  ctx.on({
-    increment() {
-      this.count++;
-    },
-    decrement() {
-      this.count--;
-    },
-    reset() {
-      this.count = 0;
-    },
-  });
-
-  ctx.html(`
-    <div class="counter">
-      <pick-action action="decrement"><button type="button">−</button></pick-action>
-      <span>{{count}}</span>
-      <pick-action action="increment"><button type="button">+</button></pick-action>
-      <pick-action action="reset"><button type="button">Reset</button></pick-action>
-    </div>
-  `);
-})
-export class SimpleCounter {}
-```
-
----
-
-### Class-Based Component (`@PickRender`)
-
-For components that need async initialization or a lifecycle manager to wire external services.
+## Quickstart (no decorators)
 
 ```typescript
 import {
-  PickRender,
-  PickComponent,
-  PickInitializer,
-  PickLifecycleManager,
-  Reactive,
+  bootstrapFramework,
+  Services,
+  definePick,
 } from "pick-components";
 
-class TodoInitializer extends PickInitializer<TodoList> {
-  protected async onInitialize(component: TodoList): Promise<boolean> {
-    component.items = await fetch("/api/todos").then((r) => r.json());
-    return true;
-  }
-}
+const helloDef = definePick<{ name: string }>("hello-card", (ctx) => {
+  ctx.state({ name: "world" });
+  ctx.html(`<p>Hello {{name}}</p>`);
+});
 
-class TodoLifecycle extends PickLifecycleManager<TodoList> {
-  protected onComponentReady(component: TodoList): void {
-    this.addSubscription(
-      todoService.onUpdate$.subscribe((items) => {
-        component.items = items;
-      }),
-    );
-  }
-}
-
-@PickRender({
-  selector: "todo-list",
-  template: `
-    <ul>
-      <pick-for items="{{items}}" key="id">
-        <li class="{{$item.done ? 'done' : ''}}">{{$item.text}}</li>
-      </pick-for>
-    </ul>
-  `,
-  initializer: () => new TodoInitializer(),
-  lifecycle: () => new TodoLifecycle(),
-})
-export class TodoList extends PickComponent {
-  @Reactive items: Todo[] = [];
-}
+await bootstrapFramework(Services, {}, {
+  components: [helloDef],
+});
 ```
 
-### Template Security
+You can register components without `@Pick`/`@PickRender` by using `definePick` and `defineComponent` descriptors through the `components` option.
 
-Pick Components validates static templates at compile time. Inline event handlers, executable elements, `srcdoc`, `style`, `srcset`, and unsafe URL protocols are rejected with explicit errors. Template expressions are evaluated through a constrained parser and dynamic URL bindings are checked by the attribute binding policy. Templates are developer-authored code, but they are still validated so templates remain declarative and do not become hidden JavaScript execution environments.
+## Copilot AI Setup (Optional)
 
-Manual verification: a template with `<img src="x" onerror="this.insertAdjacentHTML('afterend', '<strong id=xss-ok>ONERROR EJECUTADO</strong>')">` must fail rendering with a clear Pick Components error. `ONERROR EJECUTADO` must not appear.
+Want Copilot to follow Pick Components conventions for components, DI, tests, and templates?
 
----
-
-## Component Intentions
-
-Use `@Reactive` for state that renders. Use intent signals for one-shot user actions such as save, refresh, or mode change, which a lifecycle manager can coordinate with services.
-
-```typescript
-class ModeSelector extends PickComponent {
-  @Reactive mode: RaceMode = "mass_start";
-
-  readonly modeRequested$ = this.createIntent<RaceMode>();
-
-  requestMode(mode: RaceMode): void {
-    this.modeRequested$.notify(mode);
-  }
-}
-
-class ModeSelectorLifecycle extends PickLifecycleManager<ModeSelector> {
-  protected onComponentReady(component: ModeSelector): void {
-    this.addSubscription(
-      component.modeRequested$.subscribe((mode) => {
-        raceService.setMode(mode);
-      }),
-    );
-  }
-}
-```
-
-`@Pick` has the same capability through `ctx.intent<T>("name$")`. Prefer this pattern for actions and commands; keep `getPropertyObservable()` for real state changes.
+See the full setup guide in [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs/USAGE-GUIDE.md#copilot-ai-setup-optional).
 
 ---
 
-## View Actions
+## Start Paths
 
-`<pick-action>` is the declarative bridge from view markup to component actions. It listens to click and keyboard activation on its child content, then dispatches a `pick-action` event that the nearest PickComponent handles.
+- **I want to build now (npm + bundler):** stay in this README and use the Quickstart above.
+- **I want no decorators:** see [docs/USAGE-GUIDE.md#using-without-decorators-definecomponent-and-definepick](docs/USAGE-GUIDE.md#using-without-decorators-definecomponent-and-definepick).
+- **I want Copilot setup:** see [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs/USAGE-GUIDE.md#copilot-ai-setup-optional).
+- **I want plain browser ESM (no bundler):** see [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md).
+- **I want architecture and DI details:** see [docs/DEPENDENCY-INJECTION.md](docs/DEPENDENCY-INJECTION.md) and [docs/RENDERING-ARCHITECTURE.md](docs/RENDERING-ARCHITECTURE.md).
+- **I want full usage, decorators, actions, templates, and playground workflow:** see [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md).
 
-```html
-<pick-action action="archive" value="{{selectedId}}">
-  <button type="button">Archive</button>
-</pick-action>
-```
-
-- `action` is the action name exposed by `ctx.on(...)` or `getViewActions()`.
-- `value` is optional and becomes the first action argument.
-- The child can be any visual trigger, not only a `<button>`.
-- `event` is also accepted as an alias for `action`, but new code should use `action`.
-- Handled actions stop at the nearest component by default.
-- Add `bubble` only when a parent component should be allowed to handle the same action.
-
----
-
-## Template Syntax
-
-| Syntax              | Description                                               |
-| ------------------- | --------------------------------------------------------- |
-| `{{expression}}`    | Reactive binding — re-evaluates on property change        |
-| `[[RULES.field]]`   | Validation rules — expands to HTML5 validation attributes |
-| `<slot>`            | Default projection slot (native Shadow DOM)               |
-| `<slot name="X">`   | Named projection slot (native Shadow DOM)                 |
-
----
-
-## Commands
-
-| Command                    | Description                                                       |
-| -------------------------- | ----------------------------------------------------------------- |
-| `npm install`              | Install dependencies                                              |
-| `npm run build:lib`        | Compile library to `dist/`                                        |
-| `npm run build:browser`    | Bundle browser-ready ESM artifacts to `dist/browser/`             |
-| `npm run build:prod`       | Compile library + browser-ready ESM artifacts                     |
-| `npm run build:release`    | Prepare GitHub release browser artifacts in `.release-artifacts/` |
-| `npm run build`            | Compile library + examples                                        |
-| `npm run serve:dev`        | Start dev server on `http://localhost:3000`                       |
-| `npm run serve:dist`       | Serve built examples with SEO file-first routes on port `8080`    |
-| `npm test`                 | Run full test suite (unit + integration)                          |
-| `npm run test:unit`        | Unit tests only                                                   |
-| `npm run test:integration` | Integration tests only                                            |
-| `npm run test:coverage`    | Run unit + integration tests with an 80% V8 coverage threshold    |
-| `npm run lint`             | Lint source files                                                 |
-| `npm run format`           | Format source files                                               |
-
----
-
-## Interactive Playground
-
-The project ships with 15 interactive examples that run in the browser via a TypeScript playground with live preview. Each example has an editable code panel (CodeMirror) and an iframe sandbox that re-transpiles and re-executes on every change.
-
-Try it online: <https://pick-components.github.io/pick-components/>
-
-### Running the playground
+## Run Locally
 
 ```bash
 npm install
-npm run build        # builds library + example bundles
-npm run serve:dev    # http://localhost:3000
-```
-
-To preview the built examples with the production-oriented static server:
-
-```bash
 npm run build
-npm run serve:dist   # http://localhost:8080
+npm run serve:dev
 ```
 
-The playground also includes an edge worker template at `deploy/cloudflare/public-route-worker.mjs`. It serves prerendered public routes first, then falls back to the SPA shell for app-only paths. Crawler and browser requests receive the same canonical HTML; the client bundle only enhances it.
-
-### Examples
-
-| #   | Tab                       | Category     | Description                                      |
-| --- | ------------------------- | ------------ | ------------------------------------------------ |
-| 01  | Hello World               | Basics       | Minimal `@PickRender` component                 |
-| 02  | Reactive State            | Basics       | `@Reactive` state and simple actions             |
-| 03  | Template Bindings         | Basics       | Simple template bindings with `{{...}}`          |
-| 04  | Template Expressions      | Basics       | Expressions inside `{{...}}`                     |
-| 05  | Computed Bindings         | Basics       | Getter-derived bindings                          |
-| 06  | @Pick Component          | Basics       | Functional authoring with `@Pick`               |
-| 07  | Pick Actions             | Primitives   | Declarative view actions with `<pick-action>`   |
-| 07b | Pick Actions with @Pick | Primitives   | The same action model via `ctx.on(...)`          |
-| 08  | Pick Select              | Primitives   | Conditional branches with `<pick-select>`       |
-| 09  | Pick For                 | Primitives   | List rendering with `<pick-for>`                |
-| 10  | Forms & Rules             | Primitives   | Validation rules provided before render          |
-| 11  | DI Injection              | Architecture | InjectKit bridge and constructor dependencies    |
-| 12  | Real API                  | Architecture | Initializer + lifecycle + `createIntent()`       |
-| 13  | Dashboard                 | Architecture | Multi-service composition and split template/CSS |
-| 14  | @Pick Advanced           | Architecture | Full `@Pick` component with services & state    |
-| 15  | Native Slots              | Basics       | Native named and default slot projection         |
-
-### Docker deployment
-
-```bash
-docker build -t pick-components .
-docker run -p 8080:8080 pick-components
-# Playground available at http://localhost:8080
-# Public routes available at http://localhost:8080/es/01-hello
-```
+Playground: `http://localhost:3000`
 
 ---
 
 ## Documentation
 
-| Document                                                                     | Description                                                  |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [docs/PICK-VS-PICKRENDER.md](docs/PICK-VS-PICKRENDER.md)                     | When to use `@Pick` vs `@PickRender`                       |
-| [docs/PICK-VS-PICKRENDER.es.md](docs/PICK-VS-PICKRENDER.es.md)               | Cuando usar `@Pick` frente a `@PickRender`                   |
-| [docs/SEO.md](docs/SEO.md)                                                   | SEO-compatible prerendering and public route delivery         |
-| [docs/SEO.es.md](docs/SEO.es.md)                                             | Prerender compatible con SEO y entrega de rutas publicas      |
-| [docs/RENDERING-ARCHITECTURE.md](docs/RENDERING-ARCHITECTURE.md)             | Rendering pipeline overview                                  |
-| [docs/RENDERING-ARCHITECTURE.es.md](docs/RENDERING-ARCHITECTURE.es.md)       | Vista general de la arquitectura de renderizado               |
-| [docs/templates.md](docs/templates.md)                                       | Template system reference                                    |
-| [CHANGELOG.md](CHANGELOG.md)                                                 | Release history and notable changes                          |
+- [docs/README.md](https://github.com/pick-components/pick-components/blob/main/docs/README.md) - Main documentation index (English).
+- [docs/README.es.md](https://github.com/pick-components/pick-components/blob/main/docs/README.es.md) - Índice principal de documentación (español).
+- [docs/USAGE-GUIDE.md](https://github.com/pick-components/pick-components/blob/main/docs/USAGE-GUIDE.md) - Full setup, usage, and playground workflow.
+- [CHANGELOG.md](https://github.com/pick-components/pick-components/blob/main/CHANGELOG.md) - Release history and notable changes.
 
 ---
 

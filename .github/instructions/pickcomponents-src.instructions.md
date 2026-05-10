@@ -40,5 +40,4 @@ applyTo: "src/**"
 
 - DI architecture: [docs/DEPENDENCY-INJECTION.md](../../docs/DEPENDENCY-INJECTION.md)
 - Rendering internals: [docs/RENDERING-ARCHITECTURE.md](../../docs/RENDERING-ARCHITECTURE.md)
-- Rendering pipeline: [docs/RENDERING-PIPELINE-DEEP-DIVE.md](../../docs/RENDERING-PIPELINE-DEEP-DIVE.md)
-- Pick vs PickRender: [docs/SMART-VS-SMARTRENDER.md](../../docs/SMART-VS-SMARTRENDER.md)
+- Pick vs PickRender: [docs/PICK-VS-PICKRENDER.md](../../docs/PICK-VS-PICKRENDER.md)

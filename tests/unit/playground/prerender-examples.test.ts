@@ -35,7 +35,7 @@ test.describe("prerender examples script", () => {
     // Act & Assert
     expect(styles).toContain("@media (prefers-color-scheme: light)");
     expect(styles).toContain("--pg-shell-control-bg: #111827;");
-    expect(styles).toContain("--pg-shell-control-bg: #f5f8fc;");
+    expect(styles).toContain("--pg-shell-control-bg: #ffffff;");
     expect(styles).toContain(":root:not([data-theme=\"dark\"])");
   });
 });
