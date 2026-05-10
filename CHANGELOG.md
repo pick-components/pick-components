@@ -28,15 +28,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `ComponentKind` convenience constant object exported from `pick-components` with members `Render: 'render'` and `Pick: 'pick'`.
 - Added playground examples `17-define-component` and `18-define-pick` (4 locale variants each).
 - Added "Using without decorators" section to `docs/PICK-VS-PICKRENDER.md` and its Spanish translation.
+- Added `.github/brand/` SVG asset set as the repository source of truth for runtime and README branding.
+- Added documentation indexes `docs/README.md` and `docs/README.es.md` to improve navigation across EN/ES docs.
+- Added `docs/DEPENDENCY-INJECTION.md` and `docs/DEPENDENCY-INJECTION.es.md` for factory-first DI guidance.
+- Added `docs/USAGE-GUIDE.md` and `docs/WHY-PICK-COMPONENTS.md` as complementary long-form documentation.
 
 ### Changed
 - `bootstrapFramework` now validates all `componentOverrides` entries atomically before applying any patch.
 - `componentOverrides` now rejects unknown selectors during pre-validation.
 - `componentOverrides` now validates that `patch.selector`, when provided, matches the override key during pre-validation.
 - Updated repository and playground links from the old `janmbaco` namespace to `pick-components/pick-components`.
+- Updated `README.md` with theme-aware branding header and docs-oriented onboarding flow.
+- Updated playground shell UI with responsive mobile drawer navigation and aligned branding assets.
+- Updated examples/prerender build scripts to consume `.github/brand` assets as canonical branding inputs.
 
 ### Fixed
 - Removed stale references to old `janmbaco` GitHub repository and legacy playground URL in project metadata and guidance docs.
+- Fixed unit prerender expectations by updating `prerender-examples` snapshot and color-token assertions after branding/theme updates.
 
 [Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.7...HEAD
 [1.0.7]: https://github.com/pick-components/pick-components/compare/v1.0.6...v1.0.7
