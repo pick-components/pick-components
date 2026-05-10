@@ -13,6 +13,19 @@ Pick Components has **four APIs** depending on how much decorator/class syntax y
 | `@Pick` | Inline context (decorator, but setup via `ctx.*`) |
 | `definePick` | Fully decorator-free, functional — no class, no `@Reactive`, no `@Listen` |
 
+## Existing App Integration (Incremental)
+
+You can adopt Pick Components inside existing React/Vue projects without full migration.
+
+- Prefer a dedicated bootstrap entry for the screen/area where Pick is used.
+- Register only the components needed for that integration point.
+- Consume Pick components as native custom elements.
+
+Prompt examples for Copilot:
+
+- `Integrate a Pick Components widget into an existing React page using a dedicated bootstrap entry and a custom element mount point.`
+- `Generate a definePick component intended for incremental adoption inside a Vue app section, with explicit bootstrap registration.`
+
 ### `pick-action` — ALWAYS a custom element
 
 **`<pick-action>` is a custom element, not an HTML attribute.** It wraps the interactive element:
