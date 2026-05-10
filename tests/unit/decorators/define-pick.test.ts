@@ -184,12 +184,14 @@ test.describe("definePick — ctx.on view actions", () => {
 
     const state = { count: 0 } as any;
 
-    // Act
+    // Act & Assert — verify each step independently
     config.methods!["increment"].call(state);
-    config.methods!["increment"].call(state);
-    config.methods!["reset"].call(state);
+    expect(state.count).toBe(1);
 
-    // Assert
+    config.methods!["increment"].call(state);
+    expect(state.count).toBe(2);
+
+    config.methods!["reset"].call(state);
     expect(state.count).toBe(0);
   });
 });

@@ -86,7 +86,7 @@ Copilot producirá:
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mi App</title>
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/bootstrap.js"></script>
   </head>
   <body>
     <!-- tus componentes van aquí -->
@@ -140,9 +140,11 @@ import { Pick } from "pick-components";
 @Pick("counter-app", (ctx) => {
   ctx.state({ count: 0 });
 
-  ctx.on("increment", (state) => { state.count++; });
-  ctx.on("decrement", (state) => { state.count--; });
-  ctx.on("reset",     (state) => { state.count = 0; });
+  ctx.on({
+    increment() { this.count++; },
+    decrement() { this.count--; },
+    reset()      { this.count = 0; },
+  });
 
   ctx.html(`
     <p>Contador: {{count}}</p>
@@ -179,9 +181,11 @@ import { definePick, bootstrapFramework, Services } from "pick-components";
 const counterDef = definePick<{ count: number }>("counter-app", (ctx) => {
   ctx.state({ count: 0 });
 
-  ctx.on("increment", (state) => { state.count++; });
-  ctx.on("decrement", (state) => { state.count--; });
-  ctx.on("reset",     (state) => { state.count = 0; });
+  ctx.on({
+    increment() { this.count++; },
+    decrement() { this.count--; },
+    reset()      { this.count = 0; },
+  });
 
   ctx.html(`
     <p>Contador: {{count}}</p>
