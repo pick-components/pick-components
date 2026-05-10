@@ -120,6 +120,6 @@ Usa `strict` solo cuando quieras explícitamente que el framework rechace la emi
 
 ## Relacionados
 
-- [README — TypeScript y Decoradores](../README.md#typescript-and-decorators)
+- [Usage Guide — TypeScript and Decorators](USAGE-GUIDE.md#typescript-and-decorators)
 - [Pick vs PickRender](PICK-VS-PICKRENDER.es.md)
 - [Arquitectura de Renderizado](RENDERING-ARCHITECTURE.es.md)

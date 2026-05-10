@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-05-09
+
 ### Added
 - Added `docs/DECORATOR-COMPATIBILITY.md` (and Spanish translation) documenting all tested TypeScript decorator setups and bundler combinations (closes #3).
 - Added `docs/PICK-VS-OTHERS.md` (and Spanish translation) comparing Pick Components with Lit, Angular, and Glimmer (closes #5).
@@ -23,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `definePick()` as a decorator-free alternative to `@Pick` with no class required (closes #4).
 - Added `components` option to `bootstrapFramework` for explicit composition root registration (closes #4).
 - Added `ComponentDefinition` discriminated union type exported from `pick-components`. The `kind` field uses string literal types (`'render' | 'pick'`), so descriptors can be constructed without importing `ComponentKind`.
-- Added `ComponentKind` convenience enum exported from `pick-components` with members `Render = 'render'` and `Pick = 'pick'`.
+- Added `ComponentKind` convenience constant object exported from `pick-components` with members `Render: 'render'` and `Pick: 'pick'`.
 - Added playground examples `17-define-component` and `18-define-pick` (4 locale variants each).
 - Added "Using without decorators" section to `docs/PICK-VS-PICKRENDER.md` and its Spanish translation.
 
@@ -36,4 +38,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed stale references to old `janmbaco` GitHub repository and legacy playground URL in project metadata and guidance docs.
 
-[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.6...HEAD
+[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.7...HEAD
+[1.0.7]: https://github.com/pick-components/pick-components/compare/v1.0.6...v1.0.7

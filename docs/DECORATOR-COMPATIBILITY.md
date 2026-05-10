@@ -120,6 +120,6 @@ Use `strict` only when you intentionally want the framework to reject legacy dec
 
 ## Related
 
-- [README — TypeScript And Decorators](../README.md#typescript-and-decorators)
+- [Usage Guide — TypeScript and Decorators](USAGE-GUIDE.md#typescript-and-decorators)
 - [Pick vs PickRender](PICK-VS-PICKRENDER.md)
 - [Rendering Architecture](RENDERING-ARCHITECTURE.md)

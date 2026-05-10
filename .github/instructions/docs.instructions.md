@@ -38,5 +38,5 @@ applyTo: "docs/**, README.md"
 
 - Architecture overview: [docs/RENDERING-ARCHITECTURE.md](../../docs/RENDERING-ARCHITECTURE.md)
 - DI model: [docs/DEPENDENCY-INJECTION.md](../../docs/DEPENDENCY-INJECTION.md)
-- Pick vs PickRender: [docs/SMART-VS-SMARTRENDER.md](../../docs/SMART-VS-SMARTRENDER.md)
+- Pick vs PickRender: [docs/PICK-VS-PICKRENDER.md](../../docs/PICK-VS-PICKRENDER.md)
 - Project onboarding: [README.md](../../README.md)
