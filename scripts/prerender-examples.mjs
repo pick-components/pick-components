@@ -493,6 +493,7 @@ export function renderPublicStyles() {
   return `
     :root {
       color-scheme: light dark;
+      --pg-topbar-height: 53px;
       --pg-topbar-bg: #1e1e1e;
       --pg-topbar-color: #e5e9f0;
       --pg-topbar-border: #3c3c3c;
@@ -1120,7 +1121,7 @@ export function renderPublicStyles() {
 
       .pg-sidebar {
         position: fixed;
-        top: 53px;
+        top: var(--pg-topbar-height, 53px);
         left: 0;
         bottom: 0;
         width: min(82vw, 320px);
@@ -1139,7 +1140,7 @@ export function renderPublicStyles() {
       .mobile-nav-backdrop {
         display: block;
         position: fixed;
-        top: 53px;
+        top: var(--pg-topbar-height, 53px);
         right: 0;
         bottom: 0;
         left: 0;

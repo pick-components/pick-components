@@ -4,6 +4,7 @@ export const PLAYGROUND_SHELL_STYLES = `
       height: 100vh;
       min-height: 0;
       --pg-brand-col: calc(1rem + min(250px, 36vw));
+      --pg-topbar-height: 53px;
     }
 
     .pg-shell {
@@ -61,12 +62,11 @@ export const PLAYGROUND_SHELL_STYLES = `
       align-items: center;
       min-width: 0;
       text-decoration: none;
-      padding: 0.75rem 0rem;
     }
 
     .brand-logo {
       display: block;
-      width: min(230px, 36vw);
+      width: min(250px, 36vw);
       height: auto;
       flex-shrink: 0;
     }
@@ -168,7 +168,7 @@ export const PLAYGROUND_SHELL_STYLES = `
 
       .pg-sidebar {
         position: fixed;
-        top: 53px;
+        top: var(--pg-topbar-height);
         left: 0;
         bottom: 0;
         width: min(82vw, 320px);
@@ -189,7 +189,7 @@ export const PLAYGROUND_SHELL_STYLES = `
       .mobile-nav-backdrop {
         display: block;
         position: fixed;
-        top: 53px;
+        top: var(--pg-topbar-height);
         right: 0;
         bottom: 0;
         left: 0;

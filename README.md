@@ -116,7 +116,7 @@ Playground: `http://localhost:3000`
 ## Documentation
 
 - [docs/README.md](docs/README.md) - Main documentation index (English).
-- [docs/README.es.md](docs/README.es.md) - Indice principal de documentacion (espanol).
+- [docs/README.es.md](docs/README.es.md) - Índice principal de documentación (español).
 - [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md) - Full setup, usage, and playground workflow.
 - [CHANGELOG.md](CHANGELOG.md) - Release history and notable changes.
 

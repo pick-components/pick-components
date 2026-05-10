@@ -1,16 +1,16 @@
-# Inyeccion de Dependencias
+# Inyección de Dependencias
 
 Pick Components sigue un modelo de DI orientado a factories.
 
 ## Principios
 
 - Construir servicios concretos en el composition root.
-- Depender de abstracciones en el codigo de features.
-- Evitar descubrimiento implicito de servicios y constructores ocultos.
+- Depender de abstracciones en el código de features.
+- Evitar descubrimiento implícito de servicios y constructores ocultos.
 
 ## Registro por Defecto
 
-Puedes usar el registro `Services` para una integracion rapida:
+Puedes usar el registro `Services` para una integración rápida:
 
 ```typescript
 import { Services } from "pick-components";
@@ -55,7 +55,7 @@ Usa factories de dependencias en `ctx.initializer()` y `ctx.lifecycle()`:
 
 ## Contenedores Externos
 
-Los contenedores externos se pueden integrar adaptandolos a `IServiceRegistry` y resolviendo dependencias de forma explicita mediante factories.
+Los contenedores externos se pueden integrar adaptándolos a `IServiceRegistry` y resolviendo dependencias de forma explícita mediante factories.
 
 ## Documentos Relacionados
 

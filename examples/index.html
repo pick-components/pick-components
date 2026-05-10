@@ -78,11 +78,27 @@
 
         document.addEventListener("DOMContentLoaded", applyBranding);
 
-        var observer = new MutationObserver(function () {
-          applyBranding();
+        // Watch only data-theme attribute changes for theme switching (no subtree scan)
+        var themeObserver = new MutationObserver(applyWelcomeTheme);
+        themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
         });
 
-        observer.observe(document.documentElement, { childList: true, subtree: true });
+        // Watch for logo elements being added; disconnect once logos are initialized
+        var logoObserver = new MutationObserver(function () {
+          applyBrandLogos();
+          var logoFound =
+            document.querySelector("img[data-brand-logo-dark='true']") ||
+            document.querySelector("img[data-brand-logo-light='true']");
+          if (logoFound) {
+            logoObserver.disconnect();
+          }
+        });
+        logoObserver.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+        });
       })();
     </script>
     <link rel="stylesheet" href="./pico.min.css" />
@@ -191,7 +207,6 @@
       .welcome-logo {
         width: min(760px, 92vw);
         margin-bottom: 1.6rem;
-        transform: translateX(-55px);
       }
 
       .welcome-logo img {

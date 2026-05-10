@@ -1,37 +1,37 @@
-# Indice de Documentacion
+# Índice de Documentación
 
-Esta carpeta contiene la documentacion canonica de Pick Components.
+Esta carpeta contiene la documentación canónica de Pick Components.
 
 ## Primeros Pasos
 
-- [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Motivacion y origen del proyecto.
-- [USAGE-GUIDE.md](USAGE-GUIDE.md) - Guia completa (EN) de setup, bootstrap, uso y playground.
-- [PICK-VS-PICKRENDER.md](PICK-VS-PICKRENDER.md) - Cuando usar `@Pick` frente a `@PickRender`.
-- [PICK-VS-PICKRENDER.es.md](PICK-VS-PICKRENDER.es.md) - Traduccion al espanol.
+- [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Motivación y origen del proyecto.
+- [USAGE-GUIDE.md](USAGE-GUIDE.md) - Guía completa (EN) de setup, bootstrap, uso y playground.
+- [PICK-VS-PICKRENDER.md](PICK-VS-PICKRENDER.md) - Cuándo usar `@Pick` frente a `@PickRender`.
+- [PICK-VS-PICKRENDER.es.md](PICK-VS-PICKRENDER.es.md) - Traducción al español.
 
-## Arquitectura e Inyeccion de Dependencias
+## Arquitectura e Inyección de Dependencias
 
 - [RENDERING-ARCHITECTURE.md](RENDERING-ARCHITECTURE.md) - Vista general del pipeline de renderizado.
-- [RENDERING-ARCHITECTURE.es.md](RENDERING-ARCHITECTURE.es.md) - Traduccion al espanol.
+- [RENDERING-ARCHITECTURE.es.md](RENDERING-ARCHITECTURE.es.md) - Traducción al español.
 - [DEPENDENCY-INJECTION.md](DEPENDENCY-INJECTION.md) - Patrones de DI y composition root.
-- [DEPENDENCY-INJECTION.es.md](DEPENDENCY-INJECTION.es.md) - Traduccion al espanol.
+- [DEPENDENCY-INJECTION.es.md](DEPENDENCY-INJECTION.es.md) - Traducción al español.
 
 ## Templates y Seguridad
 
 - [templates.md](templates.md) - Sintaxis de templates y modelo de seguridad.
-- [templates.es.md](templates.es.md) - Traduccion al espanol.
+- [templates.es.md](templates.es.md) - Traducción al español.
 - [SEO.md](SEO.md) - Prerender compatible con SEO y entrega de rutas.
-- [SEO.es.md](SEO.es.md) - Traduccion al espanol.
+- [SEO.es.md](SEO.es.md) - Traducción al español.
 
 ## Compatibilidad de Decoradores
 
 - [DECORATOR-COMPATIBILITY.md](DECORATOR-COMPATIBILITY.md) - Configuraciones soportadas de decoradores TypeScript.
-- [DECORATOR-COMPATIBILITY.es.md](DECORATOR-COMPATIBILITY.es.md) - Traduccion al espanol.
+- [DECORATOR-COMPATIBILITY.es.md](DECORATOR-COMPATIBILITY.es.md) - Traducción al español.
 
 ## Comparativas
 
 - [PICK-VS-OTHERS.md](PICK-VS-OTHERS.md) - Pick Components frente a otros frameworks.
-- [PICK-VS-OTHERS.es.md](PICK-VS-OTHERS.es.md) - Traduccion al espanol.
+- [PICK-VS-OTHERS.es.md](PICK-VS-OTHERS.es.md) - Traducción al español.
 
 ## Notas de Release
 

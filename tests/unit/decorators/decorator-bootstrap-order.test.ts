@@ -29,7 +29,7 @@ test.describe("Decorator bootstrap order", () => {
       "[PickRender] Framework services are not available. " +
         "Call bootstrapFramework() on your service registry " +
         "(e.g. bootstrapFramework(Services) in the default setup) " +
-        "before defining components that use @PickRender. Missing service: 'IComponentMetadataRegistry'.",
+        "before importing or defining components that use @PickRender. Missing service: 'IComponentMetadataRegistry'.",
     );
   });
 
@@ -49,7 +49,7 @@ test.describe("Decorator bootstrap order", () => {
       "[Pick] Framework services are not available. " +
         "Call bootstrapFramework() on your service registry " +
         "(e.g. bootstrapFramework(Services) in the default setup) " +
-        "before defining components that use @Pick. Missing service: 'IPickComponentFactory'.",
+        "before importing or defining components that use @Pick. Missing service: 'IPickComponentFactory'.",
     );
   });
 });
