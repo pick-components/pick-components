@@ -89,6 +89,20 @@ This creates `.release-artifacts/v<version>/`, which mirrors the intended GitHub
 
 This direct browser path assumes a modern browser environment with ESM. TypeScript syntax and decorators must still be transpiled unless your target runtime explicitly supports the exact JavaScript decorator syntax you are serving.
 
+## Incremental Adoption in Existing Apps
+
+Pick Components can be adopted incrementally inside existing frontend stacks.
+
+- In React/Vue applications, Pick components can be mounted as native custom elements in selected screens.
+- You do not need a full rewrite to start; a coexistence approach is supported.
+- Keep Pick bootstrap explicit and isolated in the entry where those custom elements are used.
+
+Typical phased approach:
+
+1. Start with one self-contained widget or page section.
+2. Register only the needed Pick components in that entry.
+3. Expand usage only if the integration proves valuable for your team.
+
 ## Copilot AI Setup (Optional)
 
 If you want Copilot to follow Pick Components conventions (components, DI, tests, and templates), install the workspace skill into your project:

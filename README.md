@@ -9,6 +9,8 @@
 > A lightweight, reactive web components framework for TypeScript and modern browser ESM.  
 > Business logic stays in services. Components are pure presentation.
 
+Spanish quick entry: [README.es.md](README.es.md)
+
 Try the live playground: <https://pick-components.github.io/pick-components/>
 
 [![npm](https://img.shields.io/npm/v/pick-components)](https://www.npmjs.com/package/pick-components)
@@ -100,7 +102,9 @@ See the full setup guide in [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs
 - **I want Copilot setup:** see [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs/USAGE-GUIDE.md#copilot-ai-setup-optional).
 - **I want plain browser ESM (no bundler):** see [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md).
 - **I want architecture and DI details:** see [docs/DEPENDENCY-INJECTION.md](docs/DEPENDENCY-INJECTION.md) and [docs/RENDERING-ARCHITECTURE.md](docs/RENDERING-ARCHITECTURE.md).
+- **I want framework comparisons (React, Vue, Lit, Angular, Svelte, Glimmer):** see [docs/PICK-VS-OTHERS.md](docs/PICK-VS-OTHERS.md).
 - **I want full usage, decorators, actions, templates, and playground workflow:** see [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md).
+- **I prefer Spanish docs:** see [docs/README.es.md](docs/README.es.md), [docs/GETTING-STARTED.es.md](docs/GETTING-STARTED.es.md), and [docs/USAGE-GUIDE.es.md](docs/USAGE-GUIDE.es.md).
 
 ## Run Locally
 
@@ -119,6 +123,8 @@ Playground: `http://localhost:3000`
 - [docs/README.md](https://github.com/pick-components/pick-components/blob/main/docs/README.md) - Main documentation index (English).
 - [docs/README.es.md](https://github.com/pick-components/pick-components/blob/main/docs/README.es.md) - Índice principal de documentación (español).
 - [docs/USAGE-GUIDE.md](https://github.com/pick-components/pick-components/blob/main/docs/USAGE-GUIDE.md) - Full setup, usage, and playground workflow.
+- [docs/USAGE-GUIDE.es.md](https://github.com/pick-components/pick-components/blob/main/docs/USAGE-GUIDE.es.md) - Guía completa en español.
+- [docs/GETTING-STARTED.es.md](https://github.com/pick-components/pick-components/blob/main/docs/GETTING-STARTED.es.md) - Guía paso a paso en español.
 - [CHANGELOG.md](https://github.com/pick-components/pick-components/blob/main/CHANGELOG.md) - Release history and notable changes.
 
 ---

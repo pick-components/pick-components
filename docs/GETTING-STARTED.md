@@ -279,6 +279,18 @@ await bootstrapFramework(Services, {}, { components: [counterDef] });
 
 All four styles support `initializer`, `lifecycle`, `skeleton`, and `errorTemplate` for async hydration and loading states.
 
+## Incremental adoption in existing apps
+
+If you already have a React or Vue app, you can adopt Pick Components incrementally.
+
+- Start with one isolated widget or section.
+- Register Pick components in that local entry point.
+- Use custom elements in targeted views without migrating the entire codebase.
+
+Useful Copilot prompt:
+
+> Integrate a Pick Components widget into an existing React page using a custom element and a dedicated bootstrap entry.
+
 ---
 
 ## Next steps
