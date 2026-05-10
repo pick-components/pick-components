@@ -34,7 +34,14 @@ import { withPlaygroundBasePath } from "../../routing/models/playground-public-p
   template: PLAYGROUND_SHELL_TEMPLATE,
 })
 export class PlaygroundShell extends PickComponent {
+  @Reactive brandLogoDarkSrc = withPlaygroundBasePath(
+    "/.github/brand/logo-primary-color-dark.svg",
+  );
+  @Reactive brandLogoLightSrc = withPlaygroundBasePath(
+    "/.github/brand/logo-primary-color-light.svg",
+  );
   @Reactive locale = "en";
+  @Reactive homePath = withPlaygroundBasePath("/en");
   @Reactive currentPath = "/";
   @Reactive activeExampleSrc = withPlaygroundBasePath(
     "/playground-examples/01-hello/en-light/hello.example.ts",
@@ -47,9 +54,12 @@ export class PlaygroundShell extends PickComponent {
   @Reactive themeLabel = "Auto";
   @Reactive themeTitle = "Theme: Auto";
   @Reactive themeCycleRequestVersion = 0;
+  @Reactive mobileNavExpanded = "false";
+  @Reactive mobileNavOpenClass = "";
 
   hydrate(session: PlaygroundShellSessionState): void {
     this.locale = session.locale;
+    this.homePath = withPlaygroundBasePath(`/${session.locale}`);
     this.currentPath = session.currentPath;
     this.activeExampleSrc = session.activeExampleSrc;
     this.esPath = session.languagePaths.esPath;
@@ -63,6 +73,27 @@ export class PlaygroundShell extends PickComponent {
 
   requestThemeCycle(): void {
     this.themeCycleRequestVersion += 1;
+  }
+
+  toggleMobileNav(): void {
+    const shouldOpen = this.mobileNavExpanded !== "true";
+    this.setMobileNavState(shouldOpen);
+  }
+
+  closeMobileNav(): void {
+    this.setMobileNavState(false);
+  }
+
+  private setMobileNavState(isOpen: boolean): void {
+    this.mobileNavExpanded = isOpen ? "true" : "false";
+    this.mobileNavOpenClass = isOpen ? "mobile-nav-open" : "";
+  }
+
+  private isMobileViewport(): boolean {
+    return (
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 768px)").matches
+    );
   }
 
   onRenderComplete(): void {
@@ -87,5 +118,36 @@ export class PlaygroundShell extends PickComponent {
 
     event.preventDefault();
     this.requestThemeCycle();
+  }
+
+  @Listen("button", "click")
+  onShellButtonClick(event: MouseEvent): void {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const clickedButton = target.closest("button");
+    if (!(clickedButton instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    if (clickedButton.classList.contains("mobile-nav-toggle")) {
+      this.toggleMobileNav();
+      return;
+    }
+
+    if (clickedButton.classList.contains("mobile-nav-backdrop")) {
+      this.closeMobileNav();
+    }
+  }
+
+  @Listen("tab-nav", "click")
+  onSidebarNavigationClick(): void {
+    if (!this.isMobileViewport()) {
+      return;
+    }
+
+    this.closeMobileNav();
   }
 }

@@ -102,7 +102,7 @@ function buildPlaceholderSrcdoc(theme: "light" | "dark"): string {
   html, body {
     margin: 0;
     min-height: 100%;
-    background: ${theme === "light" ? "#f4f7fb" : "#1b2430"};
+    background: transparent;
     color: ${theme === "light" ? "#1f2937" : "#d8e0eb"};
   }
 </style>
@@ -197,7 +197,37 @@ function buildSrcdocMulti(
     const mergedImport = `import { ${[...frameworkSpecifiers].join(", ")} } from 'pick-components';`;
     const importBlock = [mergedImport, ...imports].join("\n");
 
-    scriptBody = `${importBlock}
+    // Detect decorator-free registrations: exported results of defineComponent/definePick.
+    // These must be passed explicitly to bootstrapFramework({ components: [...] }).
+    const defineExportPattern =
+      /^\s*export\s+const\s+(\w+)\s*=\s*(?:defineComponent|definePick)\s*\(/;
+    const componentDefs: string[] = [];
+    const rewrittenBody = body.map((line) => {
+      const match = defineExportPattern.exec(line);
+      if (match) {
+        componentDefs.push(match[1]);
+        // Strip the `export` keyword so the const stays in scope within the try block.
+        return line.replace(/^\s*export\s+/, "");
+      }
+      return line;
+    });
+
+    if (componentDefs.length > 0) {
+      // Decorator-free mode: bootstrap after user code, passing the collected definitions.
+      scriptBody = `${importBlock}
+
+try {
+${rewrittenBody.join("\n")}
+await bootstrapFramework(Services, {}, { components: [${componentDefs.join(", ")}] });
+} catch (e) {
+  const pre = document.createElement('pre');
+  pre.style.cssText = 'color:#e06c75;padding:1rem;font-size:0.8rem;white-space:pre-wrap;';
+  pre.textContent = e.message + '\\n' + (e.stack || '');
+  document.querySelector('main').appendChild(pre);
+}`;
+    } else {
+      // Decorator mode: @PickRender self-registers on class evaluation; bootstrap runs first.
+      scriptBody = `${importBlock}
 await bootstrapFramework(Services);
 
 try {
@@ -208,6 +238,7 @@ ${body.join("\n")}
   pre.textContent = e.message + '\\n' + (e.stack || '');
   document.querySelector('main').appendChild(pre);
 }`;
+    }
   } else {
     const lines = entryCode.split("\n");
     const imports: string[] = [];
@@ -245,7 +276,7 @@ ${JSON.stringify({ imports: importMap }, null, 2)}
     color-scheme: ${theme};
   }
   html {
-    background: ${theme === "light" ? "#f4f7fb" : "#1b2430"};
+    background: transparent;
     color: ${theme === "light" ? "#1f2937" : "#d8e0eb"};
   }
   body { margin: 0; padding: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; background: transparent; color: inherit; }

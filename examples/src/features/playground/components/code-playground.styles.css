@@ -147,13 +147,18 @@
 
 .actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 0.25rem;
   margin-left: auto;
   padding: 0 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
 }
 .actions button {
   all: unset;
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 0.3rem;
   padding: 0.25rem 0.5rem;
@@ -165,6 +170,7 @@
     background 0.15s,
     color 0.15s;
   font-family: system-ui, sans-serif;
+  white-space: nowrap;
 }
 .actions button:hover {
   background: var(--pg-action-hover-bg, #333842);
@@ -270,6 +276,18 @@ iframe {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr 1fr;
     min-height: 500px;
+  }
+  .top-bar {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .file-tabs {
+    max-width: none;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .actions {
+    padding-right: 0.35rem;
   }
   .top-bar {
     grid-column: 1;

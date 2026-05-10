@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import { access, copyFile } from "node:fs/promises";
+import { access, copyFile, cp } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
 
 // ── Build playground ESM bundles (consumed by <code-playground> iframes) ──

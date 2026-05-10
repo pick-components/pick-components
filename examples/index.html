@@ -9,11 +9,80 @@
         var first = window.location.pathname.split("/").filter(Boolean)[0];
         return first && first !== "es" && first !== "en" ? "/" + first : "";
       })();
+      window.__PICK_BRAND_LOGO_DARK_SRC__ =
+        window.__PICK_PLAYGROUND_BASE_PATH__ +
+          "/.github/brand/logo-primary-color-dark.svg";
+      window.__PICK_BRAND_LOGO_LIGHT_SRC__ =
+        window.__PICK_PLAYGROUND_BASE_PATH__ +
+          "/.github/brand/logo-primary-color-light.svg";
       (function () {
-        let t = localStorage.getItem("pc-theme");
+        var t = localStorage.getItem("pc-theme");
         if (t === "light" || t === "dark") {
           document.documentElement.setAttribute("data-theme", t);
+          return;
         }
+
+        var prefersLight =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.setAttribute(
+          "data-theme",
+          prefersLight ? "light" : "dark",
+        );
+      })();
+      (function () {
+        function applyBrandLogos() {
+          var darkSrc = window.__PICK_BRAND_LOGO_DARK_SRC__;
+          var lightSrc = window.__PICK_BRAND_LOGO_LIGHT_SRC__;
+          if (!darkSrc || !lightSrc) return;
+
+          document
+            .querySelectorAll("img[data-brand-logo-dark='true']")
+            .forEach(function (img) {
+              if (!img.getAttribute("src")) {
+                img.setAttribute("src", darkSrc);
+              }
+            });
+
+          document
+            .querySelectorAll("img[data-brand-logo-light='true']")
+            .forEach(function (img) {
+              if (!img.getAttribute("src")) {
+                img.setAttribute("src", lightSrc);
+              }
+            });
+        }
+
+        function applyWelcomeTheme() {
+          document.querySelectorAll(".welcome-logo").forEach(function (logo) {
+            var dark = logo.querySelector(".welcome-logo-dark");
+            var light = logo.querySelector(".welcome-logo-light");
+            if (!dark || !light) return;
+
+            var currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "light") {
+              dark.style.display = "none";
+              light.style.display = "block";
+              return;
+            }
+
+            dark.style.display = "block";
+            light.style.display = "none";
+          });
+        }
+
+        function applyBranding() {
+          applyBrandLogos();
+          applyWelcomeTheme();
+        }
+
+        document.addEventListener("DOMContentLoaded", applyBranding);
+
+        var observer = new MutationObserver(function () {
+          applyBranding();
+        });
+
+        observer.observe(document.documentElement, { childList: true, subtree: true });
       })();
     </script>
     <link rel="stylesheet" href="./pico.min.css" />
@@ -34,26 +103,26 @@
         --pg-action-hover-color: #e5e9f0;
         --pg-result-bg: #1b2430;
         --pg-result-lbl: #a1acbc;
-        --pg-shell-topbar-bg: #151b23;
+        --pg-shell-topbar-bg: #101a2a;
         --pg-shell-topbar-color: #eef2f7;
-        --pg-shell-panel-bg: #111822;
+        --pg-shell-panel-bg: #0f1826;
         --pg-shell-panel-border: #2a3443;
-        --pg-shell-brand-accent: #98c379;
+        --pg-shell-brand-accent: #8ac85a;
         --pg-shell-sidebar-heading: #7c8799;
         --pg-shell-sidebar-link: #e7edf7;
         --pg-shell-sidebar-hover-bg: #1a2331;
-        --pg-shell-sidebar-active-bg: rgba(97, 175, 239, 0.16);
-        --pg-shell-sidebar-active-border: #61afef;
-        --pg-shell-sidebar-active-color: #8ac6f5;
+        --pg-shell-sidebar-active-bg: rgba(138, 200, 90, 0.16);
+        --pg-shell-sidebar-active-border: #8ac85a;
+        --pg-shell-sidebar-active-color: #b7eb8f;
         --pg-shell-control-bg: #111827;
         --pg-shell-control-border: #2b3645;
         --pg-shell-control-color: #d8e0eb;
         --pg-shell-control-muted: #95a1b4;
         --pg-shell-control-hover-bg: #182233;
-        --pg-shell-control-active-bg: rgba(97, 175, 239, 0.18);
-        --pg-shell-control-active-color: #8ac6f5;
+        --pg-shell-control-active-bg: rgba(138, 200, 90, 0.2);
+        --pg-shell-control-active-color: #c9f3a8;
         --pg-shell-control-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-        --pg-shell-control-focus: rgba(97, 175, 239, 0.28);
+        --pg-shell-control-focus: rgba(138, 200, 90, 0.28);
       }
       :root[data-theme="light"] {
         --pg-topbar-bg: #f2f5f8;
@@ -70,26 +139,26 @@
         --pg-action-hover-color: #24292e;
         --pg-result-bg: #f4f7fb;
         --pg-result-lbl: #6a737d;
-        --pg-shell-topbar-bg: #f4f7fb;
+        --pg-shell-topbar-bg: #f5f9fb;
         --pg-shell-topbar-color: #1d2735;
         --pg-shell-panel-bg: #f7f9fc;
         --pg-shell-panel-border: #d7dee8;
-        --pg-shell-brand-accent: #94bf67;
+        --pg-shell-brand-accent: #78b84b;
         --pg-shell-sidebar-heading: #6d7685;
         --pg-shell-sidebar-link: #243040;
         --pg-shell-sidebar-hover-bg: #edf3f8;
-        --pg-shell-sidebar-active-bg: rgba(16, 149, 193, 0.1);
-        --pg-shell-sidebar-active-border: #1095c1;
-        --pg-shell-sidebar-active-color: #0b76a6;
-        --pg-shell-control-bg: #f5f8fc;
+        --pg-shell-sidebar-active-bg: rgba(120, 184, 75, 0.14);
+        --pg-shell-sidebar-active-border: #78b84b;
+        --pg-shell-sidebar-active-color: #3f7d19;
+        --pg-shell-control-bg: #ffffff;
         --pg-shell-control-border: #d3dce8;
         --pg-shell-control-color: #243040;
         --pg-shell-control-muted: #667389;
         --pg-shell-control-hover-bg: #ebf1f7;
-        --pg-shell-control-active-bg: rgba(16, 149, 193, 0.1);
-        --pg-shell-control-active-color: #0b76a6;
+        --pg-shell-control-active-bg: rgba(120, 184, 75, 0.14);
+        --pg-shell-control-active-color: #3f7d19;
         --pg-shell-control-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
-        --pg-shell-control-focus: rgba(16, 149, 193, 0.24);
+        --pg-shell-control-focus: rgba(120, 184, 75, 0.24);
       }
 
       /* ── Reset: Lit-playground full-viewport layout ──── */
@@ -113,15 +182,37 @@
         justify-content: center;
         height: 100%;
         text-align: center;
-        padding: 2rem;
+        padding: 2.2rem;
+        background:
+          radial-gradient(900px 420px at 15% -20%, rgba(120, 184, 75, 0.2), transparent 62%),
+          radial-gradient(820px 440px at 92% 112%, rgba(16, 149, 193, 0.16), transparent 62%),
+          var(--pg-result-bg, #f4f7fb);
+      }
+      .welcome-logo {
+        width: min(760px, 92vw);
+        margin-bottom: 1.6rem;
+        transform: translateX(-55px);
+      }
+
+      .welcome-logo img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .welcome-logo-light {
+        display: none;
       }
       .welcome h2 {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
         margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        color: var(--pg-shell-topbar-color, #eef2f7);
       }
       .welcome p {
-        color: var(--pico-muted-color);
+        color: var(--pg-shell-control-muted, #95a1b4);
         margin-bottom: 1.5rem;
+        max-width: 38rem;
       }
       .welcome .lang-btns {
         display: flex;
@@ -131,6 +222,10 @@
       @media (max-width: 768px) {
         .pg-shell {
           display: block;
+        }
+
+        .welcome-logo {
+          transform: translateX(-12px);
         }
       }
 
@@ -148,6 +243,10 @@
       <!-- Welcome (no language selected) -->
       <template data-route="/">
         <div class="welcome">
+          <div class="welcome-logo">
+            <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="Pick Components Playground" />
+            <img class="welcome-logo-light" data-brand-logo-light="true" alt="Pick Components Playground" />
+          </div>
           <h2>Welcome / Bienvenido</h2>
           <p>Select a language to explore the interactive playground:</p>
           <div class="lang-btns">
@@ -159,6 +258,10 @@
 
       <template data-route="/:base">
         <div class="welcome">
+          <div class="welcome-logo">
+            <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="Pick Components Playground" />
+            <img class="welcome-logo-light" data-brand-logo-light="true" alt="Pick Components Playground" />
+          </div>
           <h2>Welcome / Bienvenido</h2>
           <p>Select a language to explore the interactive playground:</p>
           <div class="lang-btns">
