@@ -65,8 +65,10 @@ Register at bootstrap:
 
 ```typescript
 // bootstrap.ts
-import "./my-counter.js"; // side-effect import triggers decorator registration
+import { bootstrapFramework, Services } from "pick-components/bootstrap";
+
 await bootstrapFramework(Services);
+await import("./my-counter.js"); // dynamic import: decorator side effects run after services are registered
 ```
 
 ---

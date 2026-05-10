@@ -159,9 +159,9 @@ class CounterApp {}
 **`src/bootstrap.ts`**
 ```typescript
 import { bootstrapFramework, Services } from "pick-components/bootstrap";
-import "./counter-app.js";
 
 await bootstrapFramework(Services);
+await import("./counter-app.js"); // import dinámico: los decoradores se ejecutan después de registrar los servicios
 ```
 
 **`index.html`**
