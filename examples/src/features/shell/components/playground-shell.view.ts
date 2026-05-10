@@ -218,7 +218,7 @@ export const PLAYGROUND_SHELL_STYLES = `
 export const PLAYGROUND_SHELL_TEMPLATE = `
     <div class="pg-shell">
       <div class="pg-topbar">
-        <button class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="{{mobileNavExpanded}}" aria-controls="pg-mobile-sidebar">☰</button>
+        <button type="button" class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="{{mobileNavExpanded}}" aria-controls="pg-mobile-sidebar">☰</button>
         <div class="brand">
           <a class="brand-logo-link" href="{{homePath}}" aria-label="Pick Components home">
             <img class="brand-logo brand-logo--dark" src="{{brandLogoDarkSrc}}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
@@ -244,7 +244,7 @@ export const PLAYGROUND_SHELL_TEMPLATE = `
         <tab-nav groups="{{navigationGroups}}"></tab-nav>
       </aside>
 
-      <button class="mobile-nav-backdrop {{mobileNavOpenClass}}" aria-label="Close navigation menu"></button>
+      <button type="button" class="mobile-nav-backdrop {{mobileNavOpenClass}}" aria-label="Close navigation menu"></button>
 
       <div class="pg-main">
         <playground-route-view

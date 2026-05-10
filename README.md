@@ -1,8 +1,8 @@
 <p>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/logo-expanded-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset=".github/brand/logo-expanded-light.svg">
-    <img src=".github/brand/logo-expanded-dark.svg" alt="Pick Components" width="420">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-light.svg">
+    <img src="https://raw.githubusercontent.com/pick-components/pick-components/main/.github/brand/logo-expanded-dark.svg" alt="Pick Components" width="420">
   </picture>
 </p>
 
@@ -115,10 +115,10 @@ Playground: `http://localhost:3000`
 
 ## Documentation
 
-- [docs/README.md](docs/README.md) - Main documentation index (English).
-- [docs/README.es.md](docs/README.es.md) - Índice principal de documentación (español).
-- [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md) - Full setup, usage, and playground workflow.
-- [CHANGELOG.md](CHANGELOG.md) - Release history and notable changes.
+- [docs/README.md](https://github.com/pick-components/pick-components/blob/main/docs/README.md) - Main documentation index (English).
+- [docs/README.es.md](https://github.com/pick-components/pick-components/blob/main/docs/README.es.md) - Índice principal de documentación (español).
+- [docs/USAGE-GUIDE.md](https://github.com/pick-components/pick-components/blob/main/docs/USAGE-GUIDE.md) - Full setup, usage, and playground workflow.
+- [CHANGELOG.md](https://github.com/pick-components/pick-components/blob/main/CHANGELOG.md) - Release history and notable changes.
 
 ---
 

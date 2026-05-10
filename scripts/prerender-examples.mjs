@@ -226,7 +226,7 @@ async function renderBody({ locale, path, example }) {
     >
       <div class="pg-shell" data-pick-prerender-root="true">
         <div class="pg-topbar">
-          <button class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pg-mobile-sidebar">☰</button>
+          <button type="button" class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pg-mobile-sidebar">☰</button>
           <div class="brand">
             <a href="${withPlaygroundBasePath(`/${locale}`)}" class="brand-logo-link" aria-label="Pick Components home">
               <img class="brand-logo brand-logo--dark" src="${withPlaygroundBasePath("/.github/brand/logo-primary-color-dark.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
@@ -257,7 +257,7 @@ async function renderBody({ locale, path, example }) {
             ${sidebar}
           </tab-nav>
         </aside>
-        <button class="mobile-nav-backdrop" aria-label="Close navigation menu"></button>
+        <button type="button" class="mobile-nav-backdrop" aria-label="Close navigation menu"></button>
         <div class="pg-main">
           <playground-route-view locale="${locale}" src="${escapeHtml(activeExampleSrc)}">
             ${hydrationPreview}
