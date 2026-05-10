@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-05-10
+
 ### Added
 - Added `docs/GETTING-STARTED.md` and `docs/GETTING-STARTED.es.md`: step-by-step guide (project → npm → Copilot skill → first component) covering all four component APIs (`@Pick`, `definePick`, `@PickRender`, `defineComponent`).
 - Added `.github/skills/setup-pick-components/05-inline-context-api.md`: complete `ctx.*` InlineContext API reference for `@Pick` and `definePick` (`ctx.state`, `ctx.on`, `ctx.listen`, `ctx.computed`, `ctx.intent`, `ctx.lifecycle`, `ctx.initializer`, `ctx.skeleton`, `ctx.errorTemplate`, `ctx.html`, `ctx.css`, `ctx.props`, `ctx.ref`, `ctx.rules`).
@@ -62,5 +64,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed stale references to old `janmbaco` GitHub repository and legacy playground URL in project metadata and guidance docs.
 - Fixed unit prerender expectations by updating `prerender-examples` snapshot and color-token assertions after branding/theme updates.
 
-[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.8...HEAD
+[1.0.8]: https://github.com/pick-components/pick-components/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/pick-components/pick-components/compare/v1.0.6...v1.0.7
