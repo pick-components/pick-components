@@ -16,6 +16,7 @@ dist/
 # Private plans and working docs
 .plans/
 .release-artifacts/
+.local/branding/
 
 # Test reports and artifacts
 .artifacts/
