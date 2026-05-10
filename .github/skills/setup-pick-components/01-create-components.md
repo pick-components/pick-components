@@ -2,6 +2,185 @@
 
 Use this prompt when you need Copilot to generate Pick Components with proper architecture.
 
+## Component APIs — Choose the Right One
+
+Pick Components has **four APIs** depending on how much decorator/class syntax you want:
+
+| API | When to use |
+|-----|-------------|
+| `@PickRender` | Full-featured with decorator: initializer, lifecycle, skeleton, errorTemplate |
+| `defineComponent` | Decorator-free alternative to `@PickRender`; class uses `@Reactive`/`@Listen`, registration via `bootstrapFramework` |
+| `@Pick` | Inline context (decorator, but setup via `ctx.*`) |
+| `definePick` | Fully decorator-free, functional — no class, no `@Reactive`, no `@Listen` |
+
+### `pick-action` — ALWAYS a custom element
+
+**`<pick-action>` is a custom element, not an HTML attribute.** It wraps the interactive element:
+
+```html
+<!-- ✅ CORRECT — pick-action wraps the button -->
+<pick-action action="increment"><button type="button">+</button></pick-action>
+
+<!-- ❌ WRONG — pick-action="..." as an attribute does nothing -->
+<button pick-action="increment" type="button">+</button>
+```
+
+This applies equally to `@PickRender`, `@Pick`, and `definePick` components.
+
+---
+
+## `@Pick` — Inline context with decorator
+
+Use when you want decorator syntax but prefer configuring via `ctx.*` instead of class fields:
+
+```typescript
+import { Pick, PickComponent } from "pick-components";
+import counterStyles from "./counter.styles.css";
+
+@Pick<{ count: number }>("my-counter", (ctx) => {
+  ctx.state({ count: 0 });
+
+  // ctx.on defines the view-action map for <pick-action action="...">
+  ctx.on({
+    increment() { this.count++; },
+    decrement() { this.count--; },
+    reset() { this.count = 0; },
+  });
+
+  ctx.css(counterStyles);
+
+  ctx.html(`
+    <div class="counter">
+      <p>{{count}}</p>
+      <pick-action action="decrement"><button type="button">−</button></pick-action>
+      <pick-action action="reset"><button type="button">Reset</button></pick-action>
+      <pick-action action="increment"><button type="button">+</button></pick-action>
+    </div>
+  `);
+})
+export class MyCounter extends PickComponent {}
+```
+
+Register at bootstrap:
+
+```typescript
+// bootstrap.ts
+import "./my-counter.js"; // side-effect import triggers decorator registration
+await bootstrapFramework(Services);
+```
+
+---
+
+## `definePick` — Decorator-free functional API
+
+Use when decorators are unavailable or you want fully explicit registration:
+
+```typescript
+import { definePick } from "pick-components";
+import counterStyles from "./counter.styles.css";
+
+export const counterDef = definePick<{ count: number }>("my-counter", (ctx) => {
+  ctx.state({ count: 0 });
+
+  // ctx.on defines the view-action map for <pick-action action="...">
+  ctx.on({
+    increment() { this.count++; },
+    decrement() { this.count--; },
+    reset() { this.count = 0; },
+  });
+
+  ctx.css(counterStyles);
+
+  ctx.html(`
+    <div class="counter">
+      <p>{{count}}</p>
+      <pick-action action="decrement"><button type="button">−</button></pick-action>
+      <pick-action action="reset"><button type="button">Reset</button></pick-action>
+      <pick-action action="increment"><button type="button">+</button></pick-action>
+    </div>
+  `);
+});
+```
+
+Register explicitly at bootstrap — no side effects until `bootstrapFramework` runs:
+
+```typescript
+// bootstrap.ts
+import { counterDef } from "./my-counter.js";
+await bootstrapFramework(Services, {}, { components: [counterDef] });
+```
+
+> For the full `ctx.*` API (ctx.listen, ctx.computed, ctx.intent, ctx.lifecycle, ctx.initializer, etc.) see [05-inline-context-api.md](./05-inline-context-api.md).
+
+---
+
+## `defineComponent` — Decorator-free alternative to `@PickRender`
+
+Use when decorators are unavailable **but you still want a class** with `@Reactive` and `@Listen`. The class itself is written identically to a `@PickRender` component; only the registration moves to `bootstrapFramework`:
+
+```typescript
+import { PickComponent, Reactive, Listen, defineComponent } from "pick-components";
+import counterStyles from "./counter.styles.css";
+
+// Class written as normal — @Reactive and @Listen are still used here
+class CounterExample extends PickComponent {
+  @Reactive count = 0;
+
+  @Listen("#decrementButton", "click")
+  decrement(): void { this.count--; }
+
+  @Listen("#resetButton", "click")
+  reset(): void { this.count = 0; }
+
+  @Listen("#incrementButton", "click")
+  increment(): void { this.count++; }
+}
+
+// defineComponent replaces @PickRender — returns a ComponentDefinition descriptor
+export const counterDef = defineComponent(CounterExample, {
+  selector: "counter-example",
+  styles: counterStyles,
+  template: `
+    <div class="counter">
+      <p>{{count}}</p>
+      <div class="actions">
+        <button id="decrementButton" type="button">−</button>
+        <button id="resetButton" type="button">Reset</button>
+        <button id="incrementButton" type="button">+</button>
+      </div>
+    </div>
+  `,
+});
+```
+
+Register explicitly at bootstrap:
+
+```typescript
+// bootstrap.ts
+import { counterDef } from "./counter.example.js";
+await bootstrapFramework(Services, {}, { components: [counterDef] });
+```
+
+> **Note:** Unlike `definePick`, `defineComponent` still uses `@Reactive` and `@Listen` on the class body. It does NOT use `ctx.on()`.
+
+`defineComponent` accepts the same config options as `@PickRender` — you can pass `initializer`, `lifecycle`, `skeleton`, and `errorTemplate` alongside `selector`, `template`, and `styles`:
+
+```typescript
+export const myDef = defineComponent(MyComponent, {
+  selector: "my-component",
+  template,
+  styles,
+  initializer: () => Services.getNew(MyComponentInitializer),
+  lifecycle:    () => Services.getNew(MyComponentLifecycle),
+  skeleton:     '<p aria-busy="true">Loading…</p>',
+  errorTemplate: '<p role="alert">Failed to load.</p>',
+});
+```
+
+---
+
+## `@PickRender` — Full-featured with initializer/lifecycle
+
 ## Component Structure
 
 Pick Components use `@PickRender` decorator with `initializer` and `lifecycle`:
@@ -117,6 +296,41 @@ export class MyComponentLifecycle extends PickLifecycleManager<MyComponent> {
 </div>
 ```
 
+### `pick-action` in `@PickRender` / `defineComponent` — two patterns
+
+**Pattern A — via intent + lifecycle** (preferred when the action triggers async logic or service calls):
+
+The template uses `<pick-action action="requestAction">` → the component method fires `actionRequested$.notify()` → the lifecycle reacts and calls the service.
+
+**Pattern B — via `getViewActions()`** (simpler for pure UI actions with no service interaction):
+
+```typescript
+import { PickViewActions } from "pick-components";
+
+export class MyComponent extends PickComponent {
+  @Reactive count = 0;
+
+  // getViewActions() maps pick-action names to handlers.
+  // `this` is the component instance.
+  getViewActions(): PickViewActions {
+    return {
+      increment: () => { this.count++; },
+      decrement: () => { this.count--; },
+      reset:     () => { this.count = 0; },
+    };
+  }
+}
+```
+
+```html
+<!-- Template -->
+<pick-action action="increment"><button type="button">+</button></pick-action>
+<pick-action action="decrement"><button type="button">−</button></pick-action>
+<pick-action action="reset"><button type="button">Reset</button></pick-action>
+```
+
+> Use Pattern A when the action needs a service. Use Pattern B for simple local state mutations.
+
 ### Composition Root Registration
 
 Initializers and lifecycles must be registered with factory functions so `Services.getNew()` creates a fresh instance each time:
@@ -145,6 +359,7 @@ Services.register(
 ❌ Skip `initializer` — Always hydrate data upfront  
 ❌ Mix business logic in components — Use lifecycle binding  
 ❌ Template logic beyond expressions — Validate in services  
+❌ Use `pick-action` as an HTML attribute — It is a **custom element**, always wrap: `<pick-action action="name"><button>...</button></pick-action>`  
 
 ## Real Example from Kronometa
 

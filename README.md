@@ -95,6 +95,7 @@ See the full setup guide in [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs
 ## Start Paths
 
 - **I want to build now (npm + bundler):** stay in this README and use the Quickstart above.
+- **I want a step-by-step guide with Copilot:** see [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
 - **I want no decorators:** see [docs/USAGE-GUIDE.md#using-without-decorators-definecomponent-and-definepick](docs/USAGE-GUIDE.md#using-without-decorators-definecomponent-and-definepick).
 - **I want Copilot setup:** see [docs/USAGE-GUIDE.md#copilot-ai-setup-optional](docs/USAGE-GUIDE.md#copilot-ai-setup-optional).
 - **I want plain browser ESM (no bundler):** see [docs/USAGE-GUIDE.md](docs/USAGE-GUIDE.md).
