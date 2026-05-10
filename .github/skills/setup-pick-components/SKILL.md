@@ -1,46 +1,59 @@
 ---
 name: pick-components-setup
-description: "Setup Copilot for a Pick Components project. Use when: creating or maintaining Pick Components code; generating components, tests, DI setup, and templates with real framework syntax. Covers zero-dependency Services registry, optional external DI integration, Playwright test projects, and safe template expressions."
+description: "Setup Copilot for a Pick Components project. Use when: creating or maintaining Pick Components code; generating components (@PickRender, @Pick, definePick, defineComponent), tests, DI setup, and templates with real framework syntax. Covers InlineContext ctx.* API (ctx.state, ctx.on, ctx.listen, ctx.computed, ctx.intent, ctx.lifecycle, ctx.initializer), zero-dependency Services registry, optional external DI integration, Playwright test projects, and safe template expressions."
 ---
 
 # Setup Pick Components Project
 
 Configures your project to work seamlessly with Pick Components and GitHub Copilot. This skill provides reusable guidance files under `.github/skills/setup-pick-components/`.
 
+## Component APIs — Choose the Right One
+
+| API | When to use |
+|-----|-------------|
+| `@PickRender` | Full-featured with decorator: initializer, lifecycle, skeleton, errorTemplate |
+| `defineComponent` | Decorator-free alternative to `@PickRender`; class uses `@Reactive`/`@Listen` |
+| `@Pick` | Inline context (decorator, setup via `ctx.*`) |
+| `definePick` | Fully decorator-free, functional — no class, no `@Reactive`, no `@Listen` |
+
+**`<pick-action>` is a custom element, not an HTML attribute.** Always wrap: `<pick-action action="name"><button>…</button></pick-action>`
+
 ## What This Skill Does
 
-1. ✅ Provides audited patterns for components, tests, DI, and templates
-2. ✅ Aligns generated code with Pick Components syntax and architecture
-3. ✅ Keeps DI guidance centered on built-in `Services` first
-4. ✅ Documents optional external DI integration when needed
+1. ✅ Documents all four component APIs with real examples
+2. ✅ Covers the full InlineContext (`ctx.*`) API for `@Pick` and `definePick`
+3. ✅ Aligns generated code with Pick Components syntax and architecture
+4. ✅ Keeps DI guidance centered on built-in `Services` first
+5. ✅ Documents optional external DI integration when needed
 
 ## Quick Start
 
 This skill will help you:
 
-### For Pick Components Components
-- Create `@Pick` and `@PickRender` decorated components
-- Structure JSDoc with proper `@param`, `@returns`, `@example`
-- Inject dependencies via factory functions
-- Keep logic in services, templates pure
+### For Component Creation
+- See [01-create-components.md](./01-create-components.md) — all four APIs with examples
+- See [05-inline-context-api.md](./05-inline-context-api.md) — full `ctx.*` reference for `@Pick`/`definePick` (ctx.state, ctx.on, ctx.listen, ctx.computed, ctx.intent, ctx.lifecycle, ctx.initializer, ctx.skeleton, ctx.errorTemplate, ctx.css, ctx.html, ctx.props, ctx.ref, ctx.rules)
 
 ### For Testing
 - Follow AAA pattern (Arrange-Act-Assert)
 - Write descriptive test names
 - Create unit and integration tests correctly
 - Handle error cases explicitly
+- See [02-writing-tests.md](./02-writing-tests.md)
 
 ### For Architecture
 - Use factory-first DI patterns
 - Separate business logic from presentation
 - Create proper service abstractions
 - Follow composition root patterns
+- See [03-dependency-injection.md](./03-dependency-injection.md)
 
 ### For Templates
 - Write secure template expressions
 - Use property bindings correctly
 - Handle actions and signals properly
 - Validate input in services, not templates
+- See [04-template-safety.md](./04-template-safety.md)
 
 ## Files Created
 
@@ -51,10 +64,11 @@ This skill includes:
 ├── skills/
 │   └── setup-pick-components/
 │       ├── SKILL.md
-│       ├── 01-create-components.md
+│       ├── 01-create-components.md       ← All 4 APIs with examples
 │       ├── 02-writing-tests.md
 │       ├── 03-dependency-injection.md
-│       └── 04-template-safety.md
+│       ├── 04-template-safety.md
+│       └── 05-inline-context-api.md      ← Full ctx.* API reference
 ```
 
 ## How to Use This Skill

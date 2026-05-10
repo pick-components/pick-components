@@ -20,9 +20,9 @@ export const counterDef = definePick<{ count: number }>("counter-example", (ctx)
     <div class="counter">
       <p>Counter: {{count}}</p>
       <div class="actions">
-        <button pick-action="decrement" type="button">−</button>
-        <button pick-action="reset" type="button">Reset</button>
-        <button pick-action="increment" type="button">+</button>
+        <pick-action action="decrement"><button type="button">−</button></pick-action>
+        <pick-action action="reset"><button type="button">Reset</button></pick-action>
+        <pick-action action="increment"><button type="button">+</button></pick-action>
       </div>
     </div>
   `);

@@ -10,7 +10,7 @@ Type `/setup-pick-components` in Copilot chat to set up your project with pre-co
 - Implementing factory-first dependency injection
 - Writing secure templates
 
-**First time with Pick Components?** See [SETUP.md](#) or visit the [live playground](https://pick-components.github.io/pick-components/).
+**First time with Pick Components?** See [docs/GETTING-STARTED.md](../docs/GETTING-STARTED.md) or visit the [live playground](https://pick-components.github.io/pick-components/).
 
 ## Code Style
 
