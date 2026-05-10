@@ -229,8 +229,8 @@ async function renderBody({ locale, path, example }) {
           <button type="button" class="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pg-mobile-sidebar">☰</button>
           <div class="brand">
             <a href="${withPlaygroundBasePath(`/${locale}`)}" class="brand-logo-link" aria-label="Pick Components home">
-              <img class="brand-logo brand-logo--dark" src="${withPlaygroundBasePath("/.github/brand/logo-primary-color-dark.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
-              <img class="brand-logo brand-logo--light" src="${withPlaygroundBasePath("/.github/brand/logo-primary-color-light.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
+              <img class="brand-logo brand-logo--dark" src="${withPlaygroundBasePath("/brand/logo-primary-color-dark.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
+              <img class="brand-logo brand-logo--light" src="${withPlaygroundBasePath("/brand/logo-primary-color-light.svg")}" alt="Pick Components Playground" loading="eager" fetchpriority="high" decoding="async" />
             </a>
           </div>
           <div class="spacer"></div>

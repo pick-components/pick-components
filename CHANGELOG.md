@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Moved brand SVG assets from `examples/.github/brand/` to `examples/brand/` so GitHub Pages serves them correctly (`.github/` paths are not exposed as HTTP routes by GitHub Pages).
+- Fixed `release.yml` workflow never triggering: `GITHUB_TOKEN`-based tag pushes do not trigger other workflows. Added `workflow_dispatch` to `release.yml` and a `gh workflow run` step in `tag-release.yml` that explicitly triggers the release after tag creation.
+
 ## [1.0.7] - 2026-05-09
 
 ### Added
