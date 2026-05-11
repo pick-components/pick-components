@@ -7,28 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Added `docs/USAGE-GUIDE.es.md` as the Spanish companion for the full usage guide, including setup modes, bootstrap order, decorator-free APIs, template safety, and playground workflow.
-
-### Changed
-- Updated `README.md` with direct links to Spanish documentation (`docs/README.es.md`, `docs/GETTING-STARTED.es.md`, and `docs/USAGE-GUIDE.es.md`) and improved Start Paths navigation.
-- Updated `docs/README.md` and `docs/README.es.md` to include `USAGE-GUIDE.es.md` in the docs index.
-- Expanded `docs/PICK-VS-OTHERS.md` and `docs/PICK-VS-OTHERS.es.md` with React/Vue/Svelte coverage, clearer coexistence guidance, and less repetitive framework-specific wording.
-- Updated `docs/DEPENDENCY-INJECTION.md` and `docs/DEPENDENCY-INJECTION.es.md` to document `Services.get()` lazy singleton behavior and `Services.getNew()` transient behavior.
-- Updated `docs/GETTING-STARTED.md`, `docs/GETTING-STARTED.es.md`, and `docs/USAGE-GUIDE.md` with incremental-adoption guidance for integrating Pick Components into existing React/Vue applications.
-- Updated `.github/skills/setup-pick-components/01-create-components.md` with incremental integration prompt patterns for existing frontend applications.
-
 ## [1.0.9] - 2026-05-12
 
 ### Added
 - Added `IComponentHostResolver` as a minimal public interface exposing only `resolve(component: PickComponent): HTMLElement`, intended for consumer and user-space code.
 - Registered `"IComponentHostResolver"` as a service alias in the bootstrap, so consumers can use `Services.get<IComponentHostResolver>("IComponentHostResolver")` with a matching token. `"IHostResolver"` is preserved for backward compatibility.
+- Added `docs/USAGE-GUIDE.es.md` as the Spanish companion for the full usage guide, including setup modes, bootstrap order, decorator-free APIs, template safety, and playground workflow.
 
 ### Changed
 - `IHostResolver` now extends `IComponentHostResolver` and no longer declares `clear()`, which was dead code.
 - Removed `clear()` from `DomContextHostResolver` implementation.
 - `DomContextHostResolver` updated: `PickComponent` types throughout, `WeakMap` key narrowed from `object` to `PickComponent`.
 - Updated playground `code-playground.pick.ts` to use the typed `IComponentHostResolver` import instead of an inline anonymous type.
+- Updated `README.md` with direct links to Spanish documentation (`docs/README.es.md`, `docs/GETTING-STARTED.es.md`, and `docs/USAGE-GUIDE.es.md`) and improved Start Paths navigation.
+- Updated `docs/README.md` and `docs/README.es.md` to include `USAGE-GUIDE.es.md` in the docs index.
+- Expanded `docs/PICK-VS-OTHERS.md` and `docs/PICK-VS-OTHERS.es.md` with React/Vue/Svelte coverage, clearer coexistence guidance, and less repetitive framework-specific wording.
+- Updated `docs/DEPENDENCY-INJECTION.md` and `docs/DEPENDENCY-INJECTION.es.md` to document `Services.get()` lazy singleton behavior and `Services.getNew()` transient behavior.
+- Updated `docs/GETTING-STARTED.md`, `docs/GETTING-STARTED.es.md`, and `docs/USAGE-GUIDE.md` with incremental-adoption guidance for integrating Pick Components into existing React/Vue applications.
+- Updated `.github/skills/setup-pick-components/01-create-components.md` with incremental integration prompt patterns for existing frontend applications.
 
 ## [1.0.8] - 2026-05-10
 
