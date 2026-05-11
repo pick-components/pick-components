@@ -1,12 +1,14 @@
-import type { IDomContext } from "../dom-context/dom-context.interface.js";
+import type { IComponentHostResolver } from "./component-host-resolver.interface.js";
+import type { IDomContext } from "./dom-context.interface.js";
+import type { PickComponent } from "../../core/pick-component.js";
 
 /**
  * Defines the responsibility of resolving host elements for components.
  *
  * @description
- * Abstracts the mechanism for locating the DOM host element associated
- * with a component instance or DOM context. Enables lifecycle managers
- * to access the host without direct coupling to DomContext.
+ * Internal framework contract for managing component-to-DomContext associations.
+ * Extends {@link IComponentHostResolver} with lifecycle methods used by the
+ * render pipeline. Consumer code should depend on `IComponentHostResolver` instead.
  *
  * @example
  * ```typescript
@@ -17,34 +19,19 @@ import type { IDomContext } from "../dom-context/dom-context.interface.js";
  * host.appendChild(element);
  * ```
  */
-export interface IHostResolver {
+export interface IHostResolver extends IComponentHostResolver {
   /**
    * Registers a component with its associated DOM context.
    *
    * @param component - Component instance
    * @param domContext - Associated DOM context
    */
-  register(component: object, domContext: IDomContext): void;
-
-  /**
-   * Resolves the host element for a component instance.
-   *
-   * @param component - Component instance
-   * @returns The host HTMLElement
-   * @throws Error if component is not registered
-   */
-  resolve(component: object): HTMLElement;
+  register(component: PickComponent, domContext: IDomContext): void;
 
   /**
    * Unregisters a component from the resolver.
    *
    * @param component - Component instance to unregister
    */
-  unregister(component: object): void;
-
-  /**
-   * Clears all registered components.
-   * Used for testing to ensure test isolation.
-   */
-  clear(): void;
+  unregister(component: PickComponent): void;
 }
