@@ -68,6 +68,7 @@ export type {
   IRenderEngine,
 } from "./rendering/index.js";
 export { DomContext } from "./rendering/dom-context/dom-context.js";
+export type { IComponentHostResolver } from "./rendering/dom-context/component-host-resolver.interface.js";
 export { SharedStylesRegistry } from "./rendering/styles/shared-styles-registry.js";
 export type { ISharedStylesRegistry } from "./rendering/styles/shared-styles-registry.js";
 // ScopeStack and fragment AST path removed from public API

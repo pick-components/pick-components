@@ -226,6 +226,7 @@ export async function bootstrapFramework(
 
   // Host resolution
   register("IHostResolver", () => new DomContextHostResolver());
+  register("IComponentHostResolver", () => registry.get("IHostResolver"));
 
   // Expression parsing
   register("IExpressionParser", () => new ExpressionParserService());

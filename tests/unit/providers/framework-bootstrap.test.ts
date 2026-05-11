@@ -85,6 +85,7 @@ test.describe("bootstrapFramework", () => {
       "IComponentMetadataRegistry",
       "IComponentInstanceRegistry",
       "IHostResolver",
+      "IComponentHostResolver",
       "IExpressionParser",
       "IEvaluator",
       "IExpressionResolver",
@@ -113,6 +114,19 @@ test.describe("bootstrapFramework", () => {
     for (const token of expectedTokens) {
       expect(mock.has(token)).toBe(true);
     }
+  });
+
+  test("should register IComponentHostResolver as an alias of IHostResolver", async () => {
+    // Arrange
+    const mock = createMockServiceRegistry();
+
+    // Act
+    await bootstrapFramework(mock as any);
+
+    // Assert
+    const hostResolver = mock.get("IHostResolver");
+    const componentHostResolver = mock.get("IComponentHostResolver");
+    expect(componentHostResolver).toStrictEqual(hostResolver);
   });
 
   test("should default decorator compatibility mode to auto", async () => {

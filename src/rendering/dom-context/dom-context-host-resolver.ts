@@ -1,5 +1,6 @@
 import type { IDomContext } from "./dom-context.interface.js";
 import type { IHostResolver } from "./host-resolver.interface.js";
+import type { PickComponent } from "../../core/pick-component.js";
 
 /**
  * Implements the responsibility of resolving host elements via DomContext.
@@ -24,7 +25,7 @@ import type { IHostResolver } from "./host-resolver.interface.js";
  * ```
  */
 export class DomContextHostResolver implements IHostResolver {
-  private contextMap = new WeakMap<object, IDomContext>();
+  private contextMap = new WeakMap<PickComponent, IDomContext>();
 
   /**
    * Registers a component with its DOM context.
@@ -33,7 +34,7 @@ export class DomContextHostResolver implements IHostResolver {
    * @param domContext - Associated DOM context
    * @throws Error if component or domContext is null/undefined
    */
-  register(component: object, domContext: IDomContext): void {
+  register(component: PickComponent, domContext: IDomContext): void {
     if (!component || typeof component !== "object") {
       throw new Error("Component is required");
     }
@@ -50,7 +51,7 @@ export class DomContextHostResolver implements IHostResolver {
    * @returns The host HTMLElement from associated DomContext
    * @throws Error if component is not registered
    */
-  resolve(component: object): HTMLElement {
+  resolve(component: PickComponent): HTMLElement {
     if (!component || typeof component !== "object") {
       throw new Error("Component is required");
     }
@@ -86,19 +87,11 @@ export class DomContextHostResolver implements IHostResolver {
    *
    * @param component - Component instance to unregister
    */
-  unregister(component: object): void {
+  unregister(component: PickComponent): void {
     if (!component || typeof component !== "object") {
       return;
     }
     this.contextMap.delete(component);
   }
 
-  /**
-   * Clears all registered components.
-   * Primarily for testing to ensure test isolation.
-   */
-  clear(): void {
-    // WeakMap doesn't have a clear method, but we can create a new one
-    this.contextMap = new WeakMap<object, IDomContext>();
-  }
 }

@@ -1,4 +1,4 @@
-import { PickComponent, PickRender, Reactive, Services } from "pick-components";
+import { PickComponent, PickRender, Reactive, Services, type IComponentHostResolver } from "pick-components";
 import { CodePlaygroundInitializer } from "../initializers/code-playground.initializer.js";
 import { CodePlaygroundLifecycle } from "../lifecycles/code-playground.lifecycle.js";
 
@@ -263,9 +263,7 @@ export class CodePlayground extends PickComponent {
     }
 
     try {
-      const hostResolver = Services.get<{
-        resolve(target: object): HTMLElement;
-      }>("IHostResolver");
+      const hostResolver = Services.get<IComponentHostResolver>("IComponentHostResolver");
       return hostResolver.resolve(this);
     } catch {
       return null;
