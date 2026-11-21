@@ -119,7 +119,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 24 ships an npm CLI with trusted publishing support.
+          node-version: 24
           cache: npm
           registry-url: https://registry.npmjs.org
 
