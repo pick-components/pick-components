@@ -53,38 +53,7 @@
             });
         }
 
-        function applyWelcomeTheme() {
-          document.querySelectorAll(".welcome-logo").forEach(function (logo) {
-            var dark = logo.querySelector(".welcome-logo-dark");
-            var light = logo.querySelector(".welcome-logo-light");
-            if (!dark || !light) return;
-
-            var currentTheme =
-              document.documentElement.getAttribute("data-theme");
-            if (currentTheme === "light") {
-              dark.style.display = "none";
-              light.style.display = "block";
-              return;
-            }
-
-            dark.style.display = "block";
-            light.style.display = "none";
-          });
-        }
-
-        function applyBranding() {
-          applyBrandLogos();
-          applyWelcomeTheme();
-        }
-
-        document.addEventListener("DOMContentLoaded", applyBranding);
-
-        // Watch only data-theme attribute changes for theme switching (no subtree scan)
-        var themeObserver = new MutationObserver(applyWelcomeTheme);
-        themeObserver.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ["data-theme"],
-        });
+        document.addEventListener("DOMContentLoaded", applyBrandLogos);
 
         // Watch for logo elements being added; disconnect once logos are initialized
         var logoObserver = new MutationObserver(function () {
@@ -193,63 +162,49 @@
 
       /* ── Welcome splash ──────────────────────────────── */
       .welcome {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
+        display: grid;
+        align-content: safe center;
+        justify-items: center;
+        gap: 1.25rem;
+        height: 100dvh;
+        overflow-y: auto;
+        padding: 2rem 1rem;
+        background: var(--pg-result-bg);
+        color: var(--pg-shell-topbar-color);
+      }
+      .welcome img {
+        width: 5rem;
+        height: 5rem;
+        object-fit: contain;
+      }
+      .welcome h1 {
+        margin: 0;
         text-align: center;
-        padding: 2.2rem;
-        background:
-          radial-gradient(
-            900px 420px at 15% -20%,
-            rgba(120, 184, 75, 0.2),
-            transparent 62%
-          ),
-          radial-gradient(
-            820px 440px at 92% 112%,
-            rgba(16, 149, 193, 0.16),
-            transparent 62%
-          ),
-          var(--pg-result-bg, #f4f7fb);
       }
-      .welcome-logo {
-        width: min(760px, 92vw);
-        margin-bottom: 1.6rem;
+      .welcome-languages {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+        max-width: 48rem;
       }
-
-      .welcome-logo img {
-        width: 100%;
-        height: auto;
-        display: block;
+      .welcome section {
+        display: grid;
+        align-content: start;
+        gap: 0.85rem;
+        padding: 1.25rem;
+        border: 1px solid var(--pg-shell-panel-border);
+        border-radius: 0.65rem;
+        background: var(--pg-shell-panel-bg);
       }
-
-      .welcome-logo-light {
-        display: none;
+      .welcome section > * {
+        margin: 0;
       }
-      .welcome h2 {
-        font-size: 1.7rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
-        color: var(--pg-shell-topbar-color, #eef2f7);
+      .welcome section a {
+        justify-self: start;
       }
-      .welcome p {
-        color: var(--pg-shell-control-muted, #95a1b4);
-        margin-bottom: 1.5rem;
-        max-width: 38rem;
-      }
-      .welcome .lang-btns {
-        display: flex;
-        gap: 1rem;
-      }
-
-      @media (max-width: 768px) {
-        .pg-shell {
-          display: block;
-        }
-
-        .welcome-logo {
-          transform: translateX(-12px);
+      @media (max-width: 640px) {
+        .welcome-languages {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -266,41 +221,73 @@
     <pick-router style="display: contents">
       <!-- Welcome (no language selected) -->
       <template data-route="/">
-        <div class="welcome">
-          <div class="welcome-logo">
-            <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="" />
-            <img
-              class="welcome-logo-light"
-              data-brand-logo-light="true"
-              alt=""
-            />
+        <main class="welcome">
+          <img src="./brand/mascot.svg" width="80" height="80" alt="" />
+          <h1>Pick Components</h1>
+          <div class="welcome-languages">
+            <section lang="en" aria-label="English">
+              <h2>English</h2>
+              <p>
+                Native Web Components with controlled templates and an explicit
+                lifecycle. Keep views, services and intents separate.
+              </p>
+              <p>
+                Zero runtime dependencies. No <code>eval</code> or
+                <code>new Function</code>.
+              </p>
+              <a href="./en/01-hello" role="button">Explore examples</a>
+              <a href="./en/16-template-security">Break the template</a>
+            </section>
+            <section lang="es" aria-label="Español">
+              <h2>Español</h2>
+              <p>
+                Web Components nativos con plantillas controladas y un ciclo de
+                vida explícito. Separa vistas, servicios e intenciones.
+              </p>
+              <p>
+                Cero dependencias en ejecución. Sin <code>eval</code> ni
+                <code>new Function</code>.
+              </p>
+              <a href="./es/01-hello" role="button">Explorar ejemplos</a>
+              <a href="./es/16-template-security">Rompe la plantilla</a>
+            </section>
           </div>
-          <h2>Welcome / Bienvenido</h2>
-          <p>Select a language to explore the interactive playground:</p>
-          <div class="lang-btns">
-            <a href="./es/01-hello" role="button">Español</a>
-            <a href="./en/01-hello" role="button" class="secondary">English</a>
-          </div>
-        </div>
+        </main>
       </template>
 
       <template data-route="/:base">
-        <div class="welcome">
-          <div class="welcome-logo">
-            <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="" />
-            <img
-              class="welcome-logo-light"
-              data-brand-logo-light="true"
-              alt=""
-            />
+        <main class="welcome">
+          <img src="./brand/mascot.svg" width="80" height="80" alt="" />
+          <h1>Pick Components</h1>
+          <div class="welcome-languages">
+            <section lang="en" aria-label="English">
+              <h2>English</h2>
+              <p>
+                Native Web Components with controlled templates and an explicit
+                lifecycle. Keep views, services and intents separate.
+              </p>
+              <p>
+                Zero runtime dependencies. No <code>eval</code> or
+                <code>new Function</code>.
+              </p>
+              <a href="./en/01-hello" role="button">Explore examples</a>
+              <a href="./en/16-template-security">Break the template</a>
+            </section>
+            <section lang="es" aria-label="Español">
+              <h2>Español</h2>
+              <p>
+                Web Components nativos con plantillas controladas y un ciclo de
+                vida explícito. Separa vistas, servicios e intenciones.
+              </p>
+              <p>
+                Cero dependencias en ejecución. Sin <code>eval</code> ni
+                <code>new Function</code>.
+              </p>
+              <a href="./es/01-hello" role="button">Explorar ejemplos</a>
+              <a href="./es/16-template-security">Rompe la plantilla</a>
+            </section>
           </div>
-          <h2>Welcome / Bienvenido</h2>
-          <p>Select a language to explore the interactive playground:</p>
-          <div class="lang-btns">
-            <a href="./es/01-hello" role="button">Español</a>
-            <a href="./en/01-hello" role="button" class="secondary">English</a>
-          </div>
-        </div>
+        </main>
       </template>
 
       <template data-route="/:lang/**">

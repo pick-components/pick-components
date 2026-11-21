@@ -9,17 +9,19 @@ import { PickComponent, PickRender, Reactive } from "pick-components";
   styles: securityStyles,
   template: `
     <section class="panel">
+      <h2>Break the template</h2>
       <div class="group">
         <h3>✅ Allowed</h3>
-        <p><code>count + 1</code> <output>{{count + 1}}</output></p>
+        <p><code>count + 1</code> <output data-result="allowed">{{count + 1}}</output></p>
+        <pick-action action="increment"><button type="button">Increment</button></pick-action>
         <p><code>user.name</code> <output>{{user.name}}</output></p>
         <p><code>label.toUpperCase()</code> <output>{{label.toUpperCase()}}</output></p>
         <p><code>count > 0 ? "positive" : "zero"</code> <output>{{count > 0 ? "positive" : "zero"}}</output></p>
       </div>
 
       <div class="group">
-        <h3>🚫 Silently empty (console.warn emitted)</h3>
-        <p><code>{{iife}}</code> <output>{{(() => count + 1)()}}</output></p>
+        <h3>Rejected expressions</h3>
+        <p><code>{{iife}}</code> <output data-result="rejected">{{(() => count + 1)()}}</output><span class="rejection">Expression rejected. Arrow functions cannot run in a template. Try count + 1.</span></p>
         <p><code>{{lifecycleLabel}}</code> <output>{{onInit()}}</output></p>
       </div>
 
@@ -42,6 +44,10 @@ import { PickComponent, PickRender, Reactive } from "pick-components";
 })
 class TemplateSecurityExample extends PickComponent {
   @Reactive count = 5;
+
+  increment(): void {
+    this.count += 1;
+  }
   @Reactive user = { name: "Ada" };
   @Reactive label = "hello";
 
