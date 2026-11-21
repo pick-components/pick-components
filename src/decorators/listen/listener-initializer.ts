@@ -1,6 +1,5 @@
 import type { Unsubscribe } from "../../reactive/signal.js";
 import type { IDomContext } from "../../rendering/dom-context/dom-context.interface.js";
-import { Services } from "../../providers/service-provider.js";
 import type { IListenerMetadataRegistry } from "./listener-metadata-registry.interface.js";
 import type { IListenerInitializer } from "./listener-initializer.interface.js";
 
@@ -15,6 +14,8 @@ import type { IListenerInitializer } from "./listener-initializer.interface.js";
  * Registered in the service container under `'IListenerInitializer'` by `bootstrapFramework`.
  */
 export class DefaultListenerInitializer implements IListenerInitializer {
+  constructor(private readonly metadata: IListenerMetadataRegistry) {}
+
   /**
    * Binds all `@Listen`-registered event handlers to the component's DOM context.
    *
@@ -27,9 +28,7 @@ export class DefaultListenerInitializer implements IListenerInitializer {
     if (!component || typeof component !== "object")
       throw new Error("Component is required");
 
-    const listeners = Services.get<IListenerMetadataRegistry>(
-      "IListenerMetadataRegistry",
-    ).get(component);
+    const listeners = this.metadata.get(component);
     const comp = component as Record<string, unknown>;
 
     listeners.forEach(({ methodName, eventName, selector }) => {

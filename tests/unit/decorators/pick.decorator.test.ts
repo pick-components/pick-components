@@ -236,7 +236,9 @@ test.describe("@Pick DSL Decorator", () => {
       const domContext = new DomContext(targetRoot);
       domContext.setElement(root, DomContentType.COMPONENT);
 
-      new DefaultListenerInitializer().initialize(domContext, instance);
+      Services.get<DefaultListenerInitializer>(
+        "IListenerInitializer",
+      ).initialize(domContext, instance);
 
       const input = dom.window.document.createElement("input");
       input.id = "nameField";
