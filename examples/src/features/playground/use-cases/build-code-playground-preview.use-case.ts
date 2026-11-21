@@ -43,9 +43,7 @@ export async function buildCodePlaygroundPreviewDocument(
     }
   }
 
-  const htmlParts = extractPlaygroundHtmlParts(
-    documentTab?.code ?? "",
-  );
+  const htmlParts = extractPlaygroundHtmlParts(documentTab?.code ?? "");
   const entryJs = session.entryFile.replace(/\.ts$/, ".js");
 
   return await previewPort.buildMultiSrcdoc(

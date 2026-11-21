@@ -412,9 +412,7 @@ test.describe("Multi-tab playground (forms)", () => {
       throw new Error("Expected preview iframe to be available");
     }
 
-    await expect(frame.locator("forms-example h3")).toHaveText(
-      "Forms & Rules",
-    );
+    await expect(frame.locator("forms-example h3")).toHaveText("Forms & Rules");
     await expect(
       frame.locator("text=A service provides validation rules"),
     ).toBeVisible();
@@ -978,9 +976,7 @@ test.describe("Locale switching", () => {
       throw new Error("Expected preview iframe to be available");
     }
 
-    await expect(frame.locator("pick-for-example h3")).toHaveText(
-      "Pick For",
-    );
+    await expect(frame.locator("pick-for-example h3")).toHaveText("Pick For");
     await expect(frame.locator("text=Define the component")).toBeVisible();
 
     await page.locator("language-switcher a").first().click();
@@ -1003,9 +999,7 @@ test.describe("Locale switching", () => {
       "src",
       /\/playground-examples\/09-pick-for\/es-(light|dark)\/pick-for\.example\.ts/,
     );
-    await expect(
-      frameAfter.locator("pick-for-example article"),
-    ).toHaveCount(3);
+    await expect(frameAfter.locator("pick-for-example article")).toHaveCount(3);
     await expect(
       frameAfter.locator("text=Definir el componente"),
     ).toBeVisible();

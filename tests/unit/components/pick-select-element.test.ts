@@ -66,9 +66,7 @@ test.describe("PickSelectElement", () => {
     return host;
   }
 
-  function getOnElements(
-    host: InstanceType<PickSelectElementCtor>,
-  ): Element[] {
+  function getOnElements(host: InstanceType<PickSelectElementCtor>): Element[] {
     return (host as any).branches
       .filter((branch: any) => !branch.isDefault)
       .map((branch: any) => branch.conditionElement);

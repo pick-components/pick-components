@@ -13,7 +13,6 @@ export class CodePlaygroundInitializer extends PickInitializer<CodePlayground> {
   }
 
   protected async onInitialize(component: CodePlayground): Promise<boolean> {
-
     const src = component.getRequestedSrc();
     if (!src) {
       return true;

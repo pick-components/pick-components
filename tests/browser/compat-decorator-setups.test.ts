@@ -18,9 +18,16 @@ function requireBuildArtifact(path: string): void {
 function build(label: string, command: string): void {
   console.log(`\n  ▶ Building ${label}…`);
   try {
-    execSync(command, { cwd: repositoryRoot, stdio: "pipe", maxBuffer: 10 * 1024 * 1024 });
+    execSync(command, {
+      cwd: repositoryRoot,
+      stdio: "pipe",
+      maxBuffer: 10 * 1024 * 1024,
+    });
   } catch (error) {
-    type ExecError = NodeJS.ErrnoException & { stderr?: Buffer; stdout?: Buffer };
+    type ExecError = NodeJS.ErrnoException & {
+      stderr?: Buffer;
+      stdout?: Buffer;
+    };
     const err = error as ExecError;
     const stderr = err.stderr?.toString() ?? "";
     const stdout = err.stdout?.toString() ?? "";
@@ -42,7 +49,7 @@ test.describe("Decorator compatibility setups", () => {
   let baseUrl: string;
   const bunAvailable = isBunAvailable();
 
-  test.beforeAll(async ({ }, testInfo) => {
+  test.beforeAll(async ({}, testInfo) => {
     // Allow time for all bundler/compiler builds on CI
     testInfo.setTimeout(180_000);
 
@@ -115,7 +122,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("01 — tsc + legacy experimentalDecorators", () => {
-    test("should render the component when compiled with tsc and legacy decorators", async ({ page }) => {
+    test("should render the component when compiled with tsc and legacy decorators", async ({
+      page,
+    }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/01-tsc-legacy/index.html`;
 
@@ -130,7 +139,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("02 — webpack + ts-loader + TC39 decorators", () => {
-    test("should render the component when bundled with webpack and TC39 decorators via ts-loader", async ({ page }) => {
+    test("should render the component when bundled with webpack and TC39 decorators via ts-loader", async ({
+      page,
+    }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/02-webpack-tc39/index.html`;
 
@@ -145,7 +156,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("03 — swc + TC39 decorators", () => {
-    test("should render the component when compiled with swc and TC39 decorators", async ({ page }) => {
+    test("should render the component when compiled with swc and TC39 decorators", async ({
+      page,
+    }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/03-swc-tc39/index.html`;
 
@@ -160,7 +173,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("04 — webpack + babel-loader + legacy decorators", () => {
-    test("should render the component when bundled with babel-loader and legacy decorators", async ({ page }) => {
+    test("should render the component when bundled with babel-loader and legacy decorators", async ({
+      page,
+    }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/04-babel-legacy/index.html`;
 
@@ -175,7 +190,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("05 — webpack + babel-loader + TC39 decorators (2023-11)", () => {
-    test("should render the component when bundled with babel-loader and TC39 2023-11 decorators", async ({ page }) => {
+    test("should render the component when bundled with babel-loader and TC39 2023-11 decorators", async ({
+      page,
+    }) => {
       // Arrange
       const url = `${baseUrl}/examples/compat/05-babel-tc39/index.html`;
 
@@ -190,7 +207,9 @@ test.describe("Decorator compatibility setups", () => {
   });
 
   test.describe("06 — bun + TC39 decorators", () => {
-    test("should render the component when bundled with bun and TC39 decorators", async ({ page }) => {
+    test("should render the component when bundled with bun and TC39 decorators", async ({
+      page,
+    }) => {
       // Arrange
       if (!bunAvailable) {
         test.skip();

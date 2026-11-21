@@ -215,9 +215,7 @@ test.describe("Nested Managed Elements", () => {
       expect(pickElement).not.toBeNull();
 
       // NOT managed (not in registry)
-      expect(ManagedElementRegistry.isManagedElement(pickElement!)).toBe(
-        false,
-      );
+      expect(ManagedElementRegistry.isManagedElement(pickElement!)).toBe(false);
 
       // Attribute remains (no cleanup)
       expect(pickElement!.getAttribute("data")).toBe("value");

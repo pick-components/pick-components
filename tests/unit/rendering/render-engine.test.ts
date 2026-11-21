@@ -60,7 +60,11 @@ test.describe("RenderEngine", () => {
         create: () => domContext,
       } as any,
       {
-        getOrCompile: (_componentId: string, template: string, analyzer: any) => {
+        getOrCompile: (
+          _componentId: string,
+          template: string,
+          analyzer: any,
+        ) => {
           cachedTemplate = template;
           return analyzer.analyze(template);
         },

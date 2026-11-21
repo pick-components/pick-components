@@ -61,9 +61,18 @@ export function definePick<TState = unknown>(
   selector: string,
   setup: (ctx: InlineContext<TState>) => void,
 ): ComponentDefinition {
-  if (!selector || typeof selector !== "string" || selector.trim().length === 0) throw new Error("[definePick] selector is required and must not be empty");
-  if (selector !== selector.trim()) throw new Error("[definePick] selector must not have leading or trailing whitespace");
-  if (!setup || typeof setup !== "function") throw new Error("[definePick] setup is required");
+  if (!selector || typeof selector !== "string" || selector.trim().length === 0)
+    throw new Error("[definePick] selector is required and must not be empty");
+  if (selector !== selector.trim())
+    throw new Error(
+      "[definePick] selector must not have leading or trailing whitespace",
+    );
+  if (!setup || typeof setup !== "function")
+    throw new Error("[definePick] setup is required");
 
-  return { kind: ComponentKind.Pick, selector, setup: setup as (ctx: InlineContext) => void };
+  return {
+    kind: ComponentKind.Pick,
+    selector,
+    setup: setup as (ctx: InlineContext) => void,
+  };
 }

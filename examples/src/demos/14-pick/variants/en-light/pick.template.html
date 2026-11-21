@@ -14,7 +14,10 @@
   <pick-select>
     <on condition="{{products.length > 0}}">
       <pick-for items="{{products}}" key="id">
-        <p><strong>{{$item.name}}</strong> - ${{$item.price}} · Stock: {{$item.stock}}</p>
+        <p>
+          <strong>{{$item.name}}</strong> - ${{$item.price}} · Stock:
+          {{$item.stock}}
+        </p>
       </pick-for>
     </on>
     <otherwise>

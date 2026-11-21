@@ -45,7 +45,11 @@ const createTerserPlugin = () =>
 
 export default [
   createBaseConfig("dist/index.js", "dist/browser/pick-components.js"),
-  createBaseConfig("dist/index.js", "dist/browser/pick-components.min.js", true),
+  createBaseConfig(
+    "dist/index.js",
+    "dist/browser/pick-components.min.js",
+    true,
+  ),
   createBaseConfig(
     "dist/bootstrap.js",
     "dist/browser/pick-components-bootstrap.js",

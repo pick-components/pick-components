@@ -78,8 +78,7 @@ export class ErrorRenderer implements IErrorRenderer {
     private readonly expressionResolver: IExpressionResolver,
   ) {
     if (!domAdapter) throw new Error("Dom adapter is required");
-    if (!expressionResolver)
-      throw new Error("Expression resolver is required");
+    if (!expressionResolver) throw new Error("Expression resolver is required");
   }
   /**
    * Renders an error overlay in the DOM context
@@ -144,10 +143,7 @@ export class ErrorRenderer implements IErrorRenderer {
     component?: PickComponent,
   ): Promise<void> {
     const placeholder = "__ERROR_MESSAGE_PLACEHOLDER__";
-    let template = errorTemplate.replace(
-      /\{\{\s*message\s*\}\}/g,
-      placeholder,
-    );
+    let template = errorTemplate.replace(/\{\{\s*message\s*\}\}/g, placeholder);
 
     if (component) {
       template = this.expressionResolver.resolve(template, component);

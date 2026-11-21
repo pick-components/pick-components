@@ -16,7 +16,9 @@ test.describe("definePick", () => {
   test("should return a pick descriptor when selector and setup are provided", () => {
     // Arrange
     const selector = "my-counter";
-    const setup = (ctx: any) => { ctx.html("<p>0</p>"); };
+    const setup = (ctx: any) => {
+      ctx.html("<p>0</p>");
+    };
 
     // Act
     const result = definePick(selector, setup);
@@ -31,7 +33,9 @@ test.describe("definePick", () => {
   test("should preserve setup function reference without cloning", () => {
     // Arrange
     const selector = "my-form";
-    const setup = (ctx: any) => { ctx.html("<form />"); };
+    const setup = (ctx: any) => {
+      ctx.html("<form />");
+    };
 
     // Act
     const result = definePick(selector, setup);
@@ -44,7 +48,9 @@ test.describe("definePick", () => {
   test("should not register any service when called without bootstrapFramework", () => {
     // Arrange
     const selector = "isolated-pick";
-    const setup = (ctx: any) => { ctx.html("<div />"); };
+    const setup = (ctx: any) => {
+      ctx.html("<div />");
+    };
 
     // Act — no bootstrap, should not throw
     const result = definePick(selector, setup);
@@ -59,9 +65,9 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick("", setup),
-    ).toThrow("[definePick] selector is required and must not be empty");
+    expect(() => definePick("", setup)).toThrow(
+      "[definePick] selector is required and must not be empty",
+    );
   });
 
   test("should throw when selector is null", () => {
@@ -69,9 +75,9 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick(null as any, setup),
-    ).toThrow("[definePick] selector is required and must not be empty");
+    expect(() => definePick(null as any, setup)).toThrow(
+      "[definePick] selector is required and must not be empty",
+    );
   });
 
   test("should throw when selector is undefined", () => {
@@ -79,23 +85,23 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick(undefined as any, setup),
-    ).toThrow("[definePick] selector is required and must not be empty");
+    expect(() => definePick(undefined as any, setup)).toThrow(
+      "[definePick] selector is required and must not be empty",
+    );
   });
 
   test("should throw when setup is null", () => {
     // Act & Assert
-    expect(() =>
-      definePick("my-comp", null as any),
-    ).toThrow("[definePick] setup is required");
+    expect(() => definePick("my-comp", null as any)).toThrow(
+      "[definePick] setup is required",
+    );
   });
 
   test("should throw when setup is undefined", () => {
     // Act & Assert
-    expect(() =>
-      definePick("my-comp", undefined as any),
-    ).toThrow("[definePick] setup is required");
+    expect(() => definePick("my-comp", undefined as any)).toThrow(
+      "[definePick] setup is required",
+    );
   });
 
   test("should throw when selector is whitespace-only", () => {
@@ -103,9 +109,9 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick("   ", setup),
-    ).toThrow("[definePick] selector is required and must not be empty");
+    expect(() => definePick("   ", setup)).toThrow(
+      "[definePick] selector is required and must not be empty",
+    );
   });
 
   test("should throw when selector has leading whitespace", () => {
@@ -113,9 +119,9 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick(" my-comp", setup),
-    ).toThrow("[definePick] selector must not have leading or trailing whitespace");
+    expect(() => definePick(" my-comp", setup)).toThrow(
+      "[definePick] selector must not have leading or trailing whitespace",
+    );
   });
 
   test("should throw when selector has trailing whitespace", () => {
@@ -123,9 +129,9 @@ test.describe("definePick", () => {
     const setup = (_ctx: any) => {};
 
     // Act & Assert
-    expect(() =>
-      definePick("my-comp ", setup),
-    ).toThrow("[definePick] selector must not have leading or trailing whitespace");
+    expect(() => definePick("my-comp ", setup)).toThrow(
+      "[definePick] selector must not have leading or trailing whitespace",
+    );
   });
 });
 
@@ -139,14 +145,22 @@ test.describe("definePick — ctx.on view actions", () => {
 
   test("should capture ctx.on handlers as methods in the config", () => {
     // Arrange
-    const counterDef = definePick<{ count: number }>("def-pick-counter", (ctx) => {
-      ctx.state({ count: 0 });
-      ctx.on({
-        increment() { this.count++; },
-        decrement() { this.count--; },
-        reset() { this.count = 0; },
-      });
-      ctx.html(`
+    const counterDef = definePick<{ count: number }>(
+      "def-pick-counter",
+      (ctx) => {
+        ctx.state({ count: 0 });
+        ctx.on({
+          increment() {
+            this.count++;
+          },
+          decrement() {
+            this.count--;
+          },
+          reset() {
+            this.count = 0;
+          },
+        });
+        ctx.html(`
         <div>
           <p>{{count}}</p>
           <pick-action action="increment"><button type="button">+</button></pick-action>
@@ -154,11 +168,14 @@ test.describe("definePick — ctx.on view actions", () => {
           <pick-action action="reset"><button type="button">Reset</button></pick-action>
         </div>
       `);
-    });
+      },
+    );
     const factory = new DefaultPickComponentFactory(mockListenerRegistry);
 
     // Act
-    const config = factory.captureConfig<{ count: number }>(counterDef.setup as any);
+    const config = factory.captureConfig<{ count: number }>(
+      counterDef.setup as any,
+    );
 
     // Assert — all three action names must be present in config.methods
     expect(typeof config.methods?.["increment"]).toBe("function");
@@ -168,19 +185,28 @@ test.describe("definePick — ctx.on view actions", () => {
 
   test("should invoke ctx.on handler mutating state when called with bound context", () => {
     // Arrange
-    const counterDef = definePick<{ count: number }>("def-pick-state-counter", (ctx) => {
-      ctx.state({ count: 0 });
-      ctx.on({
-        increment() { this.count++; },
-        reset() { this.count = 0; },
-      });
-      ctx.html(`
+    const counterDef = definePick<{ count: number }>(
+      "def-pick-state-counter",
+      (ctx) => {
+        ctx.state({ count: 0 });
+        ctx.on({
+          increment() {
+            this.count++;
+          },
+          reset() {
+            this.count = 0;
+          },
+        });
+        ctx.html(`
         <pick-action action="increment"><button type="button">+</button></pick-action>
         <pick-action action="reset"><button type="button">Reset</button></pick-action>
       `);
-    });
+      },
+    );
     const factory = new DefaultPickComponentFactory(mockListenerRegistry);
-    const config = factory.captureConfig<{ count: number }>(counterDef.setup as any);
+    const config = factory.captureConfig<{ count: number }>(
+      counterDef.setup as any,
+    );
 
     const state = { count: 0 } as any;
 

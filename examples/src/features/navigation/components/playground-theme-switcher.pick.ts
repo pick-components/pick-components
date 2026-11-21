@@ -1,8 +1,4 @@
-import {
-  PickComponent,
-  PickRender,
-  Reactive,
-} from "pick-components";
+import { PickComponent, PickRender, Reactive } from "pick-components";
 import type { ThemeMode } from "../models/playground-theme.js";
 
 @PickRender({

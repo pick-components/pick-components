@@ -228,9 +228,9 @@ test.describe("PickRouterElement (unit)", () => {
     expect(nestedTemplate).not.toBeNull();
     expect(nestedTemplate?.getAttribute("data-route")).toBe("/:lang/01-hello");
     expect(
-      nestedTemplate?.content.querySelector("code-playground")?.getAttribute(
-        "locale",
-      ),
+      nestedTemplate?.content
+        .querySelector("code-playground")
+        ?.getAttribute("locale"),
     ).toBe(":lang");
 
     host.disconnectedCallback();

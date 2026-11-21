@@ -38,7 +38,8 @@ export class DefaultPickComponentFactory implements IPickComponentFactory {
    * @throws Error if listenerMetadataRegistry is null or undefined
    */
   constructor(listenerMetadataRegistry: IListenerMetadataRegistry) {
-    if (!listenerMetadataRegistry) throw new Error("listenerMetadataRegistry is required");
+    if (!listenerMetadataRegistry)
+      throw new Error("listenerMetadataRegistry is required");
     this.listenerMetadataRegistry = listenerMetadataRegistry;
   }
 
@@ -394,9 +395,7 @@ export class DefaultPickComponentFactory implements IPickComponentFactory {
     if (!initFn) throw new Error("initFn is required");
 
     return class DynamicInitializer extends PickInitializer<unknown> {
-      protected async onInitialize(
-        component: PickComponent,
-      ): Promise<boolean> {
+      protected async onInitialize(component: PickComponent): Promise<boolean> {
         const deps = createDeps ? resolveDeps(createDeps) : undefined;
         await initFn.call(component, component, deps);
         return true;

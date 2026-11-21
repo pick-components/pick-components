@@ -82,7 +82,9 @@ function run() {
 
   console.log("Export completed.");
   console.log("Copied skill to:", targetSkillDir);
-  console.log("Next step: commit .github/skills/setup-pick-components/ in target repository.");
+  console.log(
+    "Next step: commit .github/skills/setup-pick-components/ in target repository.",
+  );
 }
 
 run();

@@ -23,8 +23,8 @@ test.describe("prerender examples script", () => {
     });
 
     // Act & Assert
-    expect(html).toContain("<html lang=\"es\">");
-    expect(html).not.toContain("<html lang=\"es\" data-theme=");
+    expect(html).toContain('<html lang="es">');
+    expect(html).not.toContain('<html lang="es" data-theme=');
     expect(html).toMatchSnapshot("prerender-es-01-hello.html");
   });
 
@@ -36,6 +36,6 @@ test.describe("prerender examples script", () => {
     expect(styles).toContain("@media (prefers-color-scheme: light)");
     expect(styles).toContain("--pg-shell-control-bg: #111827;");
     expect(styles).toContain("--pg-shell-control-bg: #ffffff;");
-    expect(styles).toContain(":root:not([data-theme=\"dark\"])");
+    expect(styles).toContain(':root:not([data-theme="dark"])');
   });
 });

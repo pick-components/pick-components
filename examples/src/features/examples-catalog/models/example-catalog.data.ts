@@ -107,10 +107,7 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExampleDefinition[] = [
     category: "primitives",
     kind: "primitive",
     minTabs: 2,
-    variantSrcs: buildVariantSrcs(
-      "07b-pick-actions-pick",
-      "pick-actions-pick",
-    ),
+    variantSrcs: buildVariantSrcs("07b-pick-actions-pick", "pick-actions-pick"),
   },
   {
     id: "08-pick-select",

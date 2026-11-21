@@ -13,7 +13,10 @@ test.describe("Browser-ready distribution", () => {
 
   test.beforeAll(async () => {
     // Arrange
-    server = createStaticRepositoryServer(repositoryRoot, defaultBrowserFixturePath);
+    server = createStaticRepositoryServer(
+      repositoryRoot,
+      defaultBrowserFixturePath,
+    );
 
     // Act
     await new Promise<void>((resolve) => {

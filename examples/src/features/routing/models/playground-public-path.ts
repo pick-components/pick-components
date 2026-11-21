@@ -4,9 +4,7 @@ declare global {
   }
 }
 
-export function normalizePlaygroundBasePath(
-  value?: string | null,
-): string {
+export function normalizePlaygroundBasePath(value?: string | null): string {
   if (!value) {
     return "";
   }

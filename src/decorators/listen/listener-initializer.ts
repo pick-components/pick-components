@@ -76,7 +76,10 @@ export class DefaultListenerInitializer implements IListenerInitializer {
     });
   }
 
-  private assertValidSelector(rootElement: HTMLElement, selector: string): void {
+  private assertValidSelector(
+    rootElement: HTMLElement,
+    selector: string,
+  ): void {
     rootElement.querySelector(selector);
   }
 

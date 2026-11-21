@@ -1,5 +1,10 @@
 import counterStyles from "./counter.styles.css";
-import { PickComponent, Reactive, Listen, defineComponent } from "pick-components";
+import {
+  PickComponent,
+  Reactive,
+  Listen,
+  defineComponent,
+} from "pick-components";
 
 // defineComponent es una alternativa sin decoradores a @PickRender.
 // La clase usa @Reactive y @Listen como siempre — solo cambia el registro.

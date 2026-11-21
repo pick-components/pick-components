@@ -25,7 +25,10 @@ test.describe("defineComponent", () => {
 
     // Assert
     expect(result.kind).toBe("render");
-    const renderDef = result as Extract<ComponentDefinition, { kind: "render" }>;
+    const renderDef = result as Extract<
+      ComponentDefinition,
+      { kind: "render" }
+    >;
     expect(renderDef.Class).toBe(MyComponent);
     expect(renderDef.config).toBe(config);
   });
@@ -42,7 +45,10 @@ test.describe("defineComponent", () => {
     );
 
     // Assert
-    const renderDef = result as Extract<ComponentDefinition, { kind: "render" }>;
+    const renderDef = result as Extract<
+      ComponentDefinition,
+      { kind: "render" }
+    >;
     expect(renderDef.config).toBe(config);
   });
 
@@ -67,9 +73,9 @@ test.describe("defineComponent", () => {
     const config = { selector: "my-comp", template: "<p />" };
 
     // Act & Assert
-    expect(() =>
-      defineComponent(null as any, config),
-    ).toThrow("[defineComponent] Class is required");
+    expect(() => defineComponent(null as any, config)).toThrow(
+      "[defineComponent] Class is required",
+    );
   });
 
   test("should throw when Class is undefined", () => {
@@ -77,9 +83,9 @@ test.describe("defineComponent", () => {
     const config = { selector: "my-comp", template: "<p />" };
 
     // Act & Assert
-    expect(() =>
-      defineComponent(undefined as any, config),
-    ).toThrow("[defineComponent] Class is required");
+    expect(() => defineComponent(undefined as any, config)).toThrow(
+      "[defineComponent] Class is required",
+    );
   });
 
   test("should throw when config is null", () => {
@@ -118,7 +124,9 @@ test.describe("defineComponent", () => {
         MyComponent as unknown as new (...args: unknown[]) => PickComponent,
         { selector: "", template: "<p />" },
       ),
-    ).toThrow("[defineComponent] config.selector is required and must not be empty");
+    ).toThrow(
+      "[defineComponent] config.selector is required and must not be empty",
+    );
   });
 
   test("should throw when config.selector is whitespace-only", () => {
@@ -131,7 +139,9 @@ test.describe("defineComponent", () => {
         MyComponent as unknown as new (...args: unknown[]) => PickComponent,
         { selector: "   ", template: "<p />" },
       ),
-    ).toThrow("[defineComponent] config.selector is required and must not be empty");
+    ).toThrow(
+      "[defineComponent] config.selector is required and must not be empty",
+    );
   });
 
   test("should throw when config.selector has leading whitespace", () => {
@@ -144,7 +154,9 @@ test.describe("defineComponent", () => {
         MyComponent as unknown as new (...args: unknown[]) => PickComponent,
         { selector: " my-comp", template: "<p />" },
       ),
-    ).toThrow("[defineComponent] config.selector must not have leading or trailing whitespace");
+    ).toThrow(
+      "[defineComponent] config.selector must not have leading or trailing whitespace",
+    );
   });
 
   test("should throw when config.selector has trailing whitespace", () => {
@@ -157,6 +169,8 @@ test.describe("defineComponent", () => {
         MyComponent as unknown as new (...args: unknown[]) => PickComponent,
         { selector: "my-comp ", template: "<p />" },
       ),
-    ).toThrow("[defineComponent] config.selector must not have leading or trailing whitespace");
+    ).toThrow(
+      "[defineComponent] config.selector must not have leading or trailing whitespace",
+    );
   });
 });

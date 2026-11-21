@@ -338,9 +338,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch selector must match componentId",
-    );
+    ).rejects.toThrow("Patch selector must match componentId");
 
     expect(metadataRegistry.get("pick-dialog")?.template).toBe(
       "<div>Default dialog</div>",
@@ -372,9 +370,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch selector must match componentId",
-    );
+    ).rejects.toThrow("Patch selector must match componentId");
   });
 
   test("should fail when componentOverrides patch value is not a plain object", async () => {
@@ -399,9 +395,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch must be a plain object",
-    );
+    ).rejects.toThrow("Patch must be a plain object");
   });
 
   test("should fail when componentOverrides patch value is a non-plain object", async () => {
@@ -426,9 +420,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch must be a plain object",
-    );
+    ).rejects.toThrow("Patch must be a plain object");
   });
 
   test("should fail when componentOverrides template is not a string", async () => {
@@ -455,9 +447,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch template must be a string when provided",
-    );
+    ).rejects.toThrow("Patch template must be a string when provided");
   });
 
   test("should fail when componentOverrides template is undefined", async () => {
@@ -484,9 +474,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch template must be a string when provided",
-    );
+    ).rejects.toThrow("Patch template must be a string when provided");
   });
 
   test("should fail when componentOverrides initializer is not a function", async () => {
@@ -513,9 +501,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch initializer must be a function when provided",
-    );
+    ).rejects.toThrow("Patch initializer must be a function when provided");
   });
 
   test("should fail when componentOverrides patch contains unsupported field", async () => {
@@ -542,9 +528,7 @@ test.describe("bootstrapFramework", () => {
           },
         },
       ),
-    ).rejects.toThrow(
-      "Patch contains unsupported field 'foo'",
-    );
+    ).rejects.toThrow("Patch contains unsupported field 'foo'");
   });
 
   test("should fail when componentOverrides option is not a plain object", async () => {
@@ -681,7 +665,9 @@ test.describe("bootstrapFramework", () => {
     // Act & Assert
     await expect(
       bootstrapFramework(mock as any, {}, { components: {} as any }),
-    ).rejects.toThrow("[bootstrapFramework] options.components must be an array.");
+    ).rejects.toThrow(
+      "[bootstrapFramework] options.components must be an array.",
+    );
   });
 
   test("should throw when a components entry is null", async () => {
@@ -691,7 +677,9 @@ test.describe("bootstrapFramework", () => {
     // Act & Assert
     await expect(
       bootstrapFramework(mock as any, {}, { components: [null as any] }),
-    ).rejects.toThrow("[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().");
+    ).rejects.toThrow(
+      "[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().",
+    );
   });
 
   test("should throw when a components entry is undefined", async () => {
@@ -701,18 +689,30 @@ test.describe("bootstrapFramework", () => {
     // Act & Assert
     await expect(
       bootstrapFramework(mock as any, {}, { components: [undefined as any] }),
-    ).rejects.toThrow("[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().");
+    ).rejects.toThrow(
+      "[bootstrapFramework] components[0]: each entry must be a non-null object produced by defineComponent() or definePick().",
+    );
   });
 
   test("should throw when components array contains duplicate selectors", async () => {
     // Arrange
     const mock = createMockServiceRegistry();
-    const def1 = { kind: "pick" as const, selector: "dupe-selector", setup: (_ctx: any) => {} };
-    const def2 = { kind: "pick" as const, selector: "dupe-selector", setup: (_ctx: any) => {} };
+    const def1 = {
+      kind: "pick" as const,
+      selector: "dupe-selector",
+      setup: (_ctx: any) => {},
+    };
+    const def2 = {
+      kind: "pick" as const,
+      selector: "dupe-selector",
+      setup: (_ctx: any) => {},
+    };
 
     // Act & Assert
     await expect(
       bootstrapFramework(mock as any, {}, { components: [def1, def2] as any }),
-    ).rejects.toThrow("[bootstrapFramework] components[1]: duplicate selector 'dupe-selector' — already present earlier in this components array.");
+    ).rejects.toThrow(
+      "[bootstrapFramework] components[1]: duplicate selector 'dupe-selector' — already present earlier in this components array.",
+    );
   });
 });

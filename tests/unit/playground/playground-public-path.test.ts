@@ -28,9 +28,9 @@ test.describe("playground public path helpers", () => {
     expect(withPlaygroundBasePath("/es", "/PickComponents")).toBe(
       "/PickComponents/es",
     );
-    expect(stripPlaygroundBasePath("/PickComponents/es/01-hello", "/PickComponents")).toBe(
-      "/es/01-hello",
-    );
+    expect(
+      stripPlaygroundBasePath("/PickComponents/es/01-hello", "/PickComponents"),
+    ).toBe("/es/01-hello");
   });
 
   test("infers a project pages base path from public URLs", () => {
@@ -41,8 +41,9 @@ test.describe("playground public path helpers", () => {
   });
 
   test("resolves playground routes under a project pages base path", () => {
-    (globalThis as { __PICK_PLAYGROUND_BASE_PATH__?: string })
-      .__PICK_PLAYGROUND_BASE_PATH__ = "/PickComponents";
+    (
+      globalThis as { __PICK_PLAYGROUND_BASE_PATH__?: string }
+    ).__PICK_PLAYGROUND_BASE_PATH__ = "/PickComponents";
 
     try {
       expect(hasPlaygroundLocalePrefix("/PickComponents/en/02-counter")).toBe(
@@ -51,9 +52,9 @@ test.describe("playground public path helpers", () => {
       expect(localeFromPlaygroundPath("/PickComponents/en/02-counter")).toBe(
         "en",
       );
-      expect(
-        exampleIdFromPlaygroundPath("/PickComponents/en/02-counter"),
-      ).toBe("02-counter");
+      expect(exampleIdFromPlaygroundPath("/PickComponents/en/02-counter")).toBe(
+        "02-counter",
+      );
       expect(buildExamplePath("en", "02-counter")).toBe(
         "/PickComponents/en/02-counter",
       );
@@ -63,4 +64,3 @@ test.describe("playground public path helpers", () => {
     }
   });
 });
-

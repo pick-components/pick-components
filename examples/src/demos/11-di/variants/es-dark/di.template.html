@@ -6,7 +6,10 @@
     inicializador con <code>UserService</code> y <code>HttpClient</code>.
   </p>
 
-  <p><strong>{{userCount}}</strong> usuarios vía InjectKit -> UserService -> HttpClient</p>
+  <p>
+    <strong>{{userCount}}</strong> usuarios vía InjectKit -> UserService ->
+    HttpClient
+  </p>
 
   <pick-for items="{{users}}" key="id">
     <p><strong>{{$item.name}}</strong> · {{$item.email}}</p>

@@ -1,0 +1,10 @@
+# Distribution output, locked dependency resolution and imported sources.
+dist/
+.release-artifacts/
+package-lock.json
+scripts/vendor/
+**/*.min.css
+**/*.min.js
+
+# The test renderer owns these byte-for-byte reference outputs.
+**/*-snapshots/

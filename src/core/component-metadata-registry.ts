@@ -51,11 +51,15 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
 
   private validateComponentId(componentId: string): void {
     if (typeof componentId !== "string" || componentId.trim().length === 0) {
-      throw new Error("ComponentId is required and cannot be empty or whitespace");
+      throw new Error(
+        "ComponentId is required and cannot be empty or whitespace",
+      );
     }
 
     if (componentId !== componentId.trim()) {
-      throw new Error("ComponentId cannot contain leading or trailing whitespace");
+      throw new Error(
+        "ComponentId cannot contain leading or trailing whitespace",
+      );
     }
   }
 
@@ -81,10 +85,7 @@ export class ComponentMetadataRegistry implements IComponentMetadataRegistry {
     if ("skeleton" in patch && typeof patch.skeleton !== "string") {
       throw new Error("Patch skeleton must be a string when provided");
     }
-    if (
-      "errorTemplate" in patch &&
-      typeof patch.errorTemplate !== "string"
-    ) {
+    if ("errorTemplate" in patch && typeof patch.errorTemplate !== "string") {
       throw new Error("Patch errorTemplate must be a string when provided");
     }
     if ("styles" in patch && typeof patch.styles !== "string") {

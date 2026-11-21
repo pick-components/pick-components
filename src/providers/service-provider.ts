@@ -35,7 +35,7 @@ class ServiceRegistryFacade implements IServiceRegistry {
    * @remarks
    * The custom implementation must honour these contracts:
    * - `get()` must return the **same singleton** on every call for a given token.
-  * - `getNew()` must return a **fresh instance** when the token is factory-backed.
+   * - `getNew()` must return a **fresh instance** when the token is factory-backed.
    * - `register()` must treat factory functions lazily (invoke on first `get()`, not on `register()`).
    *
    * @param impl - New registry implementation

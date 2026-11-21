@@ -62,7 +62,12 @@ test.describe("SafeContentSelector", () => {
 
     // Assert — on* and style tokens are now extracted; TemplateStaticValidator
     // throws before this selector is reached in a real render.
-    expect(fragments.map((f) => f.content)).toEqual(["{{onAttr}}", "color: {{styleAttr}}", "{{yes}}", "{{text}}"]);
+    expect(fragments.map((f) => f.content)).toEqual([
+      "{{onAttr}}",
+      "color: {{styleAttr}}",
+      "{{yes}}",
+      "{{text}}",
+    ]);
   });
 
   test("srcdoc attributes are extracted (blocked at compile time by TemplateStaticValidator)", () => {
@@ -74,7 +79,10 @@ test.describe("SafeContentSelector", () => {
 
     // Assert — srcdoc token is now extracted; TemplateStaticValidator throws
     // before this selector is reached in a real render.
-    expect(fragments.map((f) => f.content)).toEqual(["{{srcdocAttr}}", "{{yes}}"]);
+    expect(fragments.map((f) => f.content)).toEqual([
+      "{{srcdocAttr}}",
+      "{{yes}}",
+    ]);
   });
 
   test("should exclude artifacts from invalid tag names", () => {
