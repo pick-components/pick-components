@@ -175,7 +175,7 @@ export const PLAYGROUND_EXAMPLES: PlaygroundExampleDefinition[] = [
   },
   {
     id: "16-template-security",
-    labels: { es: "Seguridad de Templates", en: "Template Security" },
+    labels: { es: "Rompe la plantilla", en: "Break the template" },
     category: "basics",
     kind: "primitive",
     minTabs: 3,

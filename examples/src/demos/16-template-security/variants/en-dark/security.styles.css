@@ -59,3 +59,17 @@ output {
 .note code {
   font-size: 0.78rem;
 }
+
+.panel h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+.rejection {
+  font-size: 0.85rem;
+}
+output[data-result="rejected"]:empty {
+  display: none;
+}
+output[data-result="rejected"]:not(:empty) + .rejection {
+  display: none;
+}
