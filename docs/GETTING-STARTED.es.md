@@ -312,3 +312,32 @@ Una vez que tu primer componente funcione:
 > Muéstrame cómo registrar `CounterService` en el composition root usando `Services`.
 
 > Añade un `PickLifecycleManager` a `CounterApp` que se suscriba a un observable de `CounterService`.
+
+### Distribuir un widget independiente
+
+La página puede contener el elemento antes de cargar su módulo.
+
+```html
+<pick-product-card product-id="123"></pick-product-card>
+<script type="module" src="/widgets/product-card.js"></script>
+```
+
+En el módulo del widget, resuelve `pick-components/bootstrap` con tu empaquetador o mediante un mapa de importaciones.
+
+```javascript
+import { bootstrapElement } from "pick-components/bootstrap";
+
+await bootstrapElement("pick-product-card", (ctx) => {
+  ctx.state({ productId: "", count: 0 });
+  ctx.html(
+    '<article><span>{{productId}}</span><button type="button">{{count}}</button></article>',
+  );
+  ctx.listen("button", "click", function () {
+    this.count++;
+  });
+});
+```
+
+Cada etiqueta tiene su propio registro de servicios y cada instancia renderiza en su propio árbol de sombra. Usa `ctx.listen` para recibir eventos nativos. Los atributos HTML se escriben en kebab-case y entregan cadenas a los campos de estado que admiten escritura. El arranque de la aplicación conserva la responsabilidad de registrar primitivas como `pick-router`. Intentar definir de nuevo una etiqueta registrada produce un error.
+
+Para prerenderizar, comparte la cadena de la plantilla entre el servidor y el módulo. Importa `elementPrerenderAttributes` desde la misma entrada en Node y aplica el resultado al elemento anfitrión mediante tu serializador HTML. Genera un único hijo con la estructura de la plantilla y escapa los valores de texto. Para el ejemplo anterior sirve `<article><span>123</span><button type="button">0</button></article>`. Si el contrato y la estructura coinciden, el widget conserva el nodo y conecta sus enlaces reactivos. Si cambian, renderiza la plantilla actual. El HTML del servidor debe proceder de una fuente de confianza.

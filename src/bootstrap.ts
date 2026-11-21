@@ -5,6 +5,7 @@
  */
 export {
   bootstrapFramework,
+  bootstrapElement,
   type FrameworkOverrides,
   type BootstrapOptions,
   type DecoratorMode,
@@ -16,3 +17,4 @@ export {
   DefaultServiceRegistry,
 } from "./providers/service-provider.js";
 export type { ServiceToken } from "./providers/service-provider.interface.js";
+export { elementPrerenderAttributes } from "./ssr/prerender-manifest.js";

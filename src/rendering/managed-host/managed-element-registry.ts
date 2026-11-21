@@ -62,9 +62,8 @@ export interface IManagedElementRegistry {
  * ```
  */
 
-const registry = new WeakMap<Element, string>();
-
-export const ManagedElementRegistry: IManagedElementRegistry = {
+export class DefaultManagedElementRegistry implements IManagedElementRegistry {
+  private readonly registry = new WeakMap<Element, string>();
   /**
    * Registers an element as managed by Pick Components engine.
    *
@@ -88,8 +87,8 @@ export const ManagedElementRegistry: IManagedElementRegistry = {
     if (!componentId) {
       throw new Error("Component ID is required");
     }
-    registry.set(element, componentId);
-  },
+    this.registry.set(element, componentId);
+  }
 
   /**
    * Checks if an element is managed by Pick Components engine.
@@ -108,8 +107,8 @@ export const ManagedElementRegistry: IManagedElementRegistry = {
     if (!element) {
       return false;
     }
-    return registry.has(element);
-  },
+    return this.registry.has(element);
+  }
 
   /**
    * Gets the componentId for a managed element.
@@ -121,8 +120,8 @@ export const ManagedElementRegistry: IManagedElementRegistry = {
     if (!element) {
       return undefined;
     }
-    return registry.get(element);
-  },
+    return this.registry.get(element);
+  }
 
   /**
    * Unregisters an element from managed tracking.
@@ -139,6 +138,9 @@ export const ManagedElementRegistry: IManagedElementRegistry = {
     if (!element) {
       return;
     }
-    registry.delete(element);
-  },
-};
+    this.registry.delete(element);
+  }
+}
+
+/** Shared registry used by the application bootstrap. */
+export const ManagedElementRegistry = new DefaultManagedElementRegistry();

@@ -8,6 +8,8 @@ Pick Components follows a factory-first DI model.
 - Depend on abstractions in feature code.
 - Avoid implicit service discovery and hidden constructors.
 
+For standalone widgets, the element entry module is the composition root. Each registered tag owns a lazy registry, including its render engine and listener metadata. See [Ship an independent widget](GETTING-STARTED.md#ship-an-independent-widget).
+
 ## Default Registry
 
 Use the built-in `Services` registry when starting quickly:

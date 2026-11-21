@@ -52,6 +52,29 @@ export function computePickTemplateHash(templateSource: string): string {
   return `fnv1a-${(hash >>> 0).toString(16).padStart(8, "0")}`;
 }
 
+/**
+ * Produces the light-DOM attributes for a server-rendered widget host.
+ * Supply the same resolved template source that the widget uses at runtime.
+ *
+ * @example
+ * const attributes = elementPrerenderAttributes("product-card", "<p>{{name}}</p>");
+ */
+export function elementPrerenderAttributes(
+  selector: string,
+  templateSource: string,
+): Readonly<Record<string, string>> {
+  if (!selector || !templateSource)
+    throw new Error("Selector and template source are required");
+  return {
+    [PICK_PRERENDER_ATTRIBUTES.prerendered]: "true",
+    [PICK_PRERENDER_ATTRIBUTES.renderMode]: "light",
+    [PICK_PRERENDER_ATTRIBUTES.runtimeVersion]: PICK_PRERENDER_CONTRACT_VERSION,
+    [PICK_PRERENDER_ATTRIBUTES.selector]: selector,
+    [PICK_PRERENDER_ATTRIBUTES.templateHash]:
+      computePickTemplateHash(templateSource),
+  };
+}
+
 export function readPrerenderAdoptionCandidate(
   hostElement: HTMLElement,
 ): PrerenderAdoptionCandidate | null {
@@ -95,6 +118,13 @@ export function isLightDomPrerenderCandidate(
 }
 
 export class DefaultPrerenderAdoptionDecider implements IPrerenderAdoptionDecider {
+  constructor(
+    private readonly matchesRoot?: (
+      candidate: PrerenderAdoptionCandidate,
+      source: string,
+    ) => boolean,
+  ) {}
+
   decide(request: PrerenderAdoptionRequest): PrerenderAdoptionDecision {
     const expectedTemplateHash = computePickTemplateHash(
       request.templateSource,
@@ -145,6 +175,17 @@ export class DefaultPrerenderAdoptionDecider implements IPrerenderAdoptionDecide
       );
     }
 
+    if (
+      this.matchesRoot &&
+      !this.matchesRoot(candidate, request.templateSource)
+    ) {
+      return this.replace(
+        "root-structure-mismatch",
+        candidate,
+        expectedTemplateHash,
+      );
+    }
+
     return {
       mode: "adopt",
       reason: "compatible-prerender",
@@ -184,5 +225,5 @@ function findPrerenderRootElement(
     return child as HTMLElement;
   }
 
-  return hostElement;
+  return null;
 }

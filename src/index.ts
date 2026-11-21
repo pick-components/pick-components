@@ -12,7 +12,10 @@ export {
   Services,
 } from "./providers/service-provider.js";
 export type { ServiceToken } from "./providers/service-provider.interface.js";
-export { bootstrapFramework } from "./providers/framework-bootstrap.js";
+export {
+  bootstrapFramework,
+  bootstrapElement,
+} from "./providers/framework-bootstrap.js";
 export type {
   FrameworkOverrides,
   BootstrapOptions,
@@ -79,6 +82,7 @@ export {
   PICK_PRERENDER_ATTRIBUTES,
   PICK_PRERENDER_CONTRACT_VERSION,
   computePickTemplateHash,
+  elementPrerenderAttributes,
   isLightDomPrerenderCandidate,
   readPrerenderAdoptionCandidate,
 } from "./ssr/prerender-manifest.js";

@@ -3,7 +3,6 @@ import { JSDOM } from "jsdom";
 
 import { DefaultListenerInitializer } from "../../../src/decorators/listen/listener-initializer.js";
 import { DefaultListenerMetadataRegistry } from "../../../src/decorators/listen/listener-metadata-registry.js";
-import { Services } from "../../../src/providers/service-provider.js";
 import {
   DomContentType,
   type IDomContext,
@@ -13,6 +12,7 @@ import { DomContext } from "../../../src/rendering/dom-context/dom-context.js";
 test.describe("DefaultListenerInitializer", () => {
   let dom: JSDOM;
   let document: Document;
+  let registry: DefaultListenerMetadataRegistry;
 
   test.beforeEach(() => {
     dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
@@ -21,11 +21,10 @@ test.describe("DefaultListenerInitializer", () => {
     (global as any).HTMLElement = dom.window.HTMLElement;
     (global as any).Element = dom.window.Element;
     (global as any).Node = dom.window.Node;
-    Services.clear();
+    registry = new DefaultListenerMetadataRegistry();
   });
 
   test.afterEach(() => {
-    Services.clear();
     delete (global as any).document;
     delete (global as any).HTMLElement;
     delete (global as any).Element;
@@ -37,13 +36,11 @@ test.describe("DefaultListenerInitializer", () => {
     selector: string | null,
     eventName = "click",
   ): void {
-    const registry = new DefaultListenerMetadataRegistry();
     registry.register(prototype, {
       methodName: "onEvent",
       eventName,
       selector,
     });
-    Services.register("IListenerMetadataRegistry" as any, registry);
   }
 
   function createContext(root: HTMLElement): IDomContext {
@@ -69,7 +66,7 @@ test.describe("DefaultListenerInitializer", () => {
     const root = document.createElement("section");
     const domContext = createContext(root);
 
-    new DefaultListenerInitializer().initialize(domContext, component);
+    new DefaultListenerInitializer(registry).initialize(domContext, component);
 
     const button = document.createElement("button");
     button.id = "lateButton";
@@ -98,7 +95,7 @@ test.describe("DefaultListenerInitializer", () => {
     button.appendChild(label);
     root.appendChild(button);
 
-    new DefaultListenerInitializer().initialize(domContext, component);
+    new DefaultListenerInitializer(registry).initialize(domContext, component);
     label.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
 
     expect(component.count).toBe(1);
@@ -121,7 +118,7 @@ test.describe("DefaultListenerInitializer", () => {
     button.id = "lateButton";
     root.appendChild(button);
 
-    new DefaultListenerInitializer().initialize(domContext, component);
+    new DefaultListenerInitializer(registry).initialize(domContext, component);
     domContext.clearSubscriptions();
     button.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
 

@@ -8,6 +8,8 @@ Pick Components sigue un modelo de DI orientado a factories.
 - Depender de abstracciones en el código de features.
 - Evitar descubrimiento implícito de servicios y constructores ocultos.
 
+Para widgets independientes, el módulo de la etiqueta es la raíz de composición. Cada etiqueta registrada posee un registro de servicios de inicialización diferida, incluido su motor de renderizado y los metadatos de sus eventos. Véase [Distribuir un widget independiente](GETTING-STARTED.es.md#distribuir-un-widget-independiente).
+
 ## Registro por Defecto
 
 Puedes usar el registro `Services` para una integración rápida:
