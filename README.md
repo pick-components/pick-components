@@ -11,7 +11,7 @@
 
 Spanish quick entry: [README.es.md](README.es.md)
 
-Try the live playground: <https://pick-components.github.io/pick-components/>
+Explore the [live playground](https://pick-components.github.io/pick-components/) or try an accepted and a rejected expression in [Break the template](https://pick-components.github.io/pick-components/en/16-template-security/).
 
 [![npm](https://img.shields.io/npm/v/pick-components)](https://www.npmjs.com/package/pick-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -85,6 +85,28 @@ await bootstrapFramework(Services, {}, {
 ```
 
 You can register components without `@Pick`/`@PickRender` by using `definePick` and `defineComponent` descriptors through the `components` option.
+
+## Embed a standalone widget
+
+Place the tag in the page before loading its entry module.
+
+```html
+<product-card product-id="123"></product-card>
+<script type="module" src="/widgets/product-card.js"></script>
+```
+
+In the widget module, resolve the npm import with a bundler or an import map.
+
+```javascript
+import { bootstrapElement } from "pick-components/bootstrap";
+
+await bootstrapElement("product-card", (ctx) => {
+  ctx.state({ productId: "" });
+  ctx.html("<span>{{productId}}</span>");
+});
+```
+
+The browser upgrades existing tags. Each instance renders in its own shadow root and the tag owns its service registry. For a working click handler and server-rendered HTML, see [Ship an independent widget](docs/GETTING-STARTED.md#ship-an-independent-widget).
 
 ## Copilot AI Setup (Optional)
 

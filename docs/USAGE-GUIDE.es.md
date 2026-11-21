@@ -89,6 +89,8 @@ Esto crea `.release-artifacts/v<version>/`, que replica el contenido esperado en
 
 Esta ruta de navegador directo asume un entorno moderno con ESM. La sintaxis TypeScript y los decoradores deben transpilarse salvo que tu runtime objetivo soporte explícitamente la sintaxis exacta de decoradores JavaScript que vayas a servir.
 
+Para distribuir un widget independiente, llama a `bootstrapElement` en su módulo de entrada. Si usas ESM directamente en el navegador, impórtalo desde la copia de `pick-components-bootstrap.js` de la release que sirves con tu web. El módulo puede activar etiquetas ya presentes en el documento. Véase [Distribuir un widget independiente](GETTING-STARTED.es.md#distribuir-un-widget-independiente).
+
 ## Adopción Incremental en Apps Existentes
 
 Pick Components se puede adoptar de forma incremental dentro de stacks frontend ya existentes.

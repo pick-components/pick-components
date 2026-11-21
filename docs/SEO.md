@@ -64,6 +64,19 @@ The worker uses the same policy as Nginx: public HTML first, SPA shell only for 
 
 Generated pages mark prerendered hosts with the Pick prerender contract. On first boot, the runtime checks the contract version, selector, root mode, and template hash. Compatible markup is adopted; incompatible markup falls back to normal rendering.
 
+### Prerender a single widget
+
+On the server, obtain the host attributes from the DOM-free bootstrap entry. Share the resolved template string with the widget module.
+
+```javascript
+import { elementPrerenderAttributes } from "pick-components/bootstrap";
+
+const template = "<span>{{productId}}</span>";
+const attributes = elementPrerenderAttributes("product-card", template);
+```
+
+Use your server's HTML serializer to apply `attributes` and `product-id="123"` to `<product-card>`. Render `<span>123</span>` as its single child, escaping application data. When the widget module loads, Pick checks the contract and the child structure against the template. On a match, it moves the original node into the shadow root and connects its bindings. On a mismatch, it renders the current template. The hash identifies the template version and the server remains responsible for the origin and escaping of its HTML. See [Ship an independent widget](GETTING-STARTED.md#ship-an-independent-widget).
+
 ## Related Docs
 
 - Pick vs PickRender: [PICK-VS-PICKRENDER.md](PICK-VS-PICKRENDER.md)

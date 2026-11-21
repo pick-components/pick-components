@@ -4,6 +4,7 @@ This folder contains the canonical documentation for Pick Components.
 
 ## Getting Started
 
+- [Embed a standalone widget](GETTING-STARTED.md#ship-an-independent-widget) and [prerender its HTML](SEO.md#prerender-a-single-widget).
 - [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Project motivation and origin story.
 - [WHY-PICK-COMPONENTS.es.md](WHY-PICK-COMPONENTS.es.md) - Spanish translation.
 - [GETTING-STARTED.md](GETTING-STARTED.md) - Step-by-step guide: project → npm → skill → first component.

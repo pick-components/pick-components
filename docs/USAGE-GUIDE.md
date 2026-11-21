@@ -89,6 +89,8 @@ This creates `.release-artifacts/v<version>/`, which mirrors the intended GitHub
 
 This direct browser path assumes a modern browser environment with ESM. TypeScript syntax and decorators must still be transpiled unless your target runtime explicitly supports the exact JavaScript decorator syntax you are serving.
 
+For an independent widget, call `bootstrapElement` in its entry module. With plain browser ESM, import it from your self-hosted `pick-components-bootstrap.js` release asset. The same module can upgrade tags already in the document. See [Ship an independent widget](GETTING-STARTED.md#ship-an-independent-widget).
+
 ## Incremental Adoption in Existing Apps
 
 Pick Components can be adopted incrementally inside existing frontend stacks.

@@ -4,6 +4,7 @@ Esta carpeta contiene la documentación canónica de Pick Components.
 
 ## Primeros Pasos
 
+- [Integrar un widget independiente](GETTING-STARTED.es.md#distribuir-un-widget-independiente) y [prerenderizar su HTML](SEO.es.md#prerenderizar-un-widget).
 - [WHY-PICK-COMPONENTS.md](WHY-PICK-COMPONENTS.md) - Motivación y origen del proyecto.
 - [WHY-PICK-COMPONENTS.es.md](WHY-PICK-COMPONENTS.es.md) - Traducción al español.
 - [GETTING-STARTED.md](GETTING-STARTED.md) - Guía paso a paso: proyecto → npm → skill → primer componente (EN).

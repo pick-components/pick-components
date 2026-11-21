@@ -62,7 +62,8 @@ jobs:
         run: npm run build:release
 
   test:
-    runs-on: ubuntu-latest
+    # Match the CI runner supported by the locked Playwright Chromium build.
+    runs-on: ${{ matrix.project == 'browser' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
