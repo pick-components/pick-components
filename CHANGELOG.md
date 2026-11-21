@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-21
+
+### Added
+
+- `bootstrapElement` registers a functional widget with a private service registry and upgrades existing hosts. Writable state accepts kebab-case HTML attributes.
+- `elementPrerenderAttributes` provides the server-side contract for a widget. Compatible single-root HTML retains its node identity and receives reactive bindings on upgrade.
+- The bilingual playground links directly to the interactive “Break the template” example in English and Spanish.
+
+### Fixed
+
+- Reconnecting a widget during asynchronous initialization releases the previous render and its listeners.
+- Custom element integration tests share the JSDOM window that owns their constructors. Chromium checks run on Ubuntu 24.04 in CI and release jobs.
+
 ## [1.0.9] - 2026-05-12
 
 ### Added
@@ -83,6 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed stale references to old `janmbaco` GitHub repository and legacy playground URL in project metadata and guidance docs.
 - Fixed unit prerender expectations by updating `prerender-examples` snapshot and color-token assertions after branding/theme updates.
 
-[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.0.8...HEAD
+[Unreleased]: https://github.com/pick-components/pick-components/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/pick-components/pick-components/compare/v1.0.9...v1.1.0
+[1.0.9]: https://github.com/pick-components/pick-components/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/pick-components/pick-components/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/pick-components/pick-components/compare/v1.0.6...v1.0.7

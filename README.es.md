@@ -11,7 +11,7 @@
 
 Versión canónica en inglés: [README.md](README.md)
 
-Prueba el playground en vivo: <https://pick-components.github.io/pick-components/>
+Explora el [playground](https://pick-components.github.io/pick-components/) o prueba una expresión admitida y otra rechazada en [Rompe la plantilla](https://pick-components.github.io/pick-components/es/16-template-security/).
 
 [![npm](https://img.shields.io/npm/v/pick-components)](https://www.npmjs.com/package/pick-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -85,6 +85,28 @@ await bootstrapFramework(Services, {}, {
 ```
 
 Puedes registrar componentes sin `@Pick` ni `@PickRender` usando descriptores `definePick` y `defineComponent` mediante la opción `components`.
+
+## Integrar un widget independiente
+
+Coloca la etiqueta en la página antes de cargar su módulo.
+
+```html
+<product-card product-id="123"></product-card>
+<script type="module" src="/widgets/product-card.js"></script>
+```
+
+En el módulo del widget, resuelve la importación de npm con un empaquetador o un mapa de importaciones.
+
+```javascript
+import { bootstrapElement } from "pick-components/bootstrap";
+
+await bootstrapElement("product-card", (ctx) => {
+  ctx.state({ productId: "" });
+  ctx.html("<span>{{productId}}</span>");
+});
+```
+
+El navegador activa las etiquetas existentes. Cada instancia renderiza en su propio árbol de sombra y la etiqueta tiene su propio registro de servicios. Para probar un clic y servir HTML prerenderizado, consulta [Distribuir un widget independiente](docs/GETTING-STARTED.es.md#distribuir-un-widget-independiente).
 
 ## Setup de Copilot AI (Opcional)
 

@@ -64,6 +64,19 @@ El worker usa la misma política que Nginx: HTML público primero, shell SPA sol
 
 Las páginas generadas marcan los hosts prerenderizados con el contrato de prerender de Pick. En el primer arranque, el runtime comprueba versión del contrato, selector, modo de root y hash del template. Si el markup es compatible, se adopta; si no, se usa el render normal como fallback.
 
+### Prerenderizar un widget
+
+En el servidor, obtén los atributos del anfitrión desde la entrada de bootstrap que puede ejecutarse sin DOM. Comparte la cadena de la plantilla resuelta con el módulo del widget.
+
+```javascript
+import { elementPrerenderAttributes } from "pick-components/bootstrap";
+
+const template = "<span>{{productId}}</span>";
+const attributes = elementPrerenderAttributes("product-card", template);
+```
+
+Con el serializador HTML del servidor, aplica `attributes` y `product-id="123"` a `<product-card>`. Genera `<span>123</span>` como único hijo y escapa los datos de la aplicación. Al cargar el módulo, Pick comprueba el contrato y la estructura del hijo. Si coinciden con la plantilla, mueve el nodo original al árbol de sombra y conecta sus enlaces reactivos. Si difieren, renderiza la plantilla actual. El hash identifica la versión de la plantilla y el servidor sigue siendo responsable de la procedencia y el escapado de su HTML. Véase [Distribuir un widget independiente](GETTING-STARTED.es.md#distribuir-un-widget-independiente).
+
 ## Documentos Relacionados
 
 - Pick vs PickRender: [PICK-VS-PICKRENDER.es.md](PICK-VS-PICKRENDER.es.md)

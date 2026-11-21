@@ -13,6 +13,8 @@ Pick Components has **four APIs** depending on how much decorator/class syntax y
 | `@Pick` | Inline context (decorator, but setup via `ctx.*`) |
 | `definePick` | Fully decorator-free, functional — no class, no `@Reactive`, no `@Listen` |
 
+For an independently distributed functional widget, call `bootstrapElement(selector, setup)` from `pick-components/bootstrap` in its entry module. Use `ctx.listen` for native events. For server-rendered widgets, share the template with the server and serialize the host attributes from `elementPrerenderAttributes`. Application-wide primitives are registered by `bootstrapFramework`.
+
 ## Existing App Integration (Incremental)
 
 You can adopt Pick Components inside existing React/Vue projects without full migration.
