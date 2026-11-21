@@ -37,7 +37,8 @@ jobs:
         run: npm run build:release
 
   test:
-    runs-on: ubuntu-latest
+    # Playwright 1.57's locked Chromium and system dependency list support Ubuntu 24.04.
+    runs-on: ${{ (matrix.project == 'browser' || matrix.project == 'compat') && 'ubuntu-24.04' || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
