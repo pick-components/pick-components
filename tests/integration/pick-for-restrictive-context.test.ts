@@ -1,5 +1,6 @@
-import { test, expect } from "@playwright/test";
-import { JSDOM } from "jsdom";
+import { expect } from "@playwright/test";
+import { test } from "../support/custom-element-test.js";
+import type { JSDOM } from "jsdom";
 
 import { PickComponent } from "../../src/core/pick-component.js";
 import { Reactive } from "../../src/decorators/index.js";
@@ -14,8 +15,8 @@ test.describe("pick-for in restrictive native contexts", () => {
   let renderEngine: RenderEngine;
   let targetRoot: HTMLElement;
 
-  test.beforeEach(async () => {
-    dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
+  test.beforeEach(async ({ customElementDom }) => {
+    dom = customElementDom;
     document = dom.window.document;
     (global as any).window = dom.window;
     (global as any).document = document;
@@ -42,6 +43,7 @@ test.describe("pick-for in restrictive native contexts", () => {
   });
 
   test.afterEach(() => {
+    document.body.replaceChildren();
     Services.clear();
     delete (global as any).window;
     delete (global as any).document;
