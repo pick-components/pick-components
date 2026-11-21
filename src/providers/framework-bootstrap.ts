@@ -12,7 +12,10 @@ import { SafeMethodValidator } from "../rendering/expression-parser/safe-methods
 import { ExpressionResolver } from "../rendering/bindings/expression-resolver.js";
 import { PropertyExtractor } from "../rendering/bindings/property-extractor.js";
 import { ManagedElementResolver } from "../rendering/managed-host/managed-element-resolver.js";
-import { ManagedElementRegistry } from "../rendering/managed-host/managed-element-registry.js";
+import {
+  DefaultManagedElementRegistry,
+  ManagedElementRegistry,
+} from "../rendering/managed-host/managed-element-registry.js";
 import { OutletResolver } from "../rendering/managed-host/outlet-resolver.js";
 import { HostStyleMigrator } from "../rendering/managed-host/host-style-migrator.js";
 import { TransparentHostFactory } from "../rendering/managed-host/transparent-host.factory.js";
@@ -40,6 +43,11 @@ import type { ComponentMetadata } from "../core/component-metadata.js";
 import type { IComponentMetadataRegistry } from "../core/component-metadata-registry.interface.js";
 import { ComponentKind } from "../decorators/component-kind.js";
 import type { ComponentDefinition } from "../decorators/component-kind.js";
+
+import { DefaultServiceRegistry } from "./default-service-provider.js";
+import { definePick } from "../decorators/define-pick.js";
+import type { InlineContext } from "../decorators/pick/types.js";
+import { matchesElementPrerender } from "../ssr/matches-element-prerender.js";
 
 export { ComponentKind } from "../decorators/component-kind.js";
 export type { ComponentDefinition } from "../decorators/component-kind.js";
@@ -157,6 +165,46 @@ export async function bootstrapFramework(
   overrides: FrameworkOverrides = {},
   options: BootstrapOptions = {},
 ): Promise<void> {
+  return composeFramework(registry, overrides, options, "application");
+}
+
+/**
+ * Defines one functional widget using its own lazy registry and shadow root.
+ * Existing hosts upgrade through the browser's custom element registry.
+ *
+ * @example
+ * await bootstrapElement("product-card", (ctx) => {
+ *   ctx.state({ productId: "" });
+ *   ctx.html("<span>{{productId}}</span>");
+ * });
+ */
+export async function bootstrapElement<TState = unknown>(
+  selector: string,
+  setup: (ctx: InlineContext<TState>) => void,
+  overrides: FrameworkOverrides = {},
+): Promise<void> {
+  if (typeof customElements === "undefined") {
+    throw new Error(
+      "bootstrapElement requires a browser custom element registry",
+    );
+  }
+  const component = definePick(selector, setup);
+  if (selector !== selector.toLowerCase())
+    throw new Error("Use a lowercase custom element name");
+  await composeFramework(
+    new DefaultServiceRegistry(),
+    overrides,
+    { components: [component] },
+    "element",
+  );
+}
+
+async function composeFramework(
+  registry: IServiceRegistry,
+  overrides: FrameworkOverrides,
+  options: BootstrapOptions,
+  scope: "application" | "element",
+): Promise<void> {
   if (!registry) throw new Error("Service registry is required");
 
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
@@ -210,7 +258,10 @@ export async function bootstrapFramework(
   register("ISharedStylesRegistry", () => new SharedStylesRegistry());
   register(
     "IPrerenderAdoptionDecider",
-    () => new DefaultPrerenderAdoptionDecider(),
+    () =>
+      new DefaultPrerenderAdoptionDecider(
+        scope === "element" ? matchesElementPrerender : undefined,
+      ),
   );
 
   // Skeleton
@@ -253,7 +304,11 @@ export async function bootstrapFramework(
     "IPropertyExtractor",
     () => new PropertyExtractor(registry.get("IExpressionParser")),
   );
-  register("IManagedElementRegistry", () => ManagedElementRegistry);
+  register("IManagedElementRegistry", () =>
+    scope === "element"
+      ? new DefaultManagedElementRegistry()
+      : ManagedElementRegistry,
+  );
   register("IOutletResolver", () => new OutletResolver());
   register("IHostStyleMigrator", () => new HostStyleMigrator());
   register("ITransparentHostFactory", () => new TransparentHostFactory());
@@ -356,10 +411,17 @@ export async function bootstrapFramework(
     "IListenerMetadataRegistry",
     () => new DefaultListenerMetadataRegistry(),
   );
-  register("IListenerInitializer", () => new DefaultListenerInitializer());
+  register(
+    "IListenerInitializer",
+    () =>
+      new DefaultListenerInitializer(registry.get("IListenerMetadataRegistry")),
+  );
 
   // Pick Element infrastructure
-  register("IPickElementFactory", () => new PickElementFactory(registry));
+  register(
+    "IPickElementFactory",
+    () => new PickElementFactory(registry, scope),
+  );
   register(
     "IPickElementRegistrar",
     () =>
@@ -377,7 +439,7 @@ export async function bootstrapFramework(
       : null;
 
   // Framework custom elements (dynamic imports avoid HTMLElement in Node)
-  if (typeof customElements !== "undefined") {
+  if (scope === "application" && typeof customElements !== "undefined") {
     const [
       { PickForElement },
       { PickActionElement },
@@ -524,6 +586,11 @@ export async function bootstrapFramework(
           registry,
         )(def.Class as Parameters<ClassDecorator>[0]);
       } else if (def.kind === ComponentKind.Pick) {
+        if (scope === "element" && customElements.get(def.selector)) {
+          throw new Error(
+            `Custom element '${def.selector}' is already defined`,
+          );
+        }
         class PickBase {}
         Pick(
           def.selector,

@@ -54,7 +54,10 @@ export class PickElementFactory implements IPickElementFactory {
    * @param serviceProvider - Service provider for resolving dependencies
    * @throws Error if serviceProvider is null or undefined
    */
-  constructor(serviceProvider: IServiceProvider) {
+  constructor(
+    serviceProvider: IServiceProvider,
+    private readonly scope: "application" | "element" = "application",
+  ) {
     if (!serviceProvider) throw new Error("Service provider is required");
 
     this.serviceProvider = serviceProvider;
@@ -105,6 +108,22 @@ export class PickElementFactory implements IPickElementFactory {
       : [];
     const observableProps = [...new Set([...instanceProps, ...protoProps])];
 
+    const standalone = this.scope === "element";
+    const inputProperties = new Map<string, string>();
+    if (standalone) {
+      // Inline state fields have own writable accessors. Exclude computed values and framework internals.
+      for (const [key, descriptor] of Object.entries(
+        Object.getOwnPropertyDescriptors(instance),
+      )) {
+        if (descriptor.get && descriptor.set) {
+          inputProperties.set(
+            key.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase()),
+            key,
+          );
+        }
+      }
+    }
+
     const syncHostThemeAttribute = (host: HTMLElement): void => {
       const docTheme = document.documentElement.getAttribute("data-theme");
       if (docTheme) {
@@ -117,12 +136,15 @@ export class PickElementFactory implements IPickElementFactory {
 
     return class PickElement extends HTMLElement {
       private component: T | null = null;
+      private pendingMount: Promise<void> | null = null;
       private renderResult: RenderResult | null = null;
       private pickActionTarget: EventTarget | null = null;
       private themeObserver: MutationObserver | null = null;
 
       static get observedAttributes(): string[] {
-        return observableProps;
+        return standalone
+          ? Array.from(inputProperties.keys())
+          : observableProps;
       }
 
       private handlePickAction = (event: Event): void => {
@@ -191,17 +213,30 @@ export class PickElementFactory implements IPickElementFactory {
       };
 
       async connectedCallback(): Promise<void> {
-        if (this.component) {
-          return;
+        if (this.component) return;
+        if (this.pendingMount) {
+          await this.pendingMount;
+          if (!this.isConnected || this.component) return;
         }
+        const mount = this.mount();
+        this.pendingMount = mount;
+        try {
+          await mount;
+        } finally {
+          if (this.pendingMount === mount) this.pendingMount = null;
+        }
+      }
 
+      private async mount(): Promise<void> {
         this.component = new componentCtor();
         ensureReactiveProperties(this.component);
 
         const component = this.component;
         Array.from(this.attributes).forEach((attr) => {
-          const propName = attr.name;
-          if (propName in component) {
+          const propName = standalone
+            ? inputProperties.get(attr.name)
+            : attr.name;
+          if (propName && propName in component) {
             const fromRegistry = objectRegistry.get(attr.value);
             (component as Record<string, unknown>)[propName] =
               fromRegistry !== undefined ? fromRegistry : attr.value;
@@ -212,29 +247,34 @@ export class PickElementFactory implements IPickElementFactory {
         const prerenderCandidate = readPrerenderAdoptionCandidate(this);
         const shouldAttemptLightDomAdoption =
           isLightDomPrerenderCandidate(prerenderCandidate);
-        const restrictiveParent = getRestrictiveParentElement(this);
+        const restrictiveParent = standalone
+          ? null
+          : getRestrictiveParentElement(this);
         const targetRoot =
           restrictiveParent ??
           this.shadowRoot ??
           this.attachShadow({ mode: "open" });
 
-        // Mirror the document-level theme into the host so Shadow DOM styles
-        // that branch on :host([data-theme=...]) stay aligned after theme changes.
-        syncHostThemeAttribute(this);
-        this.themeObserver = new MutationObserver(() => {
+        if (!standalone) {
+          // Mirror the document-level theme into the host so Shadow DOM styles
+          // that branch on :host([data-theme=...]) stay aligned after theme changes.
           syncHostThemeAttribute(this);
-        });
-        this.themeObserver.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ["data-theme"],
-        });
+          this.themeObserver = new MutationObserver(() => {
+            syncHostThemeAttribute(this);
+          });
+          this.themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"],
+          });
+        }
 
         try {
           const result = await engine.render({
             componentId,
             component: this.component,
             targetRoot,
-            hostElement: this,
+            // Application hosts can migrate styles or anchor siblings. Widgets own only their shadow tree.
+            hostElement: standalone ? undefined : this,
             boot: shouldAttemptLightDomAdoption
               ? {
                   mode: "adopt",
@@ -243,8 +283,23 @@ export class PickElementFactory implements IPickElementFactory {
                 }
               : undefined,
           });
+          if (
+            standalone &&
+            shouldAttemptLightDomAdoption &&
+            prerenderCandidate &&
+            prerenderCandidate.rootElement.parentNode === this
+          ) {
+            // A rejected server root would otherwise remain available for slot projection.
+            prerenderCandidate.rootElement.remove();
+          }
+          if (this.component !== component) {
+            result.cleanup();
+            return;
+          }
           this.renderResult = result;
         } catch (error) {
+          this.themeObserver?.disconnect();
+          this.themeObserver = null;
           this.component = null;
           throw error;
         }
@@ -263,9 +318,10 @@ export class PickElementFactory implements IPickElementFactory {
       ): void {
         if (!this.component || newValue === null) return;
 
-        if (name in this.component) {
+        const propName = standalone ? inputProperties.get(name) : name;
+        if (propName && propName in this.component) {
           const resolved = objectRegistry.get(newValue);
-          (this.component as Record<string, unknown>)[name] =
+          (this.component as Record<string, unknown>)[propName] =
             resolved !== undefined ? resolved : newValue;
         }
       }

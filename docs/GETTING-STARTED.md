@@ -312,3 +312,32 @@ Once your first component works:
 > Show me how to register `CounterService` in the composition root using `Services`.
 
 > Add a `PickLifecycleManager` to `CounterApp` that subscribes to a `CounterService` observable.
+
+### Ship an independent widget
+
+Put the widget anywhere in the page. Its entry module can load later.
+
+```html
+<pick-product-card product-id="123"></pick-product-card>
+<script type="module" src="/widgets/product-card.js"></script>
+```
+
+In the widget entry module, import from `pick-components/bootstrap` with your bundler or import map.
+
+```javascript
+import { bootstrapElement } from "pick-components/bootstrap";
+
+await bootstrapElement("pick-product-card", (ctx) => {
+  ctx.state({ productId: "", count: 0 });
+  ctx.html(
+    '<article><span>{{productId}}</span><button type="button">{{count}}</button></article>',
+  );
+  ctx.listen("button", "click", function () {
+    this.count++;
+  });
+});
+```
+
+Each tag has a private service registry and each host renders into its own shadow root. Native events use `ctx.listen`. HTML inputs use kebab-case for writable state fields and deliver strings. Widget registration leaves application primitives such as `pick-router` to the application's bootstrap. A second definition of an existing tag raises an error.
+
+For a prerendered widget, share the template string between the server and the entry module. Import `elementPrerenderAttributes` from the same bootstrap entry in Node and apply its return value as attributes on the host using your HTML serializer. Render one child with the template's element structure and escaped text values. For the example above this could be `<article><span>123</span><button type="button">0</button></article>`. The widget adopts a matching child and reconnects its bindings. A stale contract or changed structure triggers rendering from the current template. Prerender assumes trusted server-generated markup.
