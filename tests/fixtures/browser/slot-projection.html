@@ -24,12 +24,8 @@
       const status = document.getElementById("status");
 
       try {
-        const {
-          bootstrapFramework,
-          Services,
-          PickComponent,
-          PickRender,
-        } = await import("../../../dist/browser/pick-components.js");
+        const { bootstrapFramework, Services, PickComponent, PickRender } =
+          await import("../../../dist/browser/pick-components.js");
 
         await bootstrapFramework(Services);
 

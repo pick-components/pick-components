@@ -29,9 +29,7 @@ const RESTRICTIVE_PARENT_TAGS = new Set([
  * const isRestrictive = hasRestrictiveParentContext(hostElement);
  * ```
  */
-export function hasRestrictiveParentContext(
-  element: Element | null,
-): boolean {
+export function hasRestrictiveParentContext(element: Element | null): boolean {
   return getRestrictiveParentElement(element) !== null;
 }
 

@@ -1,6 +1,4 @@
-import {
-  resolveTranslatedPlaygroundPath,
-} from "../../routing/services/playground-route-state.service.js";
+import { resolveTranslatedPlaygroundPath } from "../../routing/services/playground-route-state.service.js";
 
 export interface PlaygroundLanguagePaths {
   esPath: string;

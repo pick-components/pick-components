@@ -43,15 +43,20 @@ export function Pick<TState = unknown>(
     const InitializerClass = factory.createInitializerClass(config);
     const LifecycleClass = factory.createLifecycleClass(config);
 
-    const ComponentDecorator = PickComponentDecorator({
-      selector,
-      template: config.template || "",
-      skeleton: config.skeleton,
-      errorTemplate: config.errorTemplate,
-      styles: config.styles,
-      initializer: InitializerClass ? () => new InitializerClass() : undefined,
-      lifecycle: LifecycleClass ? () => new LifecycleClass() : undefined,
-    }, provider);
+    const ComponentDecorator = PickComponentDecorator(
+      {
+        selector,
+        template: config.template || "",
+        skeleton: config.skeleton,
+        errorTemplate: config.errorTemplate,
+        styles: config.styles,
+        initializer: InitializerClass
+          ? () => new InitializerClass()
+          : undefined,
+        lifecycle: LifecycleClass ? () => new LifecycleClass() : undefined,
+      },
+      provider,
+    );
 
     return ComponentDecorator(EnhancedClass);
   }) as ClassDecorator;

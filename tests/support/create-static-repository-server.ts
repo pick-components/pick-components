@@ -39,7 +39,9 @@ export function createStaticRepositoryServer(
     );
 
     if (!assetPath.ok) {
-      response.writeHead(assetPath.statusCode, { "Content-Type": "text/plain" });
+      response.writeHead(assetPath.statusCode, {
+        "Content-Type": "text/plain",
+      });
       response.end(
         assetPath.statusCode === 403 ? "403 Forbidden" : "404 Not Found",
       );

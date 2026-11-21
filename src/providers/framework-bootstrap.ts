@@ -162,7 +162,10 @@ export async function bootstrapFramework(
   const decoratorMode: DecoratorMode = options.decorators ?? "auto";
   const rawComponentOverrides = options.componentOverrides;
 
-  if (rawComponentOverrides !== undefined && !isPlainObject(rawComponentOverrides)) {
+  if (
+    rawComponentOverrides !== undefined &&
+    !isPlainObject(rawComponentOverrides)
+  ) {
     throw new Error(
       "[bootstrapFramework] componentOverrides must be a plain object when provided.",
     );
@@ -170,7 +173,9 @@ export async function bootstrapFramework(
 
   const rawComponents = options.components;
   if (rawComponents !== undefined && !Array.isArray(rawComponents)) {
-    throw new Error("[bootstrapFramework] options.components must be an array.");
+    throw new Error(
+      "[bootstrapFramework] options.components must be an array.",
+    );
   }
   const componentDefinitions = rawComponents ?? [];
 
@@ -338,10 +343,12 @@ export async function bootstrapFramework(
   );
 
   // Pick Component class factory (@Pick decorator)
-  register("IPickComponentFactory", () =>
-    new DefaultPickComponentFactory(
-      registry.get("IListenerMetadataRegistry"),
-    ),
+  register(
+    "IPickComponentFactory",
+    () =>
+      new DefaultPickComponentFactory(
+        registry.get("IListenerMetadataRegistry"),
+      ),
   );
 
   // Listener metadata registry (@Listen decorator)
@@ -415,7 +422,10 @@ export async function bootstrapFramework(
         );
       }
 
-      if (def.kind !== ComponentKind.Render && def.kind !== ComponentKind.Pick) {
+      if (
+        def.kind !== ComponentKind.Render &&
+        def.kind !== ComponentKind.Pick
+      ) {
         throw new Error(
           `[bootstrapFramework] components[${i}]: unknown kind '${(def as ComponentDefinition & { kind: string }).kind}'. Expected '${ComponentKind.Render}' or '${ComponentKind.Pick}'.`,
         );
@@ -423,37 +433,61 @@ export async function bootstrapFramework(
 
       if (def.kind === ComponentKind.Render) {
         if (!def.config || !isPlainObject(def.config)) {
-          throw new Error(`[bootstrapFramework] components[${i}]: config must be a plain object for kind '${ComponentKind.Render}'.`);
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: config must be a plain object for kind '${ComponentKind.Render}'.`,
+          );
         }
         const selector = def.config.selector;
-        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
-          throw new Error(`[bootstrapFramework] components[${i}]: config.selector is required and must not be empty.`);
+        if (
+          !selector ||
+          typeof selector !== "string" ||
+          selector.trim().length === 0
+        ) {
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: config.selector is required and must not be empty.`,
+          );
         }
         if (selector !== selector.trim()) {
-          throw new Error(`[bootstrapFramework] components[${i}]: config.selector must not have leading or trailing whitespace.`);
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: config.selector must not have leading or trailing whitespace.`,
+          );
         }
         if (!def.Class || typeof def.Class !== "function") {
-          throw new Error(`[bootstrapFramework] components[${i}]: Class must be a constructor function.`);
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: Class must be a constructor function.`,
+          );
         }
       }
 
       if (def.kind === ComponentKind.Pick) {
         const selector = def.selector;
-        if (!selector || typeof selector !== "string" || selector.trim().length === 0) {
-          throw new Error(`[bootstrapFramework] components[${i}]: selector is required and must not be empty.`);
+        if (
+          !selector ||
+          typeof selector !== "string" ||
+          selector.trim().length === 0
+        ) {
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: selector is required and must not be empty.`,
+          );
         }
         if (selector !== selector.trim()) {
-          throw new Error(`[bootstrapFramework] components[${i}]: selector must not have leading or trailing whitespace.`);
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: selector must not have leading or trailing whitespace.`,
+          );
         }
         if (!def.setup || typeof def.setup !== "function") {
-          throw new Error(`[bootstrapFramework] components[${i}]: setup must be a function.`);
+          throw new Error(
+            `[bootstrapFramework] components[${i}]: setup must be a function.`,
+          );
         }
       }
     }
 
     // Collect resolved selectors for atomicity checks (per-entry validation already passed)
     const resolvedSelectors = componentDefinitions.map((def) =>
-      def.kind === ComponentKind.Render ? (def.config.selector as string) : def.selector,
+      def.kind === ComponentKind.Render
+        ? (def.config.selector as string)
+        : def.selector,
     );
 
     // Reject duplicate selectors within this call
@@ -485,10 +519,17 @@ export async function bootstrapFramework(
 
     for (const def of componentDefinitions) {
       if (def.kind === ComponentKind.Render) {
-        PickRender(def.config, registry)(def.Class as Parameters<ClassDecorator>[0]);
+        PickRender(
+          def.config,
+          registry,
+        )(def.Class as Parameters<ClassDecorator>[0]);
       } else if (def.kind === ComponentKind.Pick) {
         class PickBase {}
-        Pick(def.selector, def.setup, registry)(PickBase as Parameters<ClassDecorator>[0]);
+        Pick(
+          def.selector,
+          def.setup,
+          registry,
+        )(PickBase as Parameters<ClassDecorator>[0]);
       }
     }
   }

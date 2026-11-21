@@ -39,18 +39,29 @@ import type { ComponentDefinition } from "./component-kind.js";
  * });
  * ```
  */
-export function defineComponent<T extends new (...args: unknown[]) => PickComponent>(
-  Class: T,
-  config: ComponentConfig,
-): ComponentDefinition {
+export function defineComponent<
+  T extends new (...args: unknown[]) => PickComponent,
+>(Class: T, config: ComponentConfig): ComponentDefinition {
   if (!Class) throw new Error("[defineComponent] Class is required");
   if (!config) throw new Error("[defineComponent] config is required");
-  if (!config.selector || typeof config.selector !== "string" || config.selector.trim().length === 0) {
-    throw new Error("[defineComponent] config.selector is required and must not be empty");
+  if (
+    !config.selector ||
+    typeof config.selector !== "string" ||
+    config.selector.trim().length === 0
+  ) {
+    throw new Error(
+      "[defineComponent] config.selector is required and must not be empty",
+    );
   }
   if (config.selector !== config.selector.trim()) {
-    throw new Error("[defineComponent] config.selector must not have leading or trailing whitespace");
+    throw new Error(
+      "[defineComponent] config.selector must not have leading or trailing whitespace",
+    );
   }
 
-  return { kind: ComponentKind.Render, Class: Class as new (...args: unknown[]) => PickComponent, config };
+  return {
+    kind: ComponentKind.Render,
+    Class: Class as new (...args: unknown[]) => PickComponent,
+    config,
+  };
 }

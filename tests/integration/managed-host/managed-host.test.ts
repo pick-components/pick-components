@@ -343,7 +343,9 @@ test.describe("Managed Host Integration", () => {
       });
 
       // Assert
-      const projectedItem = list.querySelector("li.outlet") as HTMLElement | null;
+      const projectedItem = list.querySelector(
+        "li.outlet",
+      ) as HTMLElement | null;
       expect(projectedItem).not.toBeNull();
       expect(projectedItem?.textContent).toBe("Projected");
       expect(host.style.display).toBe("none");

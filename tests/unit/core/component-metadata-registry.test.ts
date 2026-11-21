@@ -267,9 +267,9 @@ test.describe("ComponentMetadataRegistry", () => {
 
     test("should throw if componentId is null", () => {
       // Act & Assert
-      expect(() => registry.patch(null as any, { template: "<div></div>" })).toThrow(
-        "ComponentId is required and cannot be empty or whitespace",
-      );
+      expect(() =>
+        registry.patch(null as any, { template: "<div></div>" }),
+      ).toThrow("ComponentId is required and cannot be empty or whitespace");
     });
 
     test("should throw if componentId is empty whitespace", () => {
@@ -451,7 +451,9 @@ test.describe("ComponentMetadataRegistry", () => {
 
       // Act & Assert
       expect(() =>
-        registry.validatePatch("test-component", { template: "<div>New</div>" }),
+        registry.validatePatch("test-component", {
+          template: "<div>New</div>",
+        }),
       ).not.toThrow();
     });
 
@@ -466,7 +468,9 @@ test.describe("ComponentMetadataRegistry", () => {
       registry.validatePatch("test-component", { template: "<div>New</div>" });
 
       // Assert
-      expect(registry.get("test-component")?.template).toBe("<div>Original</div>");
+      expect(registry.get("test-component")?.template).toBe(
+        "<div>Original</div>",
+      );
     });
 
     test("should throw if patch has unsupported field", () => {

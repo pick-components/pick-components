@@ -65,10 +65,7 @@ export class PickElementRegistrar implements IPickElementRegistrar {
       return;
     }
 
-    const PickElementClass = this.elementFactory.create(
-      componentCtor,
-      options,
-    );
+    const PickElementClass = this.elementFactory.create(componentCtor, options);
     customElements.define(normalizedTag, PickElementClass);
   }
 }

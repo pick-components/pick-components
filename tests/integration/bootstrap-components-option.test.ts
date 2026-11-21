@@ -1,6 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { Services } from "../../src/providers/service-provider.js";
-import { bootstrapFramework, ComponentKind } from "../../src/providers/framework-bootstrap.js";
+import {
+  bootstrapFramework,
+  ComponentKind,
+} from "../../src/providers/framework-bootstrap.js";
 import type { ComponentDefinition } from "../../src/providers/framework-bootstrap.js";
 import type { IComponentMetadataRegistry } from "../../src/core/component-metadata-registry.interface.js";
 import { PickComponent } from "../../src/core/pick-component.js";
@@ -47,16 +50,23 @@ test.describe("bootstrapFramework — components option", () => {
     const def: ComponentDefinition = {
       kind: ComponentKind.Render,
       Class: MyButton as unknown as new (...args: unknown[]) => PickComponent,
-      config: { selector: "my-define-button", template: "<button>Click</button>" },
+      config: {
+        selector: "my-define-button",
+        template: "<button>Click</button>",
+      },
     };
 
     // Act
     await bootstrapFramework(Services, {}, { components: [def] });
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
     expect(metadataRegistry.has("my-define-button")).toBe(true);
-    expect(metadataRegistry.get("my-define-button")?.template).toBe("<button>Click</button>");
+    expect(metadataRegistry.get("my-define-button")?.template).toBe(
+      "<button>Click</button>",
+    );
   });
 
   test("should register a definePick descriptor as a component", async () => {
@@ -76,9 +86,13 @@ test.describe("bootstrapFramework — components option", () => {
     await bootstrapFramework(Services, {}, { components: [def] });
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
     expect(metadataRegistry.has("my-define-counter")).toBe(true);
-    expect(metadataRegistry.get("my-define-counter")?.template).toBe("<p>{{count}}</p>");
+    expect(metadataRegistry.get("my-define-counter")?.template).toBe(
+      "<p>{{count}}</p>",
+    );
   });
 
   test("should register all descriptors in a mixed components array", async () => {
@@ -95,7 +109,9 @@ test.describe("bootstrapFramework — components option", () => {
       {
         kind: ComponentKind.Pick,
         selector: "my-define-badge",
-        setup: (ctx: any) => { ctx.html("<span>badge</span>"); },
+        setup: (ctx: any) => {
+          ctx.html("<span>badge</span>");
+        },
       },
     ];
 
@@ -103,7 +119,9 @@ test.describe("bootstrapFramework — components option", () => {
     await bootstrapFramework(Services, {}, { components: defs });
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
     expect(metadataRegistry.has("my-define-card")).toBe(true);
     expect(metadataRegistry.has("my-define-badge")).toBe(true);
   });
@@ -122,9 +140,13 @@ test.describe("bootstrapFramework — components option", () => {
     await bootstrapFramework(Services, {}, { components: [def] });
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
     expect(metadataRegistry.has("my-toggle-e2e")).toBe(true);
-    expect(metadataRegistry.get("my-toggle-e2e")?.template).toBe("<button>toggle</button>");
+    expect(metadataRegistry.get("my-toggle-e2e")?.template).toBe(
+      "<button>toggle</button>",
+    );
   });
 
   test("definePick descriptor should register via bootstrapFramework end-to-end", async () => {
@@ -140,9 +162,13 @@ test.describe("bootstrapFramework — components option", () => {
     await bootstrapFramework(Services, {}, { components: [def] });
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
     expect(metadataRegistry.has("my-label-e2e")).toBe(true);
-    expect(metadataRegistry.get("my-label-e2e")?.template).toBe("<span>{{label}}</span>");
+    expect(metadataRegistry.get("my-label-e2e")?.template).toBe(
+      "<span>{{label}}</span>",
+    );
   });
 
   test("should apply componentOverrides to a component registered in the same call via components", async () => {
@@ -155,16 +181,27 @@ test.describe("bootstrapFramework — components option", () => {
     });
 
     // Act — components and componentOverrides in a single bootstrapFramework call
-    await bootstrapFramework(Services, {}, {
-      components: [def],
-      componentOverrides: {
-        "my-overridable": { selector: "my-overridable", template: "<p>overridden</p>" },
+    await bootstrapFramework(
+      Services,
+      {},
+      {
+        components: [def],
+        componentOverrides: {
+          "my-overridable": {
+            selector: "my-overridable",
+            template: "<p>overridden</p>",
+          },
+        },
       },
-    });
+    );
 
     // Assert
-    const metadataRegistry = Services.get<IComponentMetadataRegistry>("IComponentMetadataRegistry");
-    expect(metadataRegistry.get("my-overridable")?.template).toBe("<p>overridden</p>");
+    const metadataRegistry = Services.get<IComponentMetadataRegistry>(
+      "IComponentMetadataRegistry",
+    );
+    expect(metadataRegistry.get("my-overridable")?.template).toBe(
+      "<p>overridden</p>",
+    );
   });
 
   test("should throw when a component selector is already registered", async () => {

@@ -100,8 +100,16 @@ export class SafeContentSelector implements IInterpolableContentSelector {
         currentIndex = tag.endIndex;
         textStartIndex = currentIndex;
 
-        if (!tag.isClosing && !tag.isSelfClosing && this.isExcludedElement(tag)) {
-          currentIndex = this.findExcludedElementEnd(parsedHtml, currentIndex, tag.name);
+        if (
+          !tag.isClosing &&
+          !tag.isSelfClosing &&
+          this.isExcludedElement(tag)
+        ) {
+          currentIndex = this.findExcludedElementEnd(
+            parsedHtml,
+            currentIndex,
+            tag.name,
+          );
           textStartIndex = currentIndex;
         }
         continue;
@@ -213,7 +221,9 @@ export class SafeContentSelector implements IInterpolableContentSelector {
   }
 
   private isTagStartCharacter(character: string): boolean {
-    return /[A-Za-z!/]/.test(character) || character === "/" || character === "?";
+    return (
+      /[A-Za-z!/]/.test(character) || character === "/" || character === "?"
+    );
   }
 
   private readAttributes(

@@ -3,9 +3,18 @@
   <h3>Mini panel</h3>
 
   <div class="stats">
-    <div class="stat"><p class="stat-lbl">Usuarios</p><p class="stat-val">{{userCount}}</p></div>
-    <div class="stat"><p class="stat-lbl">Publicaciones</p><p class="stat-val">{{postCount}}</p></div>
-    <div class="stat"><p class="stat-lbl">Notas</p><p class="stat-val">{{notes.length}}</p></div>
+    <div class="stat">
+      <p class="stat-lbl">Usuarios</p>
+      <p class="stat-val">{{userCount}}</p>
+    </div>
+    <div class="stat">
+      <p class="stat-lbl">Publicaciones</p>
+      <p class="stat-val">{{postCount}}</p>
+    </div>
+    <div class="stat">
+      <p class="stat-lbl">Notas</p>
+      <p class="stat-val">{{notes.length}}</p>
+    </div>
   </div>
 
   <div class="cols">
@@ -27,7 +36,8 @@
       <pick-select>
         <on condition="{{notes.length > 0}}">
           <pick-for items="{{notes}}" key="id">
-            <p>{{$item.text}}
+            <p>
+              {{$item.text}}
               <pick-action action="removeNote" value="{{$item.id}}"><button type="button">x</button></pick-action>
             </p>
           </pick-for>

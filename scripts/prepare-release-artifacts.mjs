@@ -47,8 +47,14 @@ async function prepareReleaseArtifacts() {
     );
   }
 
-  await copyFile(join(repositoryRoot, "LICENSE"), join(releaseDirectory, "LICENSE"));
-  await writeFile(join(releaseDirectory, "SHA256SUMS"), `${checksums.join("\n")}\n`);
+  await copyFile(
+    join(repositoryRoot, "LICENSE"),
+    join(releaseDirectory, "LICENSE"),
+  );
+  await writeFile(
+    join(releaseDirectory, "SHA256SUMS"),
+    `${checksums.join("\n")}\n`,
+  );
   await writeFile(
     join(releaseDirectory, "README.txt"),
     [

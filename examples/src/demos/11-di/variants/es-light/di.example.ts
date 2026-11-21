@@ -1,11 +1,6 @@
 import diStyles from "./di.styles.css";
 import diTemplate from "./di.template.html";
-import {
-  PickComponent,
-  PickRender,
-  Reactive,
-  Services,
-} from "pick-components";
+import { PickComponent, PickRender, Reactive, Services } from "pick-components";
 import type { User } from "./services.js";
 
 @PickRender({

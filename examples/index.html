@@ -11,10 +11,10 @@
       })();
       window.__PICK_BRAND_LOGO_DARK_SRC__ =
         window.__PICK_PLAYGROUND_BASE_PATH__ +
-          "/brand/logo-primary-color-dark.svg";
+        "/brand/logo-primary-color-dark.svg";
       window.__PICK_BRAND_LOGO_LIGHT_SRC__ =
         window.__PICK_PLAYGROUND_BASE_PATH__ +
-          "/brand/logo-primary-color-light.svg";
+        "/brand/logo-primary-color-light.svg";
       (function () {
         var t = localStorage.getItem("pc-theme");
         if (t === "light" || t === "dark") {
@@ -59,7 +59,8 @@
             var light = logo.querySelector(".welcome-logo-light");
             if (!dark || !light) return;
 
-            var currentTheme = document.documentElement.getAttribute("data-theme");
+            var currentTheme =
+              document.documentElement.getAttribute("data-theme");
             if (currentTheme === "light") {
               dark.style.display = "none";
               light.style.display = "block";
@@ -200,8 +201,16 @@
         text-align: center;
         padding: 2.2rem;
         background:
-          radial-gradient(900px 420px at 15% -20%, rgba(120, 184, 75, 0.2), transparent 62%),
-          radial-gradient(820px 440px at 92% 112%, rgba(16, 149, 193, 0.16), transparent 62%),
+          radial-gradient(
+            900px 420px at 15% -20%,
+            rgba(120, 184, 75, 0.2),
+            transparent 62%
+          ),
+          radial-gradient(
+            820px 440px at 92% 112%,
+            rgba(16, 149, 193, 0.16),
+            transparent 62%
+          ),
           var(--pg-result-bg, #f4f7fb);
       }
       .welcome-logo {
@@ -260,7 +269,11 @@
         <div class="welcome">
           <div class="welcome-logo">
             <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="" />
-            <img class="welcome-logo-light" data-brand-logo-light="true" alt="" />
+            <img
+              class="welcome-logo-light"
+              data-brand-logo-light="true"
+              alt=""
+            />
           </div>
           <h2>Welcome / Bienvenido</h2>
           <p>Select a language to explore the interactive playground:</p>
@@ -275,7 +288,11 @@
         <div class="welcome">
           <div class="welcome-logo">
             <img class="welcome-logo-dark" data-brand-logo-dark="true" alt="" />
-            <img class="welcome-logo-light" data-brand-logo-light="true" alt="" />
+            <img
+              class="welcome-logo-light"
+              data-brand-logo-light="true"
+              alt=""
+            />
           </div>
           <h2>Welcome / Bienvenido</h2>
           <p>Select a language to explore the interactive playground:</p>

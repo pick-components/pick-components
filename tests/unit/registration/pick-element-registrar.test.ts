@@ -106,9 +106,9 @@ test.describe("PickElementRegistrar", () => {
       const factory = createMockElementFactory();
 
       // Act & Assert
-      expect(
-        () => new PickElementRegistrar(undefined as any, factory),
-      ).toThrow("Service registry is required");
+      expect(() => new PickElementRegistrar(undefined as any, factory)).toThrow(
+        "Service registry is required",
+      );
     });
 
     test("should throw error when elementFactory is null", () => {

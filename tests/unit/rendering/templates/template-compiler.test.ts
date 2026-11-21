@@ -343,7 +343,8 @@ test.describe("TemplateCompiler", () => {
       domContext,
     }) => {
       // Arrange
-      const template = '<a href="data:text/html,<script>alert(1)</script>">x</a>';
+      const template =
+        '<a href="data:text/html,<script>alert(1)</script>">x</a>';
 
       // Act & Assert
       await expect(
@@ -412,7 +413,9 @@ test.describe("TemplateCompiler", () => {
       // Act & Assert
       await expect(
         compiler.compile(template, component, domContext),
-      ).rejects.toThrow(/Unsafe static template element|Unsafe static template attribute "srcdoc"/);
+      ).rejects.toThrow(
+        /Unsafe static template element|Unsafe static template attribute "srcdoc"/,
+      );
     });
 
     test("should throw on static script elements", async ({

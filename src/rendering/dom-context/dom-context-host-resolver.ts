@@ -93,5 +93,4 @@ export class DomContextHostResolver implements IHostResolver {
     }
     this.contextMap.delete(component);
   }
-
 }

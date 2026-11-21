@@ -297,7 +297,9 @@ test.describe("RenderPipeline (Integration)", () => {
 
     // Verify that only reactive bindings were extracted
     if (compiledTemplate.bindings.size !== 2) {
-      throw new Error(`Expected 2 bindings, got ${compiledTemplate.bindings.size}`);
+      throw new Error(
+        `Expected 2 bindings, got ${compiledTemplate.bindings.size}`,
+      );
     }
 
     if (!compiledTemplate.bindings.has("dynamicClass")) {
@@ -310,9 +312,7 @@ test.describe("RenderPipeline (Integration)", () => {
 
     // Verify that rule markers are NOT in the reactive bindings set
     if (compiledTemplate.bindings.has("RULES.email")) {
-      throw new Error(
-        "Rule markers should NOT be in reactive bindings",
-      );
+      throw new Error("Rule markers should NOT be in reactive bindings");
     }
 
     // Verify template was rendered correctly with rules already resolved

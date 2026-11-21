@@ -43,7 +43,14 @@ test.describe("HtmlAwareTokenExtractor (contract)", () => {
     // by TemplateStaticValidator at compile time, not at the extraction stage.
     // Comments, <script> content, and <style> element content are still excluded.
     expect(bindings).toEqual(
-      new Set(["className", "onAttr", "styleAttr", "title", "dataValue", "message"]),
+      new Set([
+        "className",
+        "onAttr",
+        "styleAttr",
+        "title",
+        "dataValue",
+        "message",
+      ]),
     );
   });
 

@@ -26,7 +26,10 @@ export interface IDomContextFactory {
    * const context = factory.createAnchored(tbodyElement, hostElement);
    * ```
    */
-  createAnchored?(targetRoot: HTMLElement, hostElement: HTMLElement): IDomContext;
+  createAnchored?(
+    targetRoot: HTMLElement,
+    hostElement: HTMLElement,
+  ): IDomContext;
 }
 
 /**

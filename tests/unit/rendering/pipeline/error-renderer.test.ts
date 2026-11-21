@@ -72,7 +72,11 @@ test.describe("ErrorRenderer", () => {
 
       // Act & Assert
       expect(
-        () => new ErrorRenderer(nullAdapter, TemplateMother.createExpressionResolver()),
+        () =>
+          new ErrorRenderer(
+            nullAdapter,
+            TemplateMother.createExpressionResolver(),
+          ),
       ).toThrow("Dom adapter is required");
     });
 

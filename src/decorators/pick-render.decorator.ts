@@ -34,7 +34,10 @@ export type ComponentConfig = Partial<ComponentMetadata>;
  * }
  * ```
  */
-export function PickRender(config: ComponentConfig, provider: IServiceProvider = Services): ClassDecorator {
+export function PickRender(
+  config: ComponentConfig,
+  provider: IServiceProvider = Services,
+): ClassDecorator {
   if (!config) throw new Error("Config is required");
 
   return (target) => {

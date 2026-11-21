@@ -57,7 +57,9 @@ test.describe("TemplateStaticValidator", () => {
   test.describe("on* event handler attributes", () => {
     test("should throw for onclick with a literal value", () => {
       // Arrange
-      const fragment = fragmentFrom(`<button onclick="alert(1)">click</button>`);
+      const fragment = fragmentFrom(
+        `<button onclick="alert(1)">click</button>`,
+      );
 
       // Act & Assert
       expect(() => validator.validate(fragment)).toThrow(
@@ -67,7 +69,9 @@ test.describe("TemplateStaticValidator", () => {
 
     test("should throw for onclick with a binding value", () => {
       // Arrange
-      const fragment = fragmentFrom(`<button onclick="{{handler}}">click</button>`);
+      const fragment = fragmentFrom(
+        `<button onclick="{{handler}}">click</button>`,
+      );
 
       // Act & Assert
       expect(() => validator.validate(fragment)).toThrow(
@@ -173,7 +177,9 @@ test.describe("TemplateStaticValidator", () => {
   test.describe("blocked attributes: srcset", () => {
     test("should throw for srcset with any value", () => {
       // Arrange
-      const fragment = fragmentFrom(`<img src="/a.png" srcset="/a.png 1x, /b.png 2x">`);
+      const fragment = fragmentFrom(
+        `<img src="/a.png" srcset="/a.png 1x, /b.png 2x">`,
+      );
 
       // Act & Assert
       expect(() => validator.validate(fragment)).toThrow(
@@ -186,7 +192,11 @@ test.describe("TemplateStaticValidator", () => {
     const unsafeUrls = [
       { attr: "href", value: "javascript:alert(1)", tag: "a" },
       { attr: "href", value: "vbscript:msgbox(1)", tag: "a" },
-      { attr: "src", value: "data:text/html,<script>alert(1)</script>", tag: "img" },
+      {
+        attr: "src",
+        value: "data:text/html,<script>alert(1)</script>",
+        tag: "img",
+      },
       { attr: "action", value: "javascript:void(0)", tag: "form" },
     ];
 

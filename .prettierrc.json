@@ -1,0 +1,13 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "examples/src/demos/12-api/variants/*/api.template.html",
+        "examples/src/demos/13-dashboard/variants/*/dashboard.template.html"
+      ],
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
+}
